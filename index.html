@@ -926,6 +926,9 @@ body.focusread .toast { z-index: 90; }
 .isteps { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.45; }
 .shareico { width: 18px; height: 18px; vertical-align: -3px; color: #2F7AE5; }
 @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top, 0px); } }
+
+.gbtn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #1F1F1F; border: 1.5px solid #747775; font-weight: 700; }
+.gbtn .glogo { width: 20px; height: 20px; flex: none; }
 </style>
 
 <div class="wrap">
@@ -1036,7 +1039,7 @@ body.focusread .toast { z-index: 90; }
       </div>
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone</h3><div id="installRow"></div></div>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.3.0 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Scripture: World English Bible (public domain)</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.4.0 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Scripture: World English Bible (public domain)</span></div>
     </section>
   </div>
 
@@ -5418,14 +5421,21 @@ body.focusread .toast { z-index: 90; }
     return {
       mode: "firebase", fellowshipName,
       onAuth(cb) { return A.onAuthStateChanged(auth, u => { uid = u ? u.uid : null; cb(u ? { uid: u.uid, email: u.email || "" } : null); }); },
-      // ----- your account: an email and a password -----
-      async signUp(email, password) { const c = await A.createUserWithEmailAndPassword(auth, email, password); uid = c.user.uid; return { uid, email: c.user.email }; },
-      async signIn(email, password) { const c = await A.signInWithEmailAndPassword(auth, email, password); uid = c.user.uid; return { uid, email: c.user.email }; },
-      resetPassword(email) { return A.sendPasswordResetEmail(auth, email); },
+      // ----- your account: signing in with Google -----
+      // Google sign-in: a pop-up where it works, otherwise a full-page redirect that comes back here
+      async signInGoogle() {
+        const p = new A.GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
+        // an app opened from the iPhone home screen can't use pop-ups reliably: go to Google's page and come back
+        if (navigator.standalone === true) { await A.signInWithRedirect(auth, p); return null; }
+        try { const c = await A.signInWithPopup(auth, p); uid = c.user.uid; const info = A.getAdditionalUserInfo(c) || {};
+          return { uid, email: c.user.email || "", name: c.user.displayName || "", isNew: !!info.isNewUser }; }
+        catch (e) { if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported", "auth/cancelled-popup-request"].includes(e.code)) { await A.signInWithRedirect(auth, p); return null; } throw e; }
+      },
+      displayName() { return (auth.currentUser && auth.currentUser.displayName) || ""; },
       email() { return (auth.currentUser && auth.currentUser.email) || ""; },
       discardAccount() { return auth.currentUser ? A.deleteUser(auth.currentUser).catch(() => {}) : Promise.resolve(); },
       signOut() { return A.signOut(auth); },
-      async reauth(password) { const u = auth.currentUser; await A.reauthenticateWithCredential(u, A.EmailAuthProvider.credential(u.email, password)); },
+      async reauth() { await A.reauthenticateWithPopup(auth.currentUser, new A.GoogleAuthProvider()); },
       // remove everything this person wrote, then the account itself
       async deleteAccount(flockIds) {
         for (const f of flockIds) {
@@ -5628,15 +5638,14 @@ body.focusread .toast { z-index: 90; }
     return {
       mode: "demo", fellowshipName: "WordPasture (demo)",
       joinDemo, onAuth(cb) { authCb = cb; setTimeout(() => cb(joinDemo ? null : { uid: "u_me", email }), 0); return () => {}; },
-      async signUp(e, pw) { if (!/^\S+@\S+\.\S+$/.test(e)) throw fail("auth/invalid-email"); if (String(pw).length < 8) throw fail("auth/weak-password"); email = e; setTimeout(() => authCb({ uid: "u_me", email }), 50); return { uid: "u_me", email }; },
-      async signIn(e, pw) { if (!/^\S+@\S+\.\S+$/.test(e)) throw fail("auth/invalid-email"); if (String(pw).length < 8) throw fail("auth/invalid-credential");
-        email = e; joined = true; Object.values(stores).forEach(s => { if (!meIn(s)) s.profiles.push(P("u_me", "You", "Lamb", s.groups[0].id, "", 0, 0, null, { role: s.info.createdBy === "u_me" ? "shepherd" : "member" })); });
-        setTimeout(() => authCb({ uid: "u_me", email }), 50); return { uid: "u_me", email }; },
-      async resetPassword(e) { if (!/^\S+@\S+\.\S+$/.test(e)) throw fail("auth/invalid-email"); },
+      async signInGoogle(returning) { const isNew = joinDemo && !joined && !returning; email = "you@gmail.com";
+        if (!isNew) { joined = true; Object.values(stores).forEach(s => { if (!meIn(s)) s.profiles.push(P("u_me", "You", "Lamb", s.groups[0].id, "", 0, 0, null, { role: s.info.createdBy === "u_me" ? "shepherd" : "member" })); }); }
+        setTimeout(() => authCb({ uid: "u_me", email }), 50); return { uid: "u_me", email, name: "Your Name", isNew }; },
+      displayName() { return "Your Name"; },
       email() { return email; },
       async discardAccount() { authCb(null); },
       signOut() { email = ""; authCb(null); return Promise.resolve(); },
-      async reauth(pw) { if (String(pw).length < 8) throw fail("auth/invalid-credential"); },
+      async reauth() {},
       async deleteAccount() { Object.values(stores).forEach(s => { s.profiles = s.profiles.filter(p => p.uid !== "u_me"); s.refls = s.refls.filter(r => r.uid !== "u_me"); }); email = ""; authCb(null); },
       setFlock(id) { fid = id; },
       async myFlocks() { return Object.values(stores).filter(s => meIn(s)).map(s => ({ id: s.info.id, name: s.info.name })); },
@@ -5739,7 +5748,7 @@ body.focusread .toast { z-index: 90; }
   // Your lamb is one lamb; it simply grazes in each flock you belong to. Everything social happens inside the flock you're looking at.
   // A flock is made of folds (small groups). Its founder looks after everything; a shepherd looks after their own fold; everyone looks after their own posts.
   let flockInfo = null, flockBusy = false, flockMsg = "", flockSheet = false, flockTab = "list", fJoinCode = "", fFound = null, fFoundGroups = [], fName = "", fGroup = "", fNewName = "", leavingFlock = null;
-  let fEmail = "", fPw = "", fAgree = false;
+  let fAgree = false;
   const myName = () => S.displayName || (myProfile && myProfile.displayName) || "";
   const amFounder = () => !!(flockInfo && me && flockInfo.createdBy === me.uid);
   const amShep = () => !!(myProfile && myProfile.role === "shepherd");
@@ -5788,35 +5797,48 @@ body.focusread .toast { z-index: 90; }
     catch (e) { flockMsg = "Couldn't look that up just now. Check your connection and try again."; }
     flockBusy = false; paintFlocks();
   }
-  // ----- your account: an email and a password -----
+  // ----- your account: signing in with Google -----
   const AUTH_MSG = {
-    "auth/email-already-in-use": "That email already has an account. Sign in with it instead.",
-    "auth/invalid-email": "That email doesn't look right. Check it and try again.",
-    "auth/weak-password": "Choose a password of at least 8 characters.",
-    "auth/invalid-credential": "That email and password don't match. Check them, or reset your password.",
-    "auth/wrong-password": "That email and password don't match. Check them, or reset your password.",
-    "auth/user-not-found": "There's no account with that email yet.",
+    "auth/popup-closed-by-user": "The Google window was closed before you finished. Tap the button to try again.",
+    "auth/account-exists-with-different-credential": "That email is already used with another way of signing in.",
+    "auth/unauthorized-domain": "This web address isn't allowed to sign in yet. The founder needs to add it in Firebase (Authentication › Settings › Authorized domains).",
     "auth/too-many-requests": "Too many tries. Wait a few minutes, then try again.",
     "auth/network-request-failed": "No connection just now. Check your internet and try again.",
-    "auth/requires-recent-login": "For your safety, type your password again first."
+    "auth/user-disabled": "This account has been switched off. Ask the founder of your flock.",
+    "auth/requires-recent-login": "For your safety, confirm with Google again first."
   };
   const authMsg = (e, dflt) => AUTH_MSG[e && e.code] || dflt;
-  const emailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || "").trim());
-  // when someone new joins or starts a flock, these make their account
+  // when someone new joins or starts a flock, signing in with Google makes their account
   function accountCheck() {
     if (me) return "";
-    if (!emailOk(fEmail)) return "Type your email address. It's how you sign in on another phone.";
-    if (fPw.length < 8) return "Choose a password of at least 8 characters.";
     if (!fAgree) return "Tick the box to say you've read the privacy note.";
     return "";
   }
-  async function ensureAccount() { if (me) return false; await B.signUp(fEmail.trim(), fPw); await waitForMe(); return true; }
+  const PENDING = "wp-pending-join";
+  // returns true if a brand-new account was made just now (so it can be undone if joining fails)
+  async function ensureAccount(kind) {
+    if (me) return false;
+    try { sessionStorage.setItem(PENDING, JSON.stringify({ kind, code: fJoinCode, name: fName, group: fGroup, flock: fNewName, at: Date.now() })); } catch (e) {}
+    const r = await B.signInGoogle();
+    if (!r) { const e = new Error("redirect"); e.code = "redirect"; throw e; }   // the page is going to Google and will come back
+    try { sessionStorage.removeItem(PENDING); } catch (e) {}
+    await waitForMe();
+    if (!fName && r.name) fName = r.name;
+    return !!r.isNew;
+  }
+  // back from Google's sign-in page: carry on joining or starting the flock
+  async function resumePending() {
+    let p = null; try { p = JSON.parse(sessionStorage.getItem(PENDING) || "null"); sessionStorage.removeItem(PENDING); } catch (e) {}
+    if (!p || !me || Date.now() - (p.at || 0) > 15 * 60e3) return false;
+    fName = p.name || (B.displayName ? B.displayName() : ""); fGroup = p.group || ""; fAgree = true;
+    if (p.kind === "start") { fNewName = p.flock || ""; flockTab = "start"; await startFlock(); return true; }
+    fJoinCode = p.code || ""; flockTab = "join"; await lookUpFlock(); if (fFound) { fGroup = p.group || fGroup; await joinFoundFlock(); } return true;
+  }
+  const G_LOGO = `<svg viewBox="0 0 48 48" class="glogo" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
   function accountFields() {
     if (me) return "";
-    return `<div class="acctfields"><div><label class="small" for="fEmail">Your email</label><input id="fEmail" class="field" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="120" placeholder="you@example.com" value="${esc(fEmail)}"></div>
-      <div><label class="small" for="fPw">Choose a password</label><input id="fPw" class="field" type="password" autocomplete="new-password" minlength="8" maxlength="100" placeholder="At least 8 characters" value="${esc(fPw)}"></div>
-      <p class="planline">You'll use these to sign in on another phone.</p>
-      <label class="agree"><input type="checkbox" id="fAgree" ${fAgree ? "checked" : ""}><span>I've read the <button type="button" class="linkish inl" data-privacy="1">privacy note</button>.</span></label></div>`;
+    return `<div class="acctfields"><label class="agree"><input type="checkbox" id="fAgree" ${fAgree ? "checked" : ""}><span>I've read the <button type="button" class="linkish inl" data-privacy="1">privacy note</button>.</span></label>
+      <p class="planline">You'll sign in with your Google account. Use the same one on any phone to find your lamb.</p></div>`;
   }
   async function joinFoundFlock() {
     const displayName = (fName || myName()).trim();
@@ -5826,17 +5848,18 @@ body.focusread .toast { z-index: 90; }
     flockBusy = true; joining = true; flockMsg = ""; paintFlocks();
     let created = false;
     try {
-      created = await ensureAccount();
+      created = await ensureAccount("join");
       B.setFlock(fFound.id);
       const code = String(fJoinCode).toUpperCase().replace(/[^A-Z0-9]/g, "");
       await B.createProfile(Object.assign({ displayName, groupId: fGroup || (fFoundGroups[0] || {}).id || "", role: "member", code, flockName: fFound.name }, profilePayload()));
       S.displayName = displayName; S.flocks = (S.flocks || []).concat([{ id: fFound.id, name: fFound.name }]);
-      const id = fFound.id; fFound = null; fJoinCode = ""; fPw = ""; flockSheet = false; joining = false; flockBusy = false; renderFlockSheet();
+      const id = fFound.id; fFound = null; fJoinCode = ""; flockSheet = false; joining = false; flockBusy = false; renderFlockSheet();
       await enterFlock(id); toast("Welcome to " + flockName(id) + "!", () => {});
     } catch (e) {
+      if (e && e.code === "redirect") return;
       if (created) await B.discardAccount();
       joining = false; flockBusy = false;
-      flockMsg = e && /^auth\//.test(e.code || "") ? authMsg(e, "Couldn't make your account just now. Please try again.") : "Couldn't join just now. You may have been removed from this flock, or the code has changed. Check with its founder.";
+      flockMsg = e && /^auth\//.test(e.code || "") ? authMsg(e, "Couldn't sign in with Google just now. Please try again.") : "Couldn't join just now. You may have been removed from this flock, or the code has changed. Check with its founder.";
       paintFlocks();
     }
   }
@@ -5849,18 +5872,19 @@ body.focusread .toast { z-index: 90; }
     flockBusy = true; joining = true; flockMsg = ""; paintFlocks();
     let created = false;
     try {
-      created = await ensureAccount();
+      created = await ensureAccount("start");
       const f = await B.createFlock(name);
       await B.createProfile(Object.assign({ displayName, groupId: "", role: "shepherd", flockName: name }, profilePayload()));
       const gid = await B.createGroup(name.length > 28 ? "Home fold" : name);
       await B.updateProfile({ groupId: gid });
       S.displayName = displayName; S.flocks = (S.flocks || []).concat([{ id: f.id, name }]);
-      fNewName = ""; fPw = ""; flockSheet = false; joining = false; flockBusy = false; flockTab = "list"; renderFlockSheet();
+      fNewName = ""; flockSheet = false; joining = false; flockBusy = false; flockTab = "list"; renderFlockSheet();
       await enterFlock(f.id); showCode = true; renderGroup(); toast(name + " is ready. Share its code: " + f.code, () => {});
     } catch (e) {
+      if (e && e.code === "redirect") return;
       if (created) await B.discardAccount();
       joining = false; flockBusy = false;
-      flockMsg = e && /^auth\//.test(e.code || "") ? authMsg(e, "Couldn't make your account just now. Please try again.") : "Couldn't start the flock just now. Check your connection and try again.";
+      flockMsg = e && /^auth\//.test(e.code || "") ? authMsg(e, "Couldn't sign in with Google just now. Please try again.") : "Couldn't start the flock just now. Check your connection and try again.";
       paintFlocks();
     }
   }
@@ -5892,12 +5916,12 @@ body.focusread .toast { z-index: 90; }
     else if (tab === "join") body = `<div class="ffound"><span class="small">You're joining</span><b>${esc(fFound.name)}</b></div>${nameField}
       ${fFoundGroups.length > 1 ? `<div><label class="small" for="fGroup">Which fold (small group) are you in?</label><select id="fGroup" class="field"><option value="">Choose your fold</option>${fFoundGroups.slice().sort((a, b) => a.name.localeCompare(b.name)).map(g => `<option value="${esc(g.id)}" ${g.id === fGroup ? "selected" : ""}>${esc(g.name)}</option>`).join("")}</select></div>` : ""}
       ${accountFields()}
-      <button class="btn primary" id="fJoin" ${flockBusy ? "disabled" : ""}>${flockBusy ? "Joining…" : "Join " + esc(fFound.name)}</button>
+      <button class="btn ${me ? "primary" : "gbtn"}" id="fJoin" ${flockBusy ? "disabled" : ""}>${flockBusy ? "Joining…" : me ? "Join " + esc(fFound.name) : G_LOGO + "Continue with Google to join"}</button>
       <button class="linkish" id="fBack">Use a different code</button>`;
     else body = `<p class="planline">You'll be its founder. You'll get a code to share, and you can set up folds (small groups), shepherds and a reading plan for everyone.</p>
       <div><label class="small" for="fNew">Name of the flock</label><input id="fNew" class="field" maxlength="40" placeholder="e.g. Riverside Youth, The Tan Family" value="${esc(fNewName)}"></div>${nameField}
       ${accountFields()}
-      <button class="btn primary" id="fStart" ${flockBusy ? "disabled" : ""}>${flockBusy ? "Building the fold…" : "Start the flock"}</button>`;
+      <button class="btn ${me ? "primary" : "gbtn"}" id="fStart" ${flockBusy ? "disabled" : ""}>${flockBusy ? "Building the fold…" : me ? "Start the flock" : G_LOGO + "Continue with Google to start"}</button>`;
     return tabs + body + (flockMsg ? `<p class="badmsg">${esc(flockMsg)}</p>` : "");
   }
   function wireFlockForm(root) {
@@ -5908,7 +5932,7 @@ body.focusread .toast { z-index: 90; }
     on("fBack", "onclick", () => { fFound = null; flockMsg = ""; paintFlocks(); });
     on("fName", "oninput", e => { fName = e.target.value; }); on("fNew", "oninput", e => { fNewName = e.target.value; });
     on("fGroup", "onchange", e => { fGroup = e.target.value; });
-    on("fEmail", "oninput", e => { fEmail = e.target.value; }); on("fPw", "oninput", e => { fPw = e.target.value; }); on("fAgree", "onchange", e => { fAgree = e.target.checked; });
+    on("fAgree", "onchange", e => { fAgree = e.target.checked; });
     root.querySelectorAll("[data-privacy]").forEach(b => b.onclick = e => { e.preventDefault(); openPrivacy(); });
   }
   // the flocks sheet: switch between flocks, join another, start one
@@ -5932,7 +5956,7 @@ body.focusread .toast { z-index: 90; }
   let showCode = false;
 
   // ----- the welcome screen: join or start a flock (making an account as you do), or sign in -----
-  let joining = false, signingIn = false, gateOk = "", sEmail = "", sPw = "";
+  let joining = false, signingIn = false;
   function renderGate() {
     const g = $("gate"), wrap = document.querySelector(".wrap");
     const show = B && (B.mode === "firebase" || B.joinDemo) && (!me || !(S.flocks && S.flocks.length) || joining);
@@ -5940,38 +5964,25 @@ body.focusread .toast { z-index: 90; }
     if (!show) return;
     if (signingIn && !me) {
       g.innerHTML = `<div class="eyebrow">WordPasture</div><p class="cardtitle">Sign in</p>
-        <p class="planline">Welcome back. Your lamb is waiting.</p>
-        <div><label class="small" for="sEmail">Email</label><input id="sEmail" class="field" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="120" value="${esc(sEmail)}"></div>
-        <div><label class="small" for="sPw">Password</label><input id="sPw" class="field" type="password" autocomplete="current-password" maxlength="100" value="${esc(sPw)}"></div>
-        <button class="btn primary" id="sGo" ${gateBusy ? "disabled" : ""}>${gateBusy ? "Signing in…" : "Sign in"}</button>
-        ${gateMsg ? `<p class="badmsg">${esc(gateMsg)}</p>` : ""}${gateOk ? `<p class="okmsg">${esc(gateOk)}</p>` : ""}
-        <button class="linkish" id="sForgot">Forgot your password?</button>
+        <p class="planline">Welcome back. Your lamb is waiting. Use the Google account you joined with.</p>
+        <button class="btn gbtn" id="sGo" ${gateBusy ? "disabled" : ""}>${gateBusy ? "Signing in…" : G_LOGO + "Sign in with Google"}</button>
+        ${gateMsg ? `<p class="badmsg">${esc(gateMsg)}</p>` : ""}
         <button class="linkish" id="gSwap">New here? Join or start a flock</button>`;
-      $("sEmail").oninput = e => { sEmail = e.target.value; }; $("sPw").oninput = e => { sPw = e.target.value; };
-      const go = async () => {
-        if (!emailOk(sEmail)) { gateMsg = "Type the email you signed up with."; gateOk = ""; return renderGate(); }
-        if (!sPw) { gateMsg = "Type your password."; gateOk = ""; return renderGate(); }
-        gateBusy = true; gateMsg = ""; gateOk = ""; renderGate();
-        try { await B.signIn(sEmail.trim(), sPw); sPw = ""; signingIn = false; }
-        catch (e) { gateMsg = authMsg(e, "Couldn't sign in just now. Please try again."); }
+      $("sGo").onclick = async () => {
+        gateBusy = true; gateMsg = ""; renderGate();
+        try { const r = await B.signInGoogle(true); if (r) signingIn = false; }
+        catch (e) { gateMsg = authMsg(e, "Couldn't sign in with Google just now. Please try again."); }
         gateBusy = false; renderGate();
       };
-      $("sGo").onclick = go; $("sPw").onkeydown = e => { if (e.key === "Enter") go(); };
-      $("sForgot").onclick = async () => {
-        if (!emailOk(sEmail)) { gateMsg = "Type your email above first, then tap “Forgot your password?” again."; gateOk = ""; return renderGate(); }
-        try { await B.resetPassword(sEmail.trim()); gateMsg = ""; gateOk = "We've emailed you a link to choose a new password. Check your inbox (and spam)."; }
-        catch (e) { gateMsg = authMsg(e, "Couldn't send that just now. Please try again."); gateOk = ""; }
-        renderGate();
-      };
-      $("gSwap").onclick = () => { signingIn = false; gateMsg = ""; gateOk = ""; renderGate(); };
+      $("gSwap").onclick = () => { signingIn = false; gateMsg = ""; renderGate(); };
       return;
     }
     g.innerHTML = `<div class="eyebrow">WordPasture</div><p class="cardtitle">${me ? "Join a flock" : "Welcome to the flock"}</p>
       <p class="planline">${me ? "Everyone reads in at least one flock. Join one with its code, or start your own." : "A lamb is waiting for you. Feed it each day with the Word, and grow together with your flock: your fellowship, your family, your friends."}</p>
       ${flockMsg && !fFound && flockTab !== "start" && /no longer/.test(flockMsg) ? `<p class="badmsg">${esc(flockMsg)}</p>` : ""}
       <div class="flockform">${flockFormHtml("gate")}</div>
-      ${me ? `<p class="planline">Signed in as ${esc(B.email ? B.email() : "")}. <button class="linkish inl" id="gOut">Sign out</button></p>` : `<button class="linkish" id="gSwap">Already have an account? Sign in</button>`}`;
-    if ($("gSwap")) $("gSwap").onclick = () => { signingIn = true; gateMsg = ""; gateOk = ""; if (!sEmail) sEmail = fEmail; renderGate(); };
+      ${me ? `<p class="planline">Signed in as ${esc(B.email ? B.email() : "")}. <button class="linkish inl" id="gOut">Sign out</button></p>` : `<button class="linkish" id="gSwap">Already joined? Sign in with Google</button>`}`;
+    if ($("gSwap")) $("gSwap").onclick = () => { signingIn = true; gateMsg = ""; renderGate(); };
     if ($("gOut")) $("gOut").onclick = () => B.signOut();
     if (flockTab === "list") flockTab = "join";
     wireFlockForm(g);
@@ -5979,33 +5990,30 @@ body.focusread .toast { z-index: 90; }
   function waitForMe() { return new Promise(res => { const t0 = Date.now(); const tick = () => (me || Date.now() - t0 > 8000) ? res() : setTimeout(tick, 100); tick(); }); }
 
   // ----- your account, in settings: email, password, sign out, delete -----
-  let acctMode = "", acctMsg = "", acctOk = "", delPw = "", delBusy = false;
+  let acctMode = "", acctMsg = "", acctOk = "", delBusy = false;
   function renderAccount() {
     const sk = $("settingsKey");
     sk.hidden = !(B && me);
     if (sk.hidden) return;
     const mail = B.email ? B.email() : "";
     const founderOf = (S.flocks || []).filter(f => f.id === S.flockId && amFounder() && othersIn() > 0);
-    sk.innerHTML = `<h3>Your account</h3><div class="setrow"><span><b>${esc(mail || "Signed in")}</b><small class="setnote">Use this email and your password to sign in on another phone.</small></span></div>
-      <div class="row acctbtns"><button class="btn small-btn" id="acPw">Change password</button><button class="btn small-btn" id="acOut">Sign out</button></div>
-      ${acctMode === "out" ? `<div class="confirm"><b>Sign out on this phone?</b><span style="color:var(--muted);font-size:14px">${esc(S.name)} stays safe. Sign in again with your email and password.</span><div class="row"><button class="btn grow" id="acOutYes">Sign out</button><button class="btn grow" id="acNo">Stay</button></div></div>` : ""}
+    sk.innerHTML = `<h3>Your account</h3><div class="setrow"><span><b>${esc(mail || "Signed in")}</b><small class="setnote">Signed in with Google. Use this account on any phone to find ${esc(S.name)}.</small></span></div>
+      <div class="row acctbtns"><button class="btn small-btn" id="acOut">Sign out</button></div>
+      ${acctMode === "out" ? `<div class="confirm"><b>Sign out on this phone?</b><span style="color:var(--muted);font-size:14px">${esc(S.name)} stays safe. Sign in again with the same Google account.</span><div class="row"><button class="btn grow" id="acOutYes">Sign out</button><button class="btn grow" id="acNo">Stay</button></div></div>` : ""}
       ${acctMode === "del" ? `<div class="confirm"><b>Delete your account for good?</b><span style="color:var(--muted);font-size:14px">This removes ${esc(S.name)}, your reading, your journal, and everything you've shared or sent in every flock. It can't be undone.</span>
-        ${founderOf.length ? `<span class="badmsg">You founded ${esc(flockName(S.flockId))}. Hand it to someone else in Founder's tools first.</span>` : `<label class="small" for="acDelPw">Type your password to confirm</label><input id="acDelPw" class="field" type="password" autocomplete="current-password" value="${esc(delPw)}">
+        ${founderOf.length ? `<span class="badmsg">You founded ${esc(flockName(S.flockId))}. Hand it to someone else in Founder's tools first.</span>` : `<span style="color:var(--muted);font-size:14px">Google will ask you to confirm it's you.</span>
         <div class="row"><button class="btn grow danger" id="acDelYes" ${delBusy ? "disabled" : ""}>${delBusy ? "Deleting…" : "Delete everything"}</button><button class="btn grow" id="acNo">Keep my account</button></div>`}</div>` : ""}
       ${acctMsg ? `<p class="badmsg">${esc(acctMsg)}</p>` : ""}${acctOk ? `<p class="okmsg">${esc(acctOk)}</p>` : ""}
       <div class="row acctlinks"><button class="linkish" data-privacy="1">Privacy note</button>${acctMode === "del" ? "" : `<button class="linkish dangerlink" id="acDel">Delete my account</button>`}</div>`;
     const on = (id, fn) => { const el = $(id); if (el) el.onclick = fn; };
-    on("acPw", async () => { acctMsg = ""; acctOk = ""; try { await B.resetPassword(mail); acctOk = "We've emailed " + mail + " a link to choose a new password."; } catch (e) { acctMsg = authMsg(e, "Couldn't send that just now."); } renderAccount(); });
     on("acOut", () => { acctMode = "out"; renderAccount(); });
     on("acOutYes", async () => { acctMode = ""; try { localStorage.removeItem(LS); } catch (e) {} await B.signOut(); location.reload(); });
-    on("acNo", () => { acctMode = ""; delPw = ""; acctMsg = ""; renderAccount(); });
+    on("acNo", () => { acctMode = ""; acctMsg = ""; renderAccount(); });
     on("acDel", () => { acctMode = "del"; acctMsg = ""; acctOk = ""; renderAccount(); });
-    if ($("acDelPw")) $("acDelPw").oninput = e => { delPw = e.target.value; };
     on("acDelYes", async () => {
-      if (!delPw) { acctMsg = "Type your password to confirm."; return renderAccount(); }
       delBusy = true; acctMsg = ""; renderAccount();
       try {
-        await B.reauth(delPw);
+        await B.reauth();
         // flocks where I'm the only one left close with me
         // a founder hands a flock on first; a flock with no one else in it simply closes
         const close = [];
@@ -6025,7 +6033,7 @@ body.focusread .toast { z-index: 90; }
     sh.innerHTML = `<div class="calback" data-close="1"></div>
       <section class="calcard privcard" role="dialog" aria-modal="true" aria-label="Privacy note">
         <div class="calhead"><div><div class="eyebrow">WordPasture</div><p class="cardtitle">Privacy note</p></div><div class="calnav"><button data-close="1" aria-label="Close">✕</button></div></div>
-        <h4>What we keep</h4><p>Your email, the name you give each flock, your lamb, your reading, your journal, and anything you share or send.</p>
+        <h4>What we keep</h4><p>Your Google account's email, the name you give each flock, your lamb, your reading, your journal, and anything you share or send.</p>
         <h4>Who sees what</h4><ul>
           <li>Your flock sees your name, your lamb, and whether you've read today.</li>
           <li>Your reflections are seen only by the people you choose: just you, your fold, or the whole flock. A question in a fold-only reflection is seen by the whole flock.</li>
@@ -6549,7 +6557,7 @@ body.focusread .toast { z-index: 90; }
   $("inboxBtn").addEventListener("click", e => { e.stopPropagation(); inboxOpen = true; renderInbox(); });
   $("visitBack").onclick = () => setVisit(false);
   let setOpen = false, clearingHl = false;
-  function setSettings(open) { setOpen = open; $("setSheet").hidden = !open; clearingHl = false; if (!open) { acctMode = ""; acctMsg = ""; acctOk = ""; delPw = ""; } if (open) renderSettings(); }
+  function setSettings(open) { setOpen = open; $("setSheet").hidden = !open; clearingHl = false; if (!open) { acctMode = ""; acctMsg = ""; acctOk = ""; } if (open) renderSettings(); }
   $("setBtn").addEventListener("click", e => { e.stopPropagation(); setSettings(true); });
   $("setBack").onclick = () => setSettings(false);
   $("setClose").onclick = () => setSettings(false);
@@ -6649,7 +6657,7 @@ body.focusread .toast { z-index: 90; }
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.3.0";
+  const APP_VERSION = "2.4.0";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -6707,6 +6715,7 @@ body.focusread .toast { z-index: 90; }
         S.flocks = S.flocks || [];
         const pick = S.flocks.some(f => f.id === S.flockId) ? S.flockId : (S.flocks[0] || {}).id || null;
         await enterFlock(pick); saveRemote();
+        if (!S.flocks.length && await resumePending()) return;
       }
       render();
     });

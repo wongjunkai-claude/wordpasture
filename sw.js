@@ -1,7 +1,7 @@
 // WordPasture service worker: lets the app open and read offline, and keeps the Bible text close at hand.
 // The app itself (index.html) is always fetched fresh when there's a connection, so updates arrive straight away;
 // the saved copy is only used when offline. "Update now" in the app clears everything here and starts again.
-const VERSION = "wp-2.3.0";
+const VERSION = "wp-2.4.0";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "firebase-config.js", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-180.png",
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"];
 
@@ -29,6 +29,7 @@ self.addEventListener("fetch", e => {
   // the database, sign-in and update checks always go straight to the network
   if (/googleapis\.com|firebaseio|identitytoolkit|securetoken/.test(u.host)) return;
   if (u.origin === location.origin && /version\.json$/.test(u.pathname)) return;
+  if (u.origin === location.origin && u.pathname.startsWith("/__/")) return;   // Firebase's own sign-in pages
   if (req.mode === "navigate" || (u.origin === location.origin && /(\/|\.html|firebase-config\.js|manifest\.webmanifest)$/.test(u.pathname))) { e.respondWith(fresh(req)); return; }
   if (u.origin === location.origin && /\/(bible|questions|icons)\//.test(u.pathname)) { e.respondWith(kept(req)); return; }
   if (/cdnjs\.cloudflare\.com|gstatic\.com|fonts\.(googleapis|gstatic)\.com/.test(u.host)) { e.respondWith(kept(req)); return; }

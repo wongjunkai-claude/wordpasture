@@ -6,7 +6,7 @@ A daily Bible-reading game for your fellowship, your family, your friends. Each 
 
 This folder is a complete website. It runs on Firebase (Google's free app platform): Firebase Hosting serves the site, Firebase Authentication handles sign-in, and Firestore stores the lambs.
 
-People sign in with an **email and password**. Forgotten passwords are reset by email from the sign-in screen.
+People sign in with their **Google account** (Google sign-in only). There are no passwords to remember or reset.
 
 ## Try it first
 
@@ -23,10 +23,10 @@ You need a Google account and a computer with [Node.js](https://nodejs.org) inst
 
 1. **Create a Firebase project.** Go to [console.firebase.google.com](https://console.firebase.google.com), click *Add project*, and give it a name (for example `feed-my-lambs`). Google Analytics isn't needed.
 2. **Add a web app.** In the project, click the web icon (`</>`), name it, and tick *Also set up Firebase Hosting*. Firebase shows a `firebaseConfig` block. Copy those values into `public/firebase-config.js`.
-3. **Turn on sign-in.** Go to *Build → Authentication → Get started → Sign-in method*, choose *Email/Password*, switch on the first option (leave *Email link* off) and save. Then in *Authentication → Settings*:
-   - *User actions*: keep **Email enumeration protection** on.
-   - *Authorized domains*: check your site's address is listed (the `.web.app` one is added for you).
-   - Optional: *Templates → Password reset* lets you change the sender name to "WordPasture".
+3. **Turn on Google sign-in.** Go to *Build → Authentication → Get started → Sign-in method*, choose *Google*, switch it on, pick a support email and save. (Leave Email/Password off.) Then:
+   - *Authentication → Settings → Authorized domains*: check `wordpasture.web.app` and `wordpasture.firebaseapp.com` are listed.
+   - In [Google Cloud → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials?project=wordpasture), open the OAuth client *Web client (auto created by Google Service)* and under *Authorized redirect URIs* add `https://wordpasture.web.app/__/auth/handler`. The app signs in through its own address (`authDomain` in `firebase-config.js`), which is what makes Google sign-in work in Safari and from the iPhone home screen.
+   - *APIs & Services → OAuth consent screen*: set the app name to "WordPasture" and add your logo and support email, so people see it when they choose their Google account.
 4. **Create the database.** Go to *Build → Firestore Database → Create database*. Choose *Start in production mode* and a nearby location (for Singapore, `asia-southeast1`).
 5. **Point the folder at your project.** Open `.firebaserc` and replace `your-project-id` with your project's ID (shown in *Project settings*).
 6. **Deploy.** In a terminal, inside this folder:
@@ -38,9 +38,9 @@ You need a Google account and a computer with [Node.js](https://nodejs.org) inst
    This publishes the website, the security rules and the database indexes. The terminal prints your site's address, for example `https://feed-my-lambs.web.app`. (Indexes can take a few minutes to build the first time.)
 7. **Lock the key to your site.** In [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials), open the *Browser key* for the project and, under *Application restrictions*, choose *Websites* and add `https://your-project-id.web.app/*` and `https://your-project-id.firebaseapp.com/*`.
 8. **Optional: App Check.** In Firebase *Build → App Check*, register the web app with reCAPTCHA Enterprise and turn on enforcement for Firestore and Authentication. This stops other websites and scripts using your database.
-9. **Start your flock.** Open your site, choose *Start a flock*, give it a name (for example `Riverside Youth`), your name, your email and a password. You become its **founder**.
+9. **Start your flock.** Open your site, choose *Start a flock*, give it a name (for example `Riverside Youth`), and your name, then *Continue with Google*. You become its **founder**.
 10. **Set it up.** Open the farm (signpost on your fold card) and tap *Founder's tools*: see the **flock code**, rename the flock, add folds, choose shepherds, and set the reading plan in *Settings → Reading plan → Flock plan*.
-11. **Invite people.** Share the site address and the flock code. Each person types the code, their name, their fold, their email and a password.
+11. **Invite people.** Share the site address and the flock code. Each person types the code, their name, and their fold, then *Continue with Google*.
 
 To change anything later, edit the files and run `firebase deploy` again.
 
@@ -105,8 +105,8 @@ When someone signs in on a second phone, or comes back to the app, the two copie
 ## Looking after it
 
 - **Where things are:** `flocks/{flockId}` holds each flock (with `members`, `groups` (folds), `reflections`, `questions`, `cheers`, `replies`, `rhearts`, `removed`, `config/plan` inside), `codes/{CODE}` points a code to its flock, and `users/{uid}` (with `journal`) holds each person's lamb.
-- **Someone forgot their password:** they tap *Already have an account? Sign in → Forgot your password?*.
-- **Someone lost access to their email:** in *Authentication → Users* you can change their email address.
+- **Someone has a new phone:** they open the site, tap *Already joined? Sign in with Google*, and choose the same Google account.
+- **Someone used the wrong Google account:** they sign out (*Settings › Your account*) and sign in with the right one. Each Google account has its own lamb.
 
 ## Publishing an update
 
