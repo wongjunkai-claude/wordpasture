@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -201,7 +201,7 @@ details .inner { padding-bottom: 16px; display: flex; flex-direction: column; ga
 .rescue { font-family: var(--scripture); font-style: italic; color: var(--ink) !important; }
 .planted { color: var(--accent) !important; font-weight: 700; }
 .btn.primary-soft { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); color: var(--ink); }
-.field { font: 15px var(--body); color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; width: 100%; min-width: 0; }
+.field { font: 16px var(--body); color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; width: 100%; min-width: 0; }
 .row .field.grow { flex: 1 1 140px; width: auto; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; }
 .memverse { margin: 0; font-family: var(--scripture); font-style: italic; font-size: 18px; line-height: 1.5; }
 .cloze { margin: 0; font-family: var(--scripture); font-style: italic; font-size: 18px; line-height: 2.1; }
@@ -458,7 +458,7 @@ details.mini summary { padding: 4px 0; font-size: 14px; color: var(--muted); }
 .calcard.dresscard { max-height: 56%; }
 #dressBack { background: rgba(20,27,24,.12); }
 [hidden] { display: none !important; }
-.wrap.gated > :not(#gate):not(.device) { display: none; }
+.wrap.gated > :not(#gate) { display: none !important; }
 .wrap.gated .buttons { display: none; }
 #gate, #keyCard { border-color: var(--accent); }
 .codebox .lambkey { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: .04em; overflow-wrap: anywhere; }
@@ -929,6 +929,24 @@ body.focusread .toast { z-index: 90; }
 
 .gbtn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #1F1F1F; border: 1.5px solid #747775; font-weight: 700; }
 .gbtn .glogo { width: 20px; height: 20px; flex: none; }
+
+/* ---- the app doesn't zoom ---- */
+html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+input, select, textarea { font-size: max(16px, 1em); }
+/* ---- locked things: a big lock and what unlocks it ---- */
+.acc.locked, .hopt.locked { position: relative; }
+.lockcover { position: absolute; left: 50%; top: 8px; transform: translateX(-50%); width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,253,248,.9); box-shadow: 0 3px 10px -3px rgba(30,40,34,.35); pointer-events: none; }
+.lockcover svg { width: 26px; height: 26px; }
+.acc.locked .accimg, .hopt.locked img { filter: grayscale(1) blur(1.5px); opacity: .35 !important; }
+.acc.locked .unl, .hopt.locked .unl { display: block; -webkit-line-clamp: unset; font-size: 11.5px !important; font-weight: 700; color: var(--ink); line-height: 1.25; margin-top: 4px; text-align: center; }
+/* ---- turning and settling a pond, right on the pasture ---- */
+.placetools { position: absolute; z-index: 6; display: flex; gap: 8px; transform: translate(-50%, -100%); pointer-events: auto; }
+.placetools button { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #3B2B25; background: #FFFDF8; display: grid; place-items: center; box-shadow: 0 4px 12px -4px rgba(30,40,34,.5); cursor: pointer; padding: 0; }
+.placetools button svg { width: 22px; height: 22px; }
+.placetools .ok { background: #3E7F5A; border-color: #2B5A40; color: #fff; }
+.placetools.below { transform: translate(-50%, 0); }
+.placetools .ok { width: auto; padding: 0 16px; border-radius: 99px; font: 700 15px var(--body); }
+.acc.locked .lockcover svg, .hopt.locked .lockcover svg { filter: none !important; opacity: 1 !important; }
 </style>
 
 <div class="wrap">
@@ -1039,7 +1057,7 @@ body.focusread .toast { z-index: 90; }
       </div>
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone</h3><div id="installRow"></div></div>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.5.0 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Scripture: World English Bible (public domain)</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.6.0 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Scripture: World English Bible (public domain)</span></div>
     </section>
   </div>
 
@@ -3578,7 +3596,8 @@ body.focusread .toast { z-index: 90; }
       if (!snapped) { snapped = true; lambPos.copy(state.lost ? awayPos : homePos); lamb.rotation.y = state.lost ? 0.4 : HOME_YAW; }
     },
     feed() { const far = Math.hypot(lambPos.x - homePos.x, lambPos.z - homePos.z) > 0.1 || state.lost; if (far) act.feedPending = true; else { act.feedT = 0; act.feedBurst = false; } return far; },
-    setFriends, setHome, setSetting, setOutfit, keepsakeThumb, accThumb, homeThumb, skyThumb, breedThumb, lambThumb, showHome(on) { home.visible = !!on; }, setGrid(on) { gridOn = !!on; gridFx.visible = gridOn; fadeItems(gridOn); if (!on) setGridMarks([]); }, setGridMarks, onGridPointer: null, overview(on, mode) { ovOn = !!on; ovMode = mode || "view"; },
+    setFriends, setHome, setSetting, setOutfit, keepsakeThumb, accThumb, homeThumb, skyThumb, breedThumb, lambThumb, showHome(on) { home.visible = !!on; }, setGrid(on) { gridOn = !!on; gridFx.visible = gridOn; fadeItems(gridOn); if (!on) setGridMarks([]); }, setGridMarks, onGridPointer: null,
+    gridToScreen(x, z) { const v = new T.Vector3(x, 0.1, z).project(camera); if (v.z > 1) return null; return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; }, overview(on, mode) { ovOn = !!on; ovMode = mode || "view"; },
     pet() {
       if (state.lost || walking) return false;
       act.petT = 0; if (state.hearts >= 2) { act.hopT = 0; act.hopN = 1; } wagT = 1.2; lookT = 0;
@@ -4010,6 +4029,25 @@ body.focusread .toast { z-index: 90; }
     bandana: c => `<path d="M6 12 Q20 18 34 12 L22 34 Q20 36 18 34 Z" fill="${c}"/><circle cx="18" cy="20" r="1.4" fill="#fff"/><circle cx="23" cy="24" r="1.4" fill="#fff"/><circle cx="20" cy="29" r="1.2" fill="#fff"/>`,
     lei: c => `<path d="M6 14 Q20 32 34 14" stroke="#5FA75A" stroke-width="1.5" fill="none"/>` + [[7,16],[11,22],[16,26],[20,27],[24,26],[29,22],[33,16]].map(([x,y],i) => `<circle cx="${x}" cy="${y}" r="3.4" fill="${i % 2 ? "#fff" : c}" stroke="#ddd" stroke-width=".6"/>`).join("")
   };
+  // what a locked thing says: just how to unlock it
+  const LOCK_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.6" fill="#F2C14E" stroke="#3B2B25" stroke-width="1.8"/><path d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" fill="none" stroke="#3B2B25" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="15.2" r="1.5" fill="#3B2B25"/></svg>`;
+  function unlockText(how) {
+    const h = String(how || ""); let m;
+    if ((m = h.match(/^Read on (\d+) days$/))) return "Unlock on Day " + m[1];
+    if ((m = h.match(/^Read (\d+) days in a row$/))) return "Unlock with " + m[1] + "-day streak";
+    if ((m = h.match(/^Read (\d+) chapters$/))) return "Unlock after reading " + m[1] + " chapters";
+    if ((m = h.match(/^Finish (.+)$/))) return "Unlock after reading " + m[1];
+    if (h === "Read once") return "Unlock after your first reading";
+    if (h === "Learn a verse") return "Unlock after learning a verse";
+    if ((m = h.match(/^Learn (\d+) verses$/))) return "Unlock after learning " + m[1] + " verses";
+    if ((m = h.match(/^Encourage (\d+) times$/))) return "Unlock after encouraging " + m[1] + " times";
+    if ((m = h.match(/^Read (on|at) (.+)$/))) return "Unlock by reading " + m[1] + " " + m[2];
+    if (h === "Visit another fold") return "Unlock by visiting another fold";
+    if (h === "Your whole fold reads in a day") return "Unlock when your whole fold reads in a day";
+    if (h === "Bring your lamb home") return "Unlock by bringing your lamb home";
+    return "Unlock: " + h;
+  }
+  const lockBits = how => `<span class="lockcover">${LOCK_SVG}</span><small class="unl">${esc(unlockText(how))}</small>`;
   const unlockedIds = () => ACCESSORIES.filter(a => PREVIEW || a.have() >= a.need).map(a => a.id);
   const JOHN_10_11 = { ref: "John 10:11", text: "I am the good shepherd. The good shepherd lays down his life for the sheep." };
 
@@ -4906,10 +4944,9 @@ body.focusread .toast { z-index: 90; }
       const tiles = `<button class="acc ${!worn ? "worn" : ""}" data-none="1" aria-pressed="${!worn}"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="11" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".35"/><path d="M12 28L28 12" stroke="currentColor" stroke-width="2.5" opacity=".35"/></svg><b>Nothing</b></button>` +
         items.map(a => {
           const got = un.includes(a.id), on = worn === a.id, have = Math.min(a.have(), a.need);
-          return `<button class="acc ${got ? "" : "locked"} ${on ? "worn" : ""}" data-id="${a.id}" ${got ? "" : "disabled"} aria-pressed="${on}" title="${esc(got ? (a.ref || a.name) : a.how)}">
+          return `<button class="acc ${got ? "" : "locked"} ${on ? "worn" : ""}" data-id="${a.id}" ${got ? "" : "disabled"} aria-pressed="${on}" title="${esc(got ? (a.ref || a.name) : unlockText(a.how))}" aria-label="${esc(got ? a.name : unlockText(a.how))}">
             <img class="accimg" data-acc="${a.id}" alt="">
-            <b>${esc(a.name)}</b>${got ? "" : `<small class="unl">🔒 ${esc(a.how)} to unlock</small>`}
-            ${got || a.need <= 1 ? "" : `<span class="bar"><i style="width:${Math.round(have / a.need * 100)}%"></i></span>`}
+            ${got ? `<b>${esc(a.name)}</b>` : lockBits(a.how)}
           </button>`;
         }).join("");
       body = `<div class="accs">${tiles}</div>
@@ -5253,9 +5290,9 @@ body.focusread .toast { z-index: 90; }
     requestAnimationFrame(step);
   }
   function optionTiles(cat, current, attr) {
-    return `<div class="hopts">${homeOptions(cat).map(o => `<button class="hopt ${current === o.key ? "on" : ""} ${o.got ? "" : "locked"}" ${attr}="${o.key}" ${o.got ? "" : "disabled"} aria-pressed="${current === o.key}" title="${esc(o.how)}">
+    return `<div class="hopts">${homeOptions(cat).map(o => `<button class="hopt ${current === o.key ? "on" : ""} ${o.got ? "" : "locked"}" ${attr}="${o.key}" ${o.got ? "" : "disabled"} aria-pressed="${current === o.key}" title="${esc(o.got ? o.name : unlockText(o.how))}">
       ${thumbImg(cat, o.key)}
-      <b>${esc(o.name)}</b>${o.got ? "" : `<small class="unl">🔒 ${esc(o.how)} to unlock</small>`}</button>`).join("")}</div>`;
+      ${o.got ? `<b>${esc(o.name)}</b>` : lockBits(o.how)}</button>`).join("")}</div>`;
   }
   function gridHtml(kind) {
     const occ = occupied(), cells = [];
@@ -5266,7 +5303,7 @@ body.focusread .toast { z-index: 90; }
     return `<div class="gridwrap"><div class="gridlabel top">Gate</div><div class="grid" id="hgrid">${cells.join("")}${items.join("")}<div class="lambspot" aria-hidden="true">🐑</div></div><div class="gridlabel">Front · your lamb's patch</div></div>`;
   }
   function renderHomeSheet() {
-    const c = $("homeCard"); if (!homeOpen) { c.innerHTML = ""; return; }
+    const c = $("homeCard"); if (!homeOpen) { c.innerHTML = ""; placeTools(null); return; }
     const D = draft, tabs = [["sky", "Sky"], ["fence", "Fence"], ["keeps", "Keepsakes"], ["trees", "Trees"], ["water", "Water"], ["animals", "Animals"]];
     const kind = ["trees", "water", "keeps"].includes(editTab) ? editTab : null;
     if (!D.keeps) D.keeps = [];
@@ -5281,17 +5318,16 @@ body.focusread .toast { z-index: 90; }
     } else if (kind) {
       const cat = kind === "trees" ? "tree" : kind === "keeps" ? "keep" : "water";
       const placed = k => kind !== "trees" && D[kind].some(w => w.k === k);
-      const pal = homeOptions(cat).map(o => `<button class="hopt ${pick === o.key ? "on" : ""} ${o.got ? "" : "locked"} ${placed(o.key) ? "placed" : ""}" data-pick="${o.key}" ${o.got ? "" : "disabled"} title="${esc(o.name)}">${thumbImg(cat, o.key)}<b>${esc(o.name)}</b>${o.got ? "" : `<small class="unl">🔒 ${esc(o.how)} to unlock</small>`}${placed(o.key) ? `<small class="placedtag">In your pasture</small>` : ""}</button>`).join("");
+      const pal = homeOptions(cat).map(o => `<button class="hopt ${pick === o.key ? "on" : ""} ${o.got ? "" : "locked"} ${placed(o.key) ? "placed" : ""}" data-pick="${o.key}" ${o.got ? "" : "disabled"} title="${esc(o.got ? o.name : unlockText(o.how))}">${thumbImg(cat, o.key)}${o.got ? `<b>${esc(o.name)}</b>` : lockBits(o.how)}${placed(o.key) ? `<small class="placedtag">In your pasture</small>` : ""}</button>`).join("");
       body = `<p class="planline">${pick ? `Tap an empty square on the pasture to place the ${esc(homeName(cat, pick).toLowerCase())}.` : sel.size ? `${sel.size} selected. ${sel.size === 1 ? "Tap an empty square, or drag it, to move it." : ""}` : `Pick one, then tap a square on the pasture above. Tap things in the pasture to select them.`}</p>
         <div class="hopts">${pal}</div>`;
     } else if (editTab === "animals") {
       body = `<p class="planline">Tap to let an animal into your pasture. Birds fly overhead; the others roam inside the fence.</p><div class="hopts">${homeOptions("animal").map(o => { const on = !!D.animals[o.key];
-        return `<button class="hopt ${on ? "on" : ""} ${o.got ? "" : "locked"}" data-an="${o.key}" ${o.got ? "" : "disabled"} aria-pressed="${on}" title="${esc(o.how)}">${thumbImg("animal", o.key)}<b>${o.got ? "" : "🔒 "}${esc(o.name)}</b></button>`; }).join("")}</div>`;
+        return `<button class="hopt ${on ? "on" : ""} ${o.got ? "" : "locked"}" data-an="${o.key}" ${o.got ? "" : "disabled"} aria-pressed="${on}" title="${esc(o.got ? o.name : unlockText(o.how))}">${thumbImg("animal", o.key)}${o.got ? `<b>${esc(o.name)}</b>` : lockBits(o.how)}</button>`; }).join("")}</div>`;
     }
     const one = sel.size === 1 ? [...sel][0] : null;
     const tools = kind ? `<div class="edicons">
-        <button id="edUndo" ${undo.length ? "" : "disabled"} aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="M9 7L4 12l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 12h10a6 6 0 0 1 0 12h-2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" transform="translate(0 -5)"/></svg></button>
-        ${kind === "water" ? `<button id="edRot" ${one != null ? "" : "disabled"} aria-label="Turn" title="Turn"><svg viewBox="0 0 24 24"><rect x="7" y="9" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 5.5A8 8 0 0 1 19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 3.5V7h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ""}
+        <button id="edUndo" ${undo.length ? "" : "disabled"} aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button id="edDel" ${sel.size ? "" : "disabled"} aria-label="Delete selected" title="Delete selected"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 11v6M13.5 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         <button id="edAll" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2.4"/><path d="M8.5 12.5l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button id="edClear" aria-label="Clear all" title="Clear all"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.1-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M17.5 3.5v4h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>` : "";
@@ -5299,6 +5335,7 @@ body.focusread .toast { z-index: 90; }
       <div class="wtabs htabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-htab="${k}" aria-selected="${editTab === k}" class="${editTab === k ? "on" : ""}">${l}</button>`).join("")}</div>
       ${body}`;
     c.querySelectorAll("[data-htab]").forEach(b => b.onclick = () => { editTab = b.dataset.htab; sel.clear(); pick = null; renderHomeSheet(); setGridMode(); });
+    if (!kind) placeTools(null);
     const change = () => { pushHome(); renderHomeSheet(); };
     if (editTab === "sky") {
       $("liveSw").onclick = () => { D.live = D.live === false; S.home.live = D.live; if (D.live) fetchWeather(); else { liveWeather = null; liveDay = null; } change(); };
@@ -5328,7 +5365,8 @@ body.focusread .toast { z-index: 90; }
     $("edDel").onclick = () => { snap(); D[kind] = list.filter((_, i) => !sel.has(i)); sel.clear(); change(); };
     $("edAll").onclick = () => { pick = null; sel = new Set(list.map((_, i) => i)); renderHomeSheet(); };
     $("edClear").onclick = () => { if (!list.length) return; snap(); D[kind] = []; sel.clear(); change(); };
-    if ($("edRot")) $("edRot").onclick = () => { const i = [...sel][0], it = Object.assign({}, list[i], { r: list[i].r ? 0 : 1 }); if (fits(it, kind, i)) { snap(); list[i] = it; change(); } else flashGrid(); };
+    // a pond, brook or well being placed: turn it and settle it right where it sits on the pasture
+    placeTools(kind === "water" && sel.size === 1 ? [...sel][0] : null, i => { const it = Object.assign({}, list[i], { r: list[i].r ? 0 : 1 }); if (fits(it, kind, i)) { snap(); list[i] = it; change(); } else flashGrid(); }, () => { sel.clear(); renderHomeSheet(); });
     const itemAt = cell => { const o = occupied()[cell[0] + "," + cell[1]]; if (!o) return -1; const [k, i] = o.split(":"); return k === kind ? +i : -1; };
     let drag = null; ghost = null;
     window.Lamb3D.onGridPointer = (type, cell) => {
@@ -5337,7 +5375,7 @@ body.focusread .toast { z-index: 90; }
         if (i >= 0 && !pick) { drag = { i, start: cell, moved: false, off: [cell[0] - list[i].c, cell[1] - list[i].row] }; return; }
         if (pick) { if (kind !== "trees" && list.some(w => w.k === pick)) { pick = null; renderHomeSheet(); return; }
           const it = { k: pick, c: cell[0], row: cell[1] }; { const [w, d] = footprint(it); it.c = Math.min(cell[0], 12 - w); it.row = Math.min(cell[1], 12 - d); }
-          if (fits(it, kind, -1)) { snap(); list.push(it); if (kind !== "trees") pick = null; ghost = null; change(); } else flashGrid(); return; }
+          if (fits(it, kind, -1)) { snap(); list.push(it); if (kind !== "trees") pick = null; ghost = null; if (kind === "water") sel = new Set([list.length - 1]); change(); } else flashGrid(); return; }
         if (sel.size === 1) { const j = [...sel][0], it = Object.assign({}, list[j], { c: cell[0], row: cell[1] }); if (fits(it, kind, j)) { snap(); list[j] = it; change(); } else flashGrid(); return; }
         if (sel.size) { sel.clear(); renderHomeSheet(); }
       } else if (type === "move") {
@@ -5352,6 +5390,21 @@ body.focusread .toast { z-index: 90; }
     };
     showMarks(kind);
   }
+  // the turn and done buttons float over the selected water feature, following it as the view moves
+  let ptRaf = 0;
+  function placeTools(i, onTurn, onDone) {
+    let el = $("placeTools"); cancelAnimationFrame(ptRaf);
+    if (i == null || !homeOpen || !draft.water[i] || !window.Lamb3D || !window.Lamb3D.gridToScreen) { if (el) el.remove(); return; }
+    if (!el) { el = document.createElement("div"); el.id = "placeTools"; el.className = "placetools"; $("screen").appendChild(el); }
+    el.innerHTML = `<button class="turn" aria-label="Turn it"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9" fill="none" stroke="#3B2B25" stroke-width="2.4" stroke-linecap="round"/><path d="M18.5 2.5v4.2h-4.2" fill="none" stroke="#3B2B25" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="ok" aria-label="Done, it stays here">Done</button>`;
+    el.querySelector(".turn").onclick = e => { e.stopPropagation(); onTurn(i); };
+    el.querySelector(".ok").onclick = e => { e.stopPropagation(); el.remove(); onDone(); };
+    const follow = () => { const it = draft.water[i]; if (!it || !document.body.contains(el)) return; const [w, d] = footprint(it);
+      const p = window.Lamb3D.gridToScreen(GRID_X0 + it.c + w / 2, GRID_Z0 + it.row); if (p) { const below = p.y < 60; el.style.left = Math.max(56, Math.min(el.parentNode.clientWidth - 56, p.x)) + "px"; el.style.top = (below ? p.y + 6 + (d / 12) * 0 : p.y - 6) + "px"; el.classList.toggle("below", below); }
+      ptRaf = requestAnimationFrame(follow); };
+    follow();
+  }
+  const GRID_X0 = -6, GRID_Z0 = -10;
   function flashGrid() { const g = $("screen"); g.classList.remove("nope"); void g.offsetWidth; g.classList.add("nope"); }
 
   // ---------- preview: try every setting, and grow the lamb ----------
@@ -6011,7 +6064,7 @@ body.focusread .toast { z-index: 90; }
     if (sk.hidden) return;
     const mail = B.email ? B.email() : "";
     const founderOf = (S.flocks || []).filter(f => f.id === S.flockId && amFounder() && othersIn() > 0);
-    sk.innerHTML = `<h3>Your account</h3><div class="setrow"><span><b>${esc(mail || "Signed in")}</b><small class="setnote">Signed in with Google. Use this account on any phone to find ${esc(S.name)}.</small></span></div>
+    sk.innerHTML = `<h3>Your account</h3><div class="setrow"><span><b>${esc(mail || "Signed in")}</b></span></div>
       <div class="row acctbtns"><button class="btn small-btn" id="acOut">Sign out</button></div>
       ${acctMode === "out" ? `<div class="confirm"><b>Sign out on this phone?</b><span style="color:var(--muted);font-size:14px">${esc(S.name)} stays safe. Sign in again with the same Google account.</span><div class="row"><button class="btn grow" id="acOutYes">Sign out</button><button class="btn grow" id="acNo">Stay</button></div></div>` : ""}
       ${acctMode === "del" ? `<div class="confirm"><b>Delete your account for good?</b><span style="color:var(--muted);font-size:14px">This removes ${esc(S.name)}, your reading, your journal, and everything you've shared or sent in every flock. It can't be undone.</span>
@@ -6639,6 +6692,13 @@ body.focusread .toast { z-index: 90; }
     }, () => {}));
   }
 
+  // the app doesn't zoom: no pinching, no double-tap zoom
+  document.addEventListener("gesturestart", e => e.preventDefault(), { passive: false });
+  document.addEventListener("gesturechange", e => e.preventDefault(), { passive: false });
+  document.addEventListener("touchmove", e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  let lastTouchEnd = 0;
+  document.addEventListener("touchend", e => { const now = Date.now(); if (now - lastTouchEnd < 320 && !e.target.closest("input, textarea, select")) e.preventDefault(); lastTouchEnd = now; }, { passive: false });
+
   // ---------- an app on the home screen (a PWA) ----------
   // Android/Chrome offers a real install button; on iPhone it's Share › Add to Home Screen, so we show how.
   const standalone = () => (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
@@ -6671,7 +6731,7 @@ body.focusread .toast { z-index: 90; }
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.5.0";
+  const APP_VERSION = "2.6.0";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
