@@ -1,0 +1,257 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+    function shortText(v, n) { return v is string && v.size() <= n; }
+    function optText(f, n) { return !(f in request.resource.data) || shortText(request.resource.data[f], n); }
+
+    // ----- flocks -----
+    // Everything social lives inside a flock: flocks/{fid}/members, groups (folds, each with its own reflections), reflections, questions, cheers, notes, replies, rhearts, removed, config.
+    // Flocks never see each other.
+    // The founder (flocks/{fid}.createdBy) looks after the whole flock. A shepherd looks after their own fold. Everyone looks after their own posts.
+    function flockPath(fid) { return /databases/$(database)/documents/flocks/$(fid); }
+    function flock(fid) { return get(flockPath(fid)).data; }
+    function memberPath(fid, uid) { return /databases/$(database)/documents/flocks/$(fid)/members/$(uid); }
+    function isMember(fid) { return signedIn() && exists(memberPath(fid, request.auth.uid)); }
+    function myGroup(fid) { return get(memberPath(fid, request.auth.uid)).data.groupId; }
+    function isFounder(fid) { return signedIn() && flock(fid).createdBy == request.auth.uid; }
+    function isShepherd(fid) { return isMember(fid) && get(memberPath(fid, request.auth.uid)).data.role == 'shepherd'; }
+    function tendsFold(fid, gid) { return isFounder(fid) || (isShepherd(fid) && gid is string && gid != '' && gid == myGroup(fid)); }
+    function groupExists(fid, id) { return id is string && exists(/databases/$(database)/documents/flocks/$(fid)/groups/$(id)); }
+    function reflFields() {
+      return shortText(request.resource.data.see, 1000)
+        && shortText(request.resource.data.act, 1000)
+        && shortText(request.resource.data.ref, 80)
+        && shortText(request.resource.data.passage, 200)
+        && shortText(request.resource.data.day, 10)
+        && shortText(request.resource.data.name, 40)
+        && optText('us', 600) && optText('wonder', 600) && optText('pray', 600)
+        && optText('held', 200) && optText('heldRef', 160) && optText('heldText', 900)
+        && optText('kind', 20) && optText('milestone', 20);
+    }
+    function wasRemoved(fid, uid) { return exists(/databases/$(database)/documents/flocks/$(fid)/removed/$(uid)); }
+    // a reflection lives in flocks/{fid}/reflections (whole flock) or flocks/{fid}/groups/{gid}/reflections (its fold only)
+    function flockRefl(fid, rid) { return /databases/$(database)/documents/flocks/$(fid)/reflections/$(rid); }
+    function foldRefl(fid, gid, rid) { return /databases/$(database)/documents/flocks/$(fid)/groups/$(gid)/reflections/$(rid); }
+    // a reply or heart must match the reflection it's on, and the person must be able to see that reflection
+    function onRefl(fid, d) {
+      return (d.scope == 'flock' && exists(flockRefl(fid, d.reflId)) && get(flockRefl(fid, d.reflId)).data.uid == d.toUid)
+        || (d.scope == 'group' && d.groupId == myGroup(fid) && exists(foldRefl(fid, d.groupId, d.reflId)) && get(foldRefl(fid, d.groupId, d.reflId)).data.uid == d.toUid);
+    }
+
+    // Each person's own lamb (reading plan, verses, wardrobe), and one record per journal entry. Shared by all their flocks; private to them.
+    match /users/{uid} {
+      allow read, write: if isMe(uid);
+      match /journal/{entry} {
+        allow read, write: if isMe(uid);
+      }
+    }
+
+    // Flock codes: typing a code finds its flock. A code can be looked up, but the list can't be read.
+    match /codes/{code} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['flockId', 'name'])
+        && shortText(request.resource.data.name, 40)
+        && isFounder(request.resource.data.flockId);
+      allow update: if isFounder(resource.data.flockId)
+        && request.resource.data.keys().hasOnly(['flockId', 'name'])
+        && request.resource.data.flockId == resource.data.flockId
+        && shortText(request.resource.data.name, 40);
+      allow delete: if isFounder(resource.data.flockId);
+    }
+
+    match /flocks/{fid} {
+      allow read: if isMember(fid) || (signedIn() && resource.data.createdBy == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['name', 'code', 'createdBy', 'created'])
+        && request.resource.data.createdBy == request.auth.uid
+        && shortText(request.resource.data.name, 40)
+        && shortText(request.resource.data.code, 12);
+      // the founder renames the flock, changes its code, or hands it to someone already in it
+      allow update: if isFounder(fid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'code', 'createdBy'])
+        && shortText(request.resource.data.name, 40)
+        && exists(memberPath(fid, request.resource.data.createdBy));
+      // the founder deletes the flock's own record (reading plan etc. stay with their sub-records)
+      allow delete: if isFounder(fid);
+
+      // Fold names: readable before joining (the join screen lists them, before an account exists).
+      // Only someone holding the flock's code can find the flock's id. The founder tends the folds.
+      match /groups/{gid} {
+        allow read: if true;
+        allow create, update: if isFounder(fid) && shortText(request.resource.data.name, 40);
+        allow delete: if isFounder(fid);
+
+        // Fold-only reflections: only that fold can read them.
+        match /reflections/{id} {
+          allow read: if isMember(fid) && (myGroup(fid) == gid || resource.data.uid == request.auth.uid);
+          allow create, update: if isMember(fid) && myGroup(fid) == gid
+            && request.resource.data.uid == request.auth.uid
+            && id.matches(request.auth.uid + '_.*')
+            && request.resource.data.scope == 'group'
+            && request.resource.data.groupId == gid
+            && reflFields();
+          allow delete: if isMember(fid) && (resource.data.uid == request.auth.uid || tendsFold(fid, gid));
+        }
+      }
+
+      // People removed from the flock: the code won't let them back in until the founder allows it.
+      match /removed/{uid} {
+        allow read: if isFounder(fid) || isMe(uid);
+        allow create: if request.resource.data.keys().hasOnly(['name', 'by', 'at'])
+          && shortText(request.resource.data.name, 40)
+          && request.resource.data.by == request.auth.uid
+          && uid != flock(fid).createdBy
+          && exists(memberPath(fid, uid))
+          && (isFounder(fid)
+              || (isShepherd(fid)
+                  && get(memberPath(fid, uid)).data.groupId == myGroup(fid)
+                  && get(memberPath(fid, uid)).data.role != 'shepherd'));
+        allow delete: if isFounder(fid);
+      }
+
+      // Each person's public summary in this flock: name, lamb name, fold, streak, outfit.
+      match /members/{uid} {
+        allow read: if isMember(fid) || isMe(uid);
+        // join: the founder as shepherd, or anyone holding the flock's current code, as a member (unless removed)
+        allow create: if isMe(uid)
+          && request.resource.data.uid == uid
+          && shortText(request.resource.data.displayName, 40)
+          && !wasRemoved(fid, uid)
+          && ((flock(fid).createdBy == uid && request.resource.data.role == 'shepherd')
+              || (request.resource.data.role == 'member'
+                  && request.resource.data.code == flock(fid).code
+                  && groupExists(fid, request.resource.data.groupId)));
+        // people update their own summary; they stay in their fold unless it was removed, and can't make themselves shepherds
+        allow update: if isMe(uid)
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid', 'code'])
+          && shortText(request.resource.data.displayName, 40)
+          && (!('lambName' in request.resource.data) || shortText(request.resource.data.lambName, 18))
+          && (request.resource.data.groupId == resource.data.groupId
+              || resource.data.groupId == ''
+              || !groupExists(fid, resource.data.groupId)
+              || isFounder(fid))
+          && (request.resource.data.groupId == '' || groupExists(fid, request.resource.data.groupId));
+        // only the founder moves someone to another fold, or makes or unmakes a shepherd
+        allow update: if isFounder(fid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['groupId', 'role', 'updated'])
+          && (request.resource.data.role in ['member', 'shepherd'])
+          && groupExists(fid, request.resource.data.groupId);
+        // leaving; or removal by the founder, or by the shepherd of their fold (never the founder, and shepherds can't remove shepherds)
+        allow delete: if isMe(uid)
+          || (uid != flock(fid).createdBy
+              && (isFounder(fid)
+                  || (isShepherd(fid) && resource.data.groupId == myGroup(fid) && resource.data.role != 'shepherd')));
+      }
+
+      // The flock's reading plan: everyone in the flock reads it, the founder sets it.
+      match /config/plan {
+        allow read: if isMember(fid);
+        allow write: if isFounder(fid)
+          && request.resource.data.keys().hasOnly(["base", "list", "name", "start", "weekdays", "ver", "updated"])
+          && (!("base" in request.resource.data) || shortText(request.resource.data.base, 20))
+          && (!("list" in request.resource.data) || (request.resource.data.list is list && request.resource.data.list.size() <= 500))
+          && (!("name" in request.resource.data) || shortText(request.resource.data.name, 40))
+          && request.resource.data.weekdays is bool;
+      }
+
+      // Hearts (one per person, per lamb, per day) and notes. Open: everyone in the flock can read them; the app tells only the person they're for.
+      match /cheers/{id} {
+        allow read: if isMember(fid);
+        allow create: if isMember(fid)
+          && request.resource.data.fromUid == request.auth.uid
+          && request.resource.data.toUid is string
+          && request.resource.data.toUid != request.auth.uid
+          && request.resource.data.toGroup is string
+          && request.resource.data.kind == 'heart'
+          && shortText(request.resource.data.day, 10)
+          && shortText(request.resource.data.fromName, 40)
+          && id == 'h_' + request.auth.uid + '_' + request.resource.data.toUid + '_' + request.resource.data.day;
+        allow delete: if isMember(fid) && (resource.data.toUid == request.auth.uid
+          || resource.data.fromUid == request.auth.uid
+          || tendsFold(fid, resource.data.toGroup));
+      }
+      match /notes/{id} {
+        allow read: if isMember(fid);
+        allow create: if isMember(fid)
+          && request.resource.data.fromUid == request.auth.uid
+          && request.resource.data.toUid is string
+          && request.resource.data.toUid != request.auth.uid
+          && request.resource.data.toGroup is string
+          && request.resource.data.kind == 'note'
+          && shortText(request.resource.data.text, 280)
+          && shortText(request.resource.data.day, 10)
+          && shortText(request.resource.data.fromName, 40);
+        allow delete: if isMember(fid) && (resource.data.toUid == request.auth.uid
+          || resource.data.fromUid == request.auth.uid
+          || tendsFold(fid, resource.data.toGroup));
+      }
+
+      // Whole-flock reflections: everyone in the flock can read them.
+      match /reflections/{id} {
+        allow read: if isMember(fid);
+        allow create, update: if isMember(fid)
+          && request.resource.data.uid == request.auth.uid
+          && id.matches(request.auth.uid + '_.*')
+          && request.resource.data.scope == 'flock'
+          && request.resource.data.groupId == myGroup(fid)
+          && reflFields();
+        // the writer, the shepherd of their fold, or the founder
+        allow delete: if isMember(fid) && (resource.data.uid == request.auth.uid || tendsFold(fid, resource.data.groupId));
+      }
+
+      // The question in a fold-only reflection, on its own: the whole flock can read it.
+      match /questions/{id} {
+        allow read: if isMember(fid);
+        allow create, update: if isMember(fid)
+          && request.resource.data.uid == request.auth.uid
+          && id.matches(request.auth.uid + '_.*')
+          && request.resource.data.groupId == myGroup(fid)
+          && shortText(request.resource.data.wonder, 600)
+          && shortText(request.resource.data.ref, 80)
+          && shortText(request.resource.data.day, 10)
+          && shortText(request.resource.data.name, 40)
+          && optText('lambName', 18);
+        allow delete: if isMember(fid) && (resource.data.uid == request.auth.uid || tendsFold(fid, resource.data.groupId));
+      }
+
+      // Replies to a reflection's question: they follow the reflection. A fold-only reflection's replies stay in the fold.
+      match /replies/{id} {
+        allow read: if isMember(fid) && (resource.data.scope == 'flock'
+          || resource.data.groupId == myGroup(fid)
+          || resource.data.fromUid == request.auth.uid
+          || resource.data.toUid == request.auth.uid);
+        allow create: if isMember(fid)
+          && request.resource.data.fromUid == request.auth.uid
+          && request.resource.data.reflId is string
+          && onRefl(fid, request.resource.data)
+          && shortText(request.resource.data.text, 400)
+          && shortText(request.resource.data.fromName, 40);
+        allow delete: if isMember(fid) && (resource.data.fromUid == request.auth.uid
+          || resource.data.toUid == request.auth.uid
+          || tendsFold(fid, resource.data.groupId));
+      }
+
+      // Hearts given to a reflection, after reading it. One per person per reflection (the id is fixed). Same privacy as replies.
+      match /rhearts/{id} {
+        allow read: if isMember(fid) && (resource.data.scope == 'flock'
+          || resource.data.groupId == myGroup(fid)
+          || resource.data.fromUid == request.auth.uid
+          || resource.data.toUid == request.auth.uid);
+        allow create: if isMember(fid)
+          && request.resource.data.fromUid == request.auth.uid
+          && id == request.resource.data.reflId + '__' + request.auth.uid
+          && request.resource.data.toUid != request.auth.uid
+          && onRefl(fid, request.resource.data)
+          && shortText(request.resource.data.fromName, 40);
+        allow delete: if isMember(fid) && (resource.data.fromUid == request.auth.uid
+          || resource.data.toUid == request.auth.uid
+          || tendsFold(fid, resource.data.groupId));
+      }
+    }
+  }
+}
