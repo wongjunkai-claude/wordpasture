@@ -44,6 +44,16 @@ You need a Google account and a computer with [Node.js](https://nodejs.org) inst
 
 To change anything later, edit the files and run `firebase deploy` again.
 
+## An app on the home screen (PWA)
+
+WordPasture is a Progressive Web App: people install it from the browser, with no App Store needed.
+
+- **iPhone:** open the site in **Safari**, tap **Share**, then **Add to Home Screen**.
+- **Android:** open it in **Chrome**. The app offers an **Add to home screen** button, or use the ⋮ menu, then **Install app**.
+- The app shows these steps itself: once on the home page after someone's first reading, and any time in *Settings › On your phone*.
+- Installed, it opens full screen with the lamb icon. It also **works offline**: the app, the Bible text, the questions and your flock's latest data are kept on the phone (`public/sw.js` and Firestore's offline cache), and anything done offline is sent when the signal returns.
+- Updates still arrive straight away: the app is always fetched fresh when online, and *Update now* clears the saved copy.
+
 ## Who can do what
 
 | | Founder | Shepherd | Everyone |
@@ -124,3 +134,13 @@ The security rules (`firestore.rules`) haven't been run in Firebase's emulator. 
 - Start a second flock on C's account and check A and B can't see it.
 - Sign in as A on a second phone, read on both, and check nothing is lost.
 - Send a heart, then try a second heart the same day. It should be refused.
+
+## Deploying from GitHub
+
+The folder is ready to be a GitHub repository. `.github/workflows/deploy.yml` publishes the site and the Firestore rules and indexes every time you push to `main` (or when you run the workflow by hand from the *Actions* tab).
+
+One-time setup:
+1. Push this folder to a GitHub repository (the `wordpasture` folder's contents at the top level of the repo).
+2. On a computer with the Firebase CLI: `firebase init hosting:github` inside the folder, sign in to GitHub when asked, type your repo (`you/wordpasture`), and answer **No** to "set up the workflow to run a build script", **No** to overwriting/creating workflow files (one is already included). This creates the GitHub secret `FIREBASE_SERVICE_ACCOUNT_WORDPASTURE`.
+3. Give that robot account permission to update the rules: in [Google Cloud IAM](https://console.cloud.google.com/iam-admin/iam?project=wordpasture), find `github-action-…@wordpasture.iam.gserviceaccount.com`, click the pencil, and add the roles **Firebase Rules Admin** and **Cloud Datastore Index Admin**.
+4. Push (or *Actions → Deploy WordPasture → Run workflow*). A green tick means it's live.
