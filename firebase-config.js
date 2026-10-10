@@ -2,7 +2,7 @@
 // Filled in for the wordpasture project.
 export const firebaseConfig = {
   apiKey: "AIzaSyCh7S1aYgiri1qUNvF2TfbK8PfWDPhtkOg",
-  authDomain: "wordpasture.web.app",   // the site's own address, so Google sign-in works in Safari and from the home screen
+  authDomain: "wordpasture.firebaseapp.com",   // must match the address people open (wordpasture.firebaseapp.com)
   projectId: "wordpasture",
   storageBucket: "wordpasture.firebasestorage.app",
   messagingSenderId: "547197820273",

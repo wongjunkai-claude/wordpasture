@@ -10,7 +10,7 @@ People sign in with their **Google account** (Google sign-in only). There are no
 
 ## Try it first
 
-Open `public/index.html` through any web server, or deploy it as below without filling in the config. Until `public/firebase-config.js` has your real settings, the app runs in **demo mode** with two pretend flocks:
+Open `index.html` through any web server, or deploy it as below without filling in the config. Until `firebase-config.js` has your real settings, the app runs in **demo mode** with two pretend flocks:
 
 - **Riverside Youth** (code `LAMB24`): you're the shepherd of the Psalms Squad fold. Grace Lim is the founder.
 - **Tan Family** (code `HOME77`): you founded it, so you see *Founder's tools*.
@@ -22,10 +22,10 @@ Add `#demo-join` to the address to see what a newcomer sees.
 You need a Google account and a computer with [Node.js](https://nodejs.org) installed.
 
 1. **Create a Firebase project.** Go to [console.firebase.google.com](https://console.firebase.google.com), click *Add project*, and give it a name (for example `feed-my-lambs`). Google Analytics isn't needed.
-2. **Add a web app.** In the project, click the web icon (`</>`), name it, and tick *Also set up Firebase Hosting*. Firebase shows a `firebaseConfig` block. Copy those values into `public/firebase-config.js`.
+2. **Add a web app.** In the project, click the web icon (`</>`), name it, and tick *Also set up Firebase Hosting*. Firebase shows a `firebaseConfig` block. Copy those values into `firebase-config.js`.
 3. **Turn on Google sign-in.** Go to *Build → Authentication → Get started → Sign-in method*, choose *Google*, switch it on, pick a support email and save. (Leave Email/Password off.) Then:
    - *Authentication → Settings → Authorized domains*: check `wordpasture.web.app` and `wordpasture.firebaseapp.com` are listed.
-   - In [Google Cloud → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials?project=wordpasture), open the OAuth client *Web client (auto created by Google Service)* and under *Authorized redirect URIs* add `https://wordpasture.web.app/__/auth/handler`. The app signs in through its own address (`authDomain` in `firebase-config.js`), which is what makes Google sign-in work in Safari and from the iPhone home screen.
+   - Nothing to add in Google Cloud: the app signs in through `wordpasture.firebaseapp.com` (`authDomain` in `firebase-config.js`), which Google allows by default. The app's address is therefore **https://wordpasture.firebaseapp.com**. Anyone opening `wordpasture.web.app` is sent there automatically, so sign-in always happens on the same address (Safari, and the iPhone home-screen app, need that).
    - *APIs & Services → OAuth consent screen*: set the app name to "WordPasture" and add your logo and support email, so people see it when they choose their Google account.
 4. **Create the database.** Go to *Build → Firestore Database → Create database*. Choose *Start in production mode* and a nearby location (for Singapore, `asia-southeast1`).
 5. **Point the folder at your project.** Open `.firebaserc` and replace `your-project-id` with your project's ID (shown in *Project settings*).
@@ -35,7 +35,7 @@ You need a Google account and a computer with [Node.js](https://nodejs.org) inst
    firebase login
    firebase deploy
    ```
-   This publishes the website, the security rules and the database indexes. The terminal prints your site's address, for example `https://feed-my-lambs.web.app`. (Indexes can take a few minutes to build the first time.)
+   This publishes the website, the security rules and the database indexes. Your app's address is **https://wordpasture.firebaseapp.com** (the `.web.app` address the terminal prints also works; it forwards there). (Indexes can take a few minutes to build the first time.)
 7. **Lock the key to your site.** In [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials), open the *Browser key* for the project and, under *Application restrictions*, choose *Websites* and add `https://your-project-id.web.app/*` and `https://your-project-id.firebaseapp.com/*`.
 8. **Optional: App Check.** In Firebase *Build → App Check*, register the web app with reCAPTCHA Enterprise and turn on enforcement for Firestore and Authentication. This stops other websites and scripts using your database.
 9. **Start your flock.** Open your site, choose *Start a flock*, give it a name (for example `Riverside Youth`), and your name, then *Continue with Google*. You become its **founder**.
@@ -51,7 +51,7 @@ WordPasture is a Progressive Web App: people install it from the browser, with n
 - **iPhone:** open the site in **Safari**, tap **Share**, then **Add to Home Screen**.
 - **Android:** open it in **Chrome**. The app offers an **Add to home screen** button, or use the ⋮ menu, then **Install app**.
 - The app shows these steps itself: once on the home page after someone's first reading, and any time in *Settings › On your phone*.
-- Installed, it opens full screen with the lamb icon. It also **works offline**: the app, the Bible text, the questions and your flock's latest data are kept on the phone (`public/sw.js` and Firestore's offline cache), and anything done offline is sent when the signal returns.
+- Installed, it opens full screen with the lamb icon. It also **works offline**: the app, the Bible text, the questions and your flock's latest data are kept on the phone (`sw.js` and Firestore's offline cache), and anything done offline is sent when the signal returns.
 - Updates still arrive straight away: the app is always fetched fresh when online, and *Update now* clears the saved copy.
 
 ## Who can do what
@@ -83,7 +83,7 @@ WordPasture is a Progressive Web App: people install it from the browser, with n
 - **Private to you:** your journal, your answers, your verses and your plan progress.
 - **Flocks never see each other.** Joining needs the flock's current code; if a code gets out, the founder makes a new one.
 - **Deleting:** *Settings → Your account → Delete my account* removes the person's lamb, journal, and everything they shared or sent, in every flock, then the account itself.
-- The app's *Privacy note* (on the sign-up form and in Settings) explains all this in plain words, and asks under-18s to make sure a parent or guardian knows.
+- The app's *Privacy note* (in *Settings › Your account*) explains all this in plain words, and asks under-18s to make sure a parent or guardian knows.
 
 ## Never running out of space
 
@@ -97,7 +97,7 @@ When someone signs in on a second phone, or comes back to the app, the two copie
 
 - **Flocks are separate.** Folds, members, reflections, questions, hearts, notes, replies and the flock plan all belong to one flock. Someone in two flocks switches between them by tapping the flock name on their fold card.
 - **One plan at a time.** You follow one reading plan: a personal one, or one flock's plan. Each flock's founder sets its plan.
-- **Read, Reflect, Remember.** The day's passage opens right in the app (World English Bible, in `public/bible/`), with highlighting, a full-screen reading mode, a calendar, and passage-specific questions (in `public/questions/`).
+- **Read, Reflect, Remember.** The day's passage opens right in the app (World English Bible, in `bible/`), with highlighting, a full-screen reading mode, a calendar, and passage-specific questions (in `questions/`).
 - **The pasture.** The tree icon opens your own pasture: sky, fence, gate, trees, water and animals, unlocked as you keep reading.
 - **Rewards** come quickly at first (days 1, 2, 3, 5, 7, 10…) and then at gradually widening gaps, with wardrobe and pasture rewards falling on different days so there's usually something within reach.
 - **The 3D meadow pauses** whenever it's scrolled out of view or the app is in the background, to save battery.
@@ -112,8 +112,8 @@ When someone signs in on a second phone, or comes back to the app, the two copie
 
 Everyone is moved onto a new version automatically:
 
-1. In `public/index.html`, change `const APP_VERSION = "…"` to the new number (and the "Version …" line in Settings).
-2. In `public/version.json`, put the same number.
+1. In `index.html`, change `const APP_VERSION = "…"` to the new number (and the "Version …" line in Settings).
+2. In `version.json`, put the same number.
 3. Deploy (`firebase deploy`).
 
 Within a few minutes (or as soon as they reopen the app), each person sees "A new update is ready" with an **Update now** button. It can't be dismissed: tapping it clears stored copies of the app and reloads the latest one. Their lamb and reading are kept.
