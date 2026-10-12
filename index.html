@@ -1318,6 +1318,10 @@ html.has-flock #inboxBtn[hidden] { display: grid !important; }
 html.booting .wrap { visibility: hidden; }
 #fellowCard .maptip { min-height: 90px; display: grid; place-items: center; margin: 0; border: 1.5px dashed var(--line); border-radius: 14px; box-sizing: border-box; }
 #fellowCard .mapinfo { min-height: 90px; box-sizing: border-box; }
+/* text size: three A's on one baseline, growing */
+#tsize { align-items: stretch; }
+#tsize button { height: 42px; padding: 0 0 8px; display: flex; align-items: flex-end; justify-content: center; line-height: 1; font-family: var(--body); font-weight: 600; }
+#tsize button[data-v="s"] { font-size: 14px; } #tsize button[data-v="m"] { font-size: 19px; } #tsize button[data-v="l"] { font-size: 25px; }
 </style>
 
 <script>
@@ -1454,7 +1458,7 @@ html.booting .wrap { visibility: hidden; }
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.0 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.2 · 12 October 2026, 10:16 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -5937,7 +5941,7 @@ html.booting .wrap { visibility: hidden; }
     if ($("memStop")) $("memStop").onclick = () => { memView = null; memResult = null; memDraft = ""; renderVerse(); paintSteps(); };
     $("memBackTop").onclick = () => { memView = null; memResult = null; memDraft = ""; memReads = 0; renderVerse(); paintSteps(); };
   }
-  function memMenu(m, btn) { closeMenus();
+  function memMenu(m, btn) { if (menuToggle(btn)) return;
       const mm = document.createElement("div"); mm.id = "memMenu"; mm.className = "memmenu"; mm.setAttribute("role", "menu");
       mm.innerHTML = `<button role="menuitem" data-act="restart">Restart</button><button role="menuitem" class="danger" data-act="remove">Remove</button>`;
       document.body.appendChild(mm); menuAt = Date.now(); const r = btn.getBoundingClientRect();
@@ -7315,12 +7319,14 @@ html.booting .wrap { visibility: hidden; }
 `;
   }
   // founders and shepherds: a small menu on each lamb
-  let menuAt = 0;
-  function closeMenus() { const m = $("memMenu"); if (m) m.remove(); }
+  let menuAt = 0, menuFor = null;
+  function closeMenus() { const m = $("memMenu"); if (m) m.remove(); menuFor = null; }
+  // tapping the same ⋮ again closes its menu
+  const menuToggle = btn => { const k = btn.dataset.tend || btn.dataset.memmore || btn; if ($("memMenu") && menuFor === k) { closeMenus(); return true; } closeMenus(); menuFor = k; return false; };
   // a tap can arrive as more than one click on phones: the one that opened a menu mustn't close it
   document.addEventListener("click", e => { const m = $("memMenu"); if (!m || m.contains(e.target) || Date.now() - menuAt < 450 || (e.target.closest && e.target.closest("[data-memmore], [data-tend]"))) return; m.remove(); });
   function openMemberMenu(uid, btn) {
-    closeMenus(); const p = profOf(uid); if (!p) return;
+    if (menuToggle(btn)) return; const p = profOf(uid); if (!p) return;
     const m = document.createElement("div"); m.id = "memMenu"; m.className = "memmenu"; m.setAttribute("role", "menu");
     const shep = p.role === "shepherd";
     m.innerHTML = `${canAppoint(p) ? `<button role="menuitem" data-act="shep">${shep ? "Stop being a shepherd" : "Appoint as shepherd"}</button>` : ""}${canRemove(p) ? `<button role="menuitem" class="danger" data-act="remove">Remove from flock</button>` : ""}`;
@@ -7973,7 +7979,7 @@ html.booting .wrap { visibility: hidden; }
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.0";
+  const APP_VERSION = "2.15.2";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
