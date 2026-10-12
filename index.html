@@ -1358,6 +1358,29 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
 .catchcard .catchreader { flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px 8px 8px; }
 .catchcard .catchnote { margin: -4px 0 0; text-align: center; font-size: 13px; }
 .catchcard .donebtn[disabled] { opacity: .5; filter: grayscale(.4); }
+
+/* the date picker, iPhone-calendar style */
+.dpcard { gap: 10px !important; }
+.dp-top { display: flex; align-items: center; justify-content: space-between; }
+.dp-top .cardtitle { margin: 0; }
+.dp-today { all: unset; cursor: pointer; color: var(--accent); font: 700 14px var(--body); padding: 6px 4px; }
+.dp-month { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; }
+.dp-month b { font: 700 17px var(--body); }
+.dp-month span { display: flex; gap: 4px; }
+.dp-month button { all: unset; cursor: pointer; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: var(--accent); font: 600 26px/1 var(--body); }
+.dp-month button:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 4px; text-align: center; }
+.dp-grid i { font: 700 11px var(--body); color: var(--muted); font-style: normal; padding-bottom: 4px; letter-spacing: .04em; }
+.dp-d { all: unset; cursor: pointer; justify-self: center; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font: 500 17px var(--body); color: var(--ink); }
+.dp-d.now { color: var(--accent); font-weight: 700; }
+.dp-d.on { background: var(--accent); color: var(--accent-ink, #fff); font-weight: 700; }
+.dp-d:not(.on):hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.dp-note { margin: 0; font-size: 13px; }
+/* a new reward: its button sits under its name, so long names keep their line */
+.celeblist li:not(.celebstory) { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 6px; align-items: center; }
+.celeblist li:not(.celebstory) > .clart { grid-row: 1 / span 2; }
+.celeblist li:not(.celebstory) > .cltext { grid-column: 2; align-self: end; }
+.celeblist li:not(.celebstory) > [data-use] { grid-column: 2; justify-self: start; align-self: start; }
 </style>
 
 <script>
@@ -1484,7 +1507,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.8 · 12 October 2026, 11:39 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.10 · 12 October 2026, 11:55 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -5277,19 +5300,46 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     return `<optgroup label="Plans">${Object.entries(PLANS).filter(([k]) => k !== "fellowship" && k !== "book").map(([k, p]) => opt(k, p.name)).join("")}</optgroup>
       <optgroup label="One book, a chapter a day">${BOOKS.map(([n], b) => opt("book:" + b, n)).join("")}</optgroup>`;
   }
-  function startPlan(key, fresh) {
+  function startPlan(key, fresh, start) {
     S.planStart = S.planStart || {}; S.planDone = S.planDone || {};
     const pk = key;
     if (key.startsWith("book:")) { S.plan = "book"; S.bookPick = +key.slice(5); } else S.plan = isFellow(key) ? "fellowship" : key;
     if (isFellow(key)) { S.fellowJoined = S.fellowJoined || {}; if (!S.fellowJoined[key]) S.fellowJoined[key] = today(); }
     if (!isFellow(key)) {
       const used = S.planStart[pk] && doneCount(pk) > 0 && doneCount(pk) < planLen(pk);
-      if (fresh || !used) { S.planStart[pk] = today(); S.planDone[pk] = {}; }
+      if (fresh || !used) { S.planStart[pk] = start || today(); S.planDone[pk] = {}; }
       else S.planStart[pk] = startFor(pk, firstUnread(pk));   // pick up at the first unread day, with nothing behind
     }
     viewIdx = null; rereading = false; catchAll = false; planConfirm = null;
     if (!$("planSheet").hidden) { openPlans(false); toast("Reading plan: " + getPlan(planKey()).name, () => {}); }
     save(); render();
+  }
+  const planKeyFor = k => k === "book" ? "book:" + (S.bookPick == null ? 40 : S.bookPick) : k === "fellowship" ? planKey() : k;
+  const longDay = d => parseYmd(d).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: parseYmd(d).getFullYear() === new Date().getFullYear() ? undefined : "numeric" });
+  // a date picker in the style of the iPhone calendar: a month of days, the chosen one in a filled circle
+  function pickDate(o) {
+    let sel = o.value || today(), m = parseYmd(sel); m = new Date(m.getFullYear(), m.getMonth(), 1);
+    let sh = $("dateSheet"); if (!sh) { sh = document.createElement("div"); sh.id = "dateSheet"; sh.className = "calsheet"; document.body.appendChild(sh); }
+    const paint = () => {
+      const lead = m.getDay(), dim = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate(), cells = [];
+      for (let i = 0; i < lead; i++) cells.push(`<span></span>`);
+      for (let d = 1; d <= dim; d++) { const k = ymd(new Date(m.getFullYear(), m.getMonth(), d)); cells.push(`<button class="dp-d ${k === sel ? "on" : ""} ${k === today() ? "now" : ""}" data-d="${k}" aria-pressed="${k === sel}">${d}</button>`); }
+      sh.innerHTML = `<div class="calback" data-x="1"></div>
+        <section class="calcard dpcard" role="dialog" aria-modal="true" aria-label="${esc(o.title)}">
+          <div class="dp-top"><p class="cardtitle">${esc(o.title)}</p><button class="dp-today" id="dpToday">Today</button></div>
+          <div class="dp-month"><b>${m.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</b><span><button id="dpPrev" aria-label="Previous month">‹</button><button id="dpNext" aria-label="Next month">›</button></span></div>
+          <div class="dp-grid">${["S", "M", "T", "W", "T", "F", "S"].map(x => `<i>${x}</i>`).join("")}${cells.join("")}</div>
+          ${o.note ? `<p class="planline dp-note">${esc(o.note)}</p>` : ""}
+          <div class="celebbtns"><button class="btn" data-x="1">Cancel</button><button class="btn primary" id="dpYes">${esc(o.yes ? o.yes(sel) : "Done")}</button></div>
+        </section>`;
+      sh.querySelectorAll("[data-x]").forEach(x => x.onclick = () => sh.remove());
+      sh.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { sel = b.dataset.d; paint(); });
+      $("dpPrev").onclick = () => { m = new Date(m.getFullYear(), m.getMonth() - 1, 1); paint(); };
+      $("dpNext").onclick = () => { m = new Date(m.getFullYear(), m.getMonth() + 1, 1); paint(); };
+      $("dpToday").onclick = () => { sel = today(); m = parseYmd(sel); m = new Date(m.getFullYear(), m.getMonth(), 1); paint(); };
+      $("dpYes").onclick = () => { sh.remove(); o.onPick(sel); };
+    };
+    paint();
   }
   function renderPlans() {
     const el = $("plans"); if (!el) return;
@@ -5314,7 +5364,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       const act = isCur
         ? (fl ? `<p class="pnote">You're reading with ${esc(flockName(S.flockId))}.</p>` : planConfirm === k
           ? `<div class="row"><button class="btn grow danger" data-restart="${k}">Yes, start over</button><button class="btn grow" data-cancel="1">Keep going</button></div>`
-          : `<button class="btn" data-ask="${k}">Restart from today</button>`)
+          : `<div class="row"><button class="btn grow" data-when="${k}">Change start date</button><button class="btn grow" data-ask="${k}">Start over</button></div><p class="pnote">Started ${esc(longDay(startOf(planKeyFor(k))))}.</p>`)
         : fl ? (activeCfg ? `<button class="btn primary-soft" data-start="${k}">Read with ${esc(flockName(S.flockId))}</button>` : "")
         : used ? `<div class="row"><button class="btn grow primary-soft" data-start="${k}">Continue (${dn} of ${len} read)</button><button class="btn grow" data-fresh="${k}">Start over</button></div>`
         : `<button class="btn primary-soft" data-start="${k}">Start this plan</button>`;
@@ -5326,9 +5376,17 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     el.querySelectorAll("[data-open]").forEach(b => b.onclick = () => { planOpen = planOpen === b.dataset.open ? null : b.dataset.open; planConfirm = null; renderPlans(); });
     const keyOf = k => { if (k !== "fellowship") return k === "book" ? "book:" + (S.bookPick == null ? 40 : S.bookPick) : k;
       S.planFlock = S.flockId; planCfg = activeCfg; watchPlanFlock(); return fellowKey(); };
-    el.querySelectorAll("[data-start]").forEach(b => b.onclick = () => startPlan(keyOf(b.dataset.start), false));
-    el.querySelectorAll("[data-fresh]").forEach(b => b.onclick = () => startPlan(keyOf(b.dataset.fresh), true));
-    el.querySelectorAll("[data-ask]").forEach(b => b.onclick = () => { planConfirm = b.dataset.ask; renderPlans(); });
+    // starting a plan (or starting over) asks which day to start on
+    const askStart = (k, fresh) => { const key = keyOf(k); pickDate({ title: fresh && planKeyFor(k) === planKey() ? "Start over on" : "Start on", value: today(),
+      note: "Start today, or pick the day you began. Days before today that aren't read show under Missed passages.", yes: d => `Start ${shortDay(d)}`, onPick: d => startPlan(key, true, d) }); };
+    el.querySelectorAll("[data-start]").forEach(b => b.onclick = () => { const k = b.dataset.start, key = keyOf(k);
+      const used = !isFellow(key) && S.planStart && S.planStart[key] && doneCount(key) > 0 && doneCount(key) < planLen(key);
+      if (isFellow(key) || used) startPlan(key, false); else askStart(k, false); });
+    el.querySelectorAll("[data-fresh]").forEach(b => b.onclick = () => askStart(b.dataset.fresh, true));
+    el.querySelectorAll("[data-ask]").forEach(b => b.onclick = () => askStart(b.dataset.ask, true));
+    el.querySelectorAll("[data-when]").forEach(b => b.onclick = () => { const key = keyOf(b.dataset.when);
+      pickDate({ title: "Start date", value: startOf(key), note: "Your readings so far are kept. The plan's days move to line up with the new start date.", yes: d => `Start ${shortDay(d)}`,
+        onPick: d => { S.planStart = S.planStart || {}; S.planStart[key] = d; viewIdx = null; catchAll = false; save(); renderPlans(); render(); toast("Start date: " + longDay(d), () => {}); } }); });
     el.querySelectorAll("[data-restart]").forEach(b => b.onclick = () => startPlan(keyOf(b.dataset.restart), true));
     el.querySelectorAll("[data-cancel]").forEach(b => b.onclick = () => { planConfirm = null; renderPlans(); });
     if ($("bookPick")) $("bookPick").onchange = e => { const was = S.plan === "book"; S.bookPick = +e.target.value; if (was) startPlan("book:" + S.bookPick, false); else renderPlans(); };
@@ -5560,7 +5618,8 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       t.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { viewIdx = +b.dataset.go; rereading = false; render(); $("today").scrollIntoView({ behavior: "smooth", block: "start" }); });
       if ($("catchMore")) $("catchMore").onclick = () => { catchAll = true; render(); };
       t.querySelectorAll("[data-cbook]").forEach(b => b.onclick = () => openCatch(+b.dataset.cbook));
-      t.querySelectorAll("[data-ctick]").forEach(b => b.onclick = () => catchUp(+b.dataset.ctick, true));
+      t.querySelectorAll("[data-ctick]").forEach(b => b.onclick = () => { const bk = +b.dataset.ctick, g = catchGroups(planKey(), missedList(planKey())).find(x => x.b === bk); if (!g) return;
+        confirmSheet(`Mark ${g.label} as read?`, "It counts as read on the days it was planned for, so no hearts are lost and your streak carries on.", "Yes, I've read it", false, () => catchUp(bk, true)); });
       if ($("backToday")) $("backToday").onclick = () => { viewIdx = null; render(); };
       if ($("calBtn")) $("calBtn").onclick = () => { calOpen = true; calMonth = null; calPick = null; renderCal(); };
       if ($("bibleBtn")) $("bibleBtn").onclick = () => { bibleSheet = true; bookOpen = null; renderBible(); };
@@ -8068,7 +8127,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.8";
+  const APP_VERSION = "2.15.10";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
