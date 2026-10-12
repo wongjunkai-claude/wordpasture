@@ -1384,6 +1384,51 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
 /* "Reflecting on" runs straight on into the passage, wrapping under it on the left */
 .journal .jhold { text-align: left; }
 .journal .jhold .jlink { display: inline; text-align: left; overflow-wrap: break-word; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* chapter names easier to see; a new book is set off by a line */
+.reader .chap { font-size: 17.5px !important; color: color-mix(in srgb, var(--ink) 72%, var(--muted)) !important; }
+.reader .chap.newbook, .catchreader .chap.newbook { border-top: 2px solid var(--line); padding-top: 16px; margin-top: 26px !important; }
+.reader .nextsep { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 26px 0 6px; padding-top: 16px; border-top: 2px dashed color-mix(in srgb, var(--accent) 40%, var(--line)); font-family: var(--body); }
+.reader .nextsep span { font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.reader .nextsep b { font-family: var(--display); font-weight: 600; font-size: 16px; color: var(--accent); }
+.reader .nextsep + .chap { margin-top: 10px !important; }
+/* a tapped highlight shows which words the colour or ✕ will change */
+.reader .w.tapsel { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 1px; border-radius: 3px; }
+/* founder's tools: Done like every other main button */
+.manage .founddone { align-self: stretch; margin-top: 6px; }
+/* the hearts' i: its own layer, so it doesn't flicker over the moving pasture */
+.heartwrap, .hinfo { transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; will-change: transform; }
+
+/* missed passages fold away: the heading shows how many are unread */
+.catchup .catchhead { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 2px 0; }
+.catchup .catchhead .eyebrow { margin: 0; }
+.catchup .catchn { margin-left: auto; font: 700 12.5px var(--body); color: var(--heart); background: color-mix(in srgb, var(--heart) 10%, var(--card)); border-radius: 99px; padding: 2px 9px; }
+.catchup .catchchev { width: 20px; height: 20px; color: var(--muted); transition: transform .2s; }
+.catchup.open .catchchev { transform: rotate(180deg); }
+/* main buttons keep their own size instead of stretching across the screen */
+.donebtn { width: auto !important; align-self: center; min-width: min(100%, 260px); max-width: 100%; padding-inline: 16px 24px; }
+.vstart .donebtn { margin-inline: auto; }
+.celebbtns { justify-content: center !important; }
+.celebbtns .btn { flex: 0 1 auto !important; min-width: 128px; padding-inline: 22px; }
+.calcard > .btn.primary, .calcard > .btn.primary-soft, #newsSheet .btn.primary { align-self: center; min-width: 200px; padding-inline: 28px; }
+html.lay-tab .screen { aspect-ratio: 1.45; }
+/* portrait tablet: tighter, so the larger size doesn't feel spread out */
+html.lay-tab .wrap { gap: calc(12px * var(--z)) !important; padding-inline: calc(12px * var(--z)) !important; }
+html.lay-tab .card { padding: 14px 16px; gap: 10px; }
+html.lay-tab .week { max-width: 400px; margin-inline: auto; width: 100%; gap: 2px; }
+html.lay-tab .namerow { margin-block: -2px; }
+/* buttons standing on their own in a card keep their own size, centred */
+.card > .btn, .card > div > .btn:only-child, .installcard .btn { align-self: center; width: auto; min-width: min(100%, 220px); padding-inline: 28px; }
+/* calmer button heights: the main green button ~50px, pop-up buttons ~44px */
+.donebtn { padding-block: 7px !important; gap: 10px; font-size: 17px; }
+.donebtn .db-ico { width: 38px; height: 32px; }
+.donebtn .db-ico svg { width: 30px; height: 23px; }
+.celebbtns .btn, .calcard .btn.primary, .confirm .btn { padding-block: 10px; min-height: 44px; font-size: 15px; }
+.calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block: 10px; }
+html.lay-tab .donebtn { font-size: 15px; padding-block: 4px !important; min-width: min(100%, 220px); }
+html.lay-tab .donebtn .db-ico { width: 32px; height: 28px; } html.lay-tab .donebtn .db-ico svg { width: 26px; height: 20px; }
+html.lay-tab .celebbtns .btn, html.lay-tab .calcard .btn.primary, html.lay-tab .confirm .btn { padding-block: 7px; min-height: 38px; font-size: 14px; min-width: 110px; }
+html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block: 7px; }
 </style>
 
 <script>
@@ -1391,7 +1436,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
 (function () {
   var w = innerWidth, h = innerHeight, r = document.documentElement, fine = matchMedia("(pointer: fine)").matches;
   var wide = w >= 900 && h >= 560 && w > h * 1.05, tab = !wide && w >= 600;
-  var z = wide ? Math.max(1, Math.min(w / 2 / 520, fine ? 1.25 : 1.4)) : tab ? Math.max(1, Math.min(w / 480, 1.75)) : 1;
+  var z = wide ? 1.1 * Math.max(1, Math.min(w / 2 / 520, fine ? 1.25 : 1.4)) : tab ? Math.max(1, Math.min(w / 640, 1.3)) : 1;
   r.classList.add("booting");   // the loading screen shows until the app and the lamb are drawn
   if (wide) r.classList.add("lay-wide"); if (tab) r.classList.add("lay-tab"); r.style.setProperty("--z", z.toFixed(3));
   try { var st = JSON.parse(localStorage.getItem("feed-my-lambs-v1") || "{}"); if (st.flockId && st.flocks && st.flocks.length) r.classList.add("has-flock"); } catch (e) {}
@@ -1427,8 +1472,8 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       </svg>
       <div class="hud"><div class="heartwrap"><div class="hearts" id="hearts"><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg></div><button class="hinfo" id="heartInfo" aria-label="How hearts work" aria-expanded="false">i</button>
           <div class="hpop" id="heartPop" hidden role="dialog" aria-label="How hearts work"><b>Hearts</b>
-            <p><span class="up">+1</span> Read today's passage</p><p><span class="up">+1</span> Read ahead</p><p><span class="down">−1</span> Each day you miss</p>
-            <small>At zero hearts your lamb wanders off. Read to bring it home.</small></div></div>
+            <p><span class="up">+1</span> Read today's passage</p><p><span class="up">+1</span> Read ahead</p><p><span class="down">−1</span> Each day you miss</p><p><span class="up">+1</span> "I've read" on a missed day</p>
+            <small>At zero hearts your lamb wanders off. Read today's passage to bring it home with 1 heart.</small></div></div>
         <div class="hudicons">
           <button class="hudbtn" id="homeBtn" aria-label="Tend your pasture">
             <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 40V25" stroke="#3B2B25" stroke-width="2.8" stroke-linecap="round"/><path d="M24 30l-5-4M24 33l5-4" stroke="#3B2B25" stroke-width="2.2" stroke-linecap="round"/><circle cx="24" cy="17" r="10" fill="#8FCB72" stroke="#3B2B25" stroke-width="2.4"/><circle cx="20" cy="15" r="2" fill="#E8564A"/><circle cx="27.5" cy="19.5" r="2" fill="#E8564A"/><path d="M12 41h24" stroke="#5FA75A" stroke-width="2.6" stroke-linecap="round"/></svg>
@@ -1510,7 +1555,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.11 · 13 October 2026, 12:11 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.16 · 13 October 2026, 6:21 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -4389,12 +4434,13 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   }
   function dateOfIdx(key, i) { const p = getPlan(key), st = startOf(key); if (p.dates) return p.dates[Math.min(i, p.dates.length - 1)]; if (!p.weekdays) return addDays(st, i); let d = st, k = -1; while (true) { if (!isWeekend(d)) { k++; if (k === i) return d; } d = addDays(d, 1); } }
   const doneMap = key => ((S.planDone || {})[key] || {});
+  const lateMap = key => ((S.lateRead || {})[key] || {});   // missed days read later in the app: no longer listed, still missed
   const isDoneIdx = (key, i) => doneMap(key)[i] != null;
   const isReadingDay = d => { const p = getPlan(planKey()); if (p.dates) return p.dates.includes(d); return !p.weekdays || !isWeekend(d); };
   function todayIdxOf(key) { const i = indexOn(key, today()); return i; }
   // missed passages: before today, not read
   function missedList(key) { const t = todayIdxOf(key), p = getPlan(key), lim = t == null ? (() => { let d = today(); while (indexOn(key, d) == null) d = addDays(d, -1); return indexOn(key, d) + 1; })() : t;
-    const from = joinedOn(key), out = []; for (let i = 0; i < Math.min(lim, p.days.length); i++) if (!isDoneIdx(key, i) && (!from || dateOfIdx(key, i) >= from)) out.push(i); return out; }
+    const from = joinedOn(key), out = []; for (let i = 0; i < Math.min(lim, p.days.length); i++) if (!isDoneIdx(key, i) && !lateMap(key)[i] && (!from || dateOfIdx(key, i) >= from)) out.push(i); return out; }
   // missed passages, gathered by book: each book's chapters from the missed days that haven't been caught up yet
   function catchGroups(key, missing) {
     const p = getPlan(key), parts = ((S.catchParts || {})[key]) || {}, by = new Map();
@@ -4405,13 +4451,19 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   // a catch-up counts on the day it was meant for: no lost heart, no broken streak, not shown as missed
   function catchUp(b, elsewhere) {
     const pk = planKey(), g = catchGroups(pk, missedList(pk)).find(x => x.b === b); if (!g) return;
-    const keys = ["planDone", "chRead", "fedDays", "covered", "lastFed", "heartsAtFeed", "streak", "best", "total", "daysRead", "catchParts", "books"], before = JSON.parse(JSON.stringify(keys.reduce((o, k) => (o[k] = S[k], o), {})));
+    const keys = ["planDone", "chRead", "fedDays", "covered", "lastFed", "heartsAtFeed", "streak", "best", "total", "daysRead", "catchParts", "books", "lateRead", "catchLate"], before = JSON.parse(JSON.stringify(keys.reduce((o, k) => (o[k] = S[k], o), {})));
     const p = getPlan(pk), hNow = hearts(); let done = 0, latest = null;
     S.catchParts = S.catchParts || {}; S.catchParts[pk] = S.catchParts[pk] || {}; S.planDone = S.planDone || {}; S.planDone[pk] = S.planDone[pk] || {}; S.chRead = S.chRead || {}; S.covered = S.covered || []; S.fedDays = S.fedDays || [];
+    S.lateRead = S.lateRead || {}; S.lateRead[pk] = S.lateRead[pk] || {}; S.catchLate = S.catchLate || {}; S.catchLate[pk] = S.catchLate[pk] || {};
+    let late = 0;
     g.items.forEach(i => {
       const d = dateOfIdx(pk, i), parts = S.catchParts[pk][i] = (S.catchParts[pk][i] || []).concat([b]);
-      (p.days[i] || []).filter(e => e[0] === b).forEach(([bb, c]) => { if (!S.chRead[bb + ":" + c]) S.chRead[bb + ":" + c] = d; });
-      if ([...new Set((p.days[i] || []).map(e => e[0]))].every(x => parts.includes(x))) {
+      if (!elsewhere) S.catchLate[pk][i] = 1;
+      else (p.days[i] || []).filter(e => e[0] === b).forEach(([bb, c]) => { if (!S.chRead[bb + ":" + c]) S.chRead[bb + ":" + c] = d; });
+      if (![...new Set((p.days[i] || []).map(e => e[0]))].every(x => parts.includes(x))) return;
+      // read late, here in the app: off the list, but the day stays missed (no hearts back, no streak, no reward progress)
+      if (S.catchLate[pk][i]) { S.lateRead[pk][i] = today(); delete S.catchParts[pk][i]; delete S.catchLate[pk][i]; late++; return; }
+      {
         S.planDone[pk][i] = d; delete S.catchParts[pk][i]; done++; S.total += 1;
         if (!S.fedDays.includes(d)) S.fedDays.push(d); if (!S.covered.includes(d)) S.covered.push(d);
         if (!latest || d > latest) latest = d;
@@ -4430,8 +4482,8 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       if (finished.length) { S.books.push(...finished); S.newBooks = (S.bookDay === today() ? S.newBooks : []).concat(finished); S.bookDay = today(); }
       checkUnlocks(); touchDirectory();
     }
-    save(); render(); popText("♥");
-    toast(`${g.label} marked as read${elsewhere ? "" : " — well done"}. Tap to undo.`, () => { Object.assign(S, before); save(); render(); });
+    save(); render(); if (elsewhere) popText("♥");
+    toast(elsewhere ? `${g.label} marked as read. Tap to undo.` : `${g.label} read. Well done! Tap to undo.`, () => { Object.assign(S, before); save(); render(); });
   }
   // a missed book's passages, back to back; Done once they've been read to the end
   function openCatch(b) {
@@ -5068,7 +5120,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     return day.map((e, i) => {
       const [b, c] = e, items = books[i][c - 1] || [];
       const hl = withHl ? ((S.hl && S.hl[hlKey(ver, b, c)]) || {}) : {};
-      let w = 0, lastV = 0, html = `<h4 class="chap">${esc(zh ? BOOKS_ZH[b] : BOOKS[b][0])} ${c}</h4><p class="para">`;
+      let w = 0, lastV = 0, html = `<h4 class="chap${i && day[i - 1][0] !== b ? " newbook" : ""}">${esc(zh ? BOOKS_ZH[b] : BOOKS[b][0])} ${c}</h4><p class="para">`;
       items.forEach(([v, text, kind]) => {
         const tk = verToks(ver, text);
         if (!vIn(e, v)) { w += tk.length; return; }
@@ -5130,7 +5182,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   function markHeld(el, hold) { if (!el) return; el.querySelectorAll(".w.held").forEach(w => w.classList.remove("held"));
     ((hold && hold.sets) || []).forEach(st => el.querySelectorAll(`.w[data-k^="${st.b}:${st.c}:"]`).forEach(w => { const v = +w.dataset.v; if (v >= st.v1 && v <= st.v2 && !w.closest(".nextread")) w.classList.add("held"); })); }
   let readerFor = "", readerEl = null, readerScroll = 0;
-  function buildReader(day, key, nextDay) {
+  function buildReader(day, key, nextDay, moreDays) {
     const el = document.createElement("div");
     el.className = "reader"; el.id = "reader"; el.tabIndex = 0;
     el.setAttribute("aria-label", "Passage text");
@@ -5142,7 +5194,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       el.dataset.ver = books.ver; el.classList.toggle("zh", books.ver === "cuvs");
       el.innerHTML = `<div class="rd-inner${day.length === 1 ? " single" : ""}">` + chaptersHtml(day, books, true)
         + `<div class="endwall"><span class="endmark">${SHEEP_MINI}</span><b>The end of today's reading</b></div>`
-        + (nextDay ? `<div class="nextnote"><span>Keep going?</span><b>Up next: ${esc(label(nextDay))}</b><small>Keep scrolling to read ahead</small></div><div class="nextread"></div>` : `<div class="nextnote"><b>You've reached the end of this plan.</b></div>`)
+        + (nextDay ? `<div class="nextnote"><span>Keep going?</span><b>Up next: ${esc(label(nextDay))}</b><small>Keep scrolling to read ahead, up to five days</small></div><div class="nextread"></div>` : `<div class="nextnote"><b>You've reached the end of this plan.</b></div>`)
         + `</div>`;
       measure(); progressFrom(el, barrier); markHeld(el, S.steps && S.steps.key === key ? S.steps.hold : null);
     }).catch(e => {
@@ -5150,7 +5202,10 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     });
     const loadNext = () => {
       if (nextLoaded || !nextDay) return; nextLoaded = true;
-      loadDay(ver, nextDay).then(books => { const slot = el.querySelector(".nextread"); if (slot) slot.innerHTML = chaptersHtml(nextDay, books, false); }).catch(() => { nextLoaded = false; });
+      const days = (moreDays && moreDays.length ? moreDays : [nextDay]).slice(0, 5);
+      Promise.all(days.map(d => loadDay(ver, d))).then(all => { const slot = el.querySelector(".nextread"); if (!slot) return;
+        slot.innerHTML = all.map((books, n) => (n ? `<div class="nextsep"><span>${n === 1 ? "The day after" : "Then"}</span><b>${esc(label(days[n]))}</b></div>` : "") + chaptersHtml(days[n], books, false)).join(""); })
+        .catch(() => { nextLoaded = false; });
     };
     // Rubber band at the end of today's reading: the text stretches a little and springs back.
     // Keep pulling and it gives way to the next reading.
@@ -5195,7 +5250,11 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       const w0 = e.target.nextElementSibling && e.target.nextElementSibling.closest(".w") ? e.target.nextElementSibling : null;
       if (w0) { const [b, c] = w0.dataset.k.split(":"); tapTarget = [...scope.querySelectorAll(`.w[data-k^="${b}:${c}:"][data-v="${w0.dataset.v}"]`)]; showHlBar(); return; } }
     const sp = e.target.closest(".w"); const sel = getSelection();
-    if (sp && sp.className.includes("hl-") && (!sel || sel.isCollapsed)) { tapTarget = [sp]; showHlBar(); }
+    if (sp && sp.className.includes("hl-") && (!sel || sel.isCollapsed)) {
+      // the whole highlight it belongs to, so ✕ takes it all off (or a colour changes it all)
+      const col = (sp.className.match(/hl-\w/) || [""])[0], all = [...scope.querySelectorAll(".w")], at = all.indexOf(sp); let a = at, z = at;
+      while (a > 0 && all[a - 1].classList.contains(col)) a--; while (z < all.length - 1 && all[z + 1].classList.contains(col)) z++;
+      tapTarget = all.slice(a, z + 1); tapTarget.forEach(w => w.classList.add("tapsel")); showHlBar(); }
   };
   const readSig = () => S.par ? "par" : readVer();
   // Two versions side by side or one above the other: CUVS first, BSB second (like the 文A button).
@@ -5258,10 +5317,11 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     if (!readerEl || !sel || sel.isCollapsed || !sel.rangeCount) return [];
     const r = sel.getRangeAt(0);
     if (!readerEl.contains(r.commonAncestorContainer)) return [];
-    return [...readerEl.querySelectorAll(".w")].filter(sp => r.intersectsNode(sp) && !sp.closest(".nextread"));
+    const node = n => n && (n.nodeType === 1 ? n : n.parentElement), pane = readerEl.classList.contains("par") ? (node(sel.anchorNode) && node(sel.anchorNode).closest(".rpane")) : null;
+    return [...(pane || readerEl).querySelectorAll(".w")].filter(sp => r.intersectsNode(sp) && !sp.closest(".nextread"));
   }
   function showHlBar() { const bar = $("hlbar"); if (bar) bar.hidden = false; }
-  function hideHlBar() { const bar = $("hlbar"); if (bar) bar.hidden = true; tapTarget = null; }
+  function hideHlBar() { const bar = $("hlbar"); if (bar) bar.hidden = true; if (tapTarget) tapTarget.forEach(w => w.classList.remove("tapsel")); tapTarget = null; }
   document.addEventListener("selectionchange", () => {
     if (step !== "read") return;
     if (selectedWords().length) { tapTarget = null; showHlBar(); }
@@ -5273,7 +5333,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     if (!S.hl) S.hl = {};
     spans.forEach(sp => {
       const [b, c, i] = sp.dataset.k.split(":"), pane = sp.closest("[data-ver]"), key = hlKey(pane ? pane.dataset.ver : "web", b, c);
-      sp.className = "w" + (col ? " hl-" + col : "");
+      sp.className = "w" + (col ? " hl-" + col : ""); sp.classList.remove("tapsel");
       S.hl[key] = S.hl[key] || {};
       if (col) S.hl[key][i] = col; else delete S.hl[key][i];
       if (!Object.keys(S.hl[key]).length) delete S.hl[key];
@@ -5501,6 +5561,8 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     const read = S.journal.filter(j => j.d === k).map(j => j.ref);
     const inPlan = i != null && i >= 0 && i < p.days.length, ref = inPlan ? [label(p.days[i])] : [];
     if (k < t) { if (read.length) return { kind: "done", refs: read };
+      if (inPlan && isDoneIdx(pk, i) && doneMap(pk)[i] <= k) return { kind: "done", refs: ref };
+      if (inPlan && lateMap(pk)[i]) return { kind: "missed", refs: ref, late: true };
       if (inPlan && !isDoneIdx(pk, i) && k < joinedOn(pk)) return { kind: "before", refs: ref };
       if (inPlan && !isDoneIdx(pk, i)) return { kind: "missed", refs: ref };
       if (inPlan) return { kind: "early", refs: ref };
@@ -5529,7 +5591,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       cells.push(`<button class="cd k-${r.kind} ${k === today() ? "is-today" : ""} ${k === pick ? "picked" : ""}" data-k="${k}" aria-label="${k}${r.refs.length ? ": " + esc(r.refs.join(", ")) : ""}"><span>${d}</span><i></i></button>`);
     }
     const dayBox = k => { const r = readingOn(k), pd = parseYmd(k);
-      const status = { done: "Read", missed: "Missed · catch up from today's card", today: "Today", planned: "Planned", early: "Read ahead", before: "Before you joined", rest: "Rest day", none: "No reading" }[r.kind];
+      const status = r.late ? "Missed · read later" : { done: "Read", missed: "Missed · catch up from today's card", today: "Today", planned: "Planned", early: "Read ahead", before: "Before you joined", rest: "Rest day", none: "No reading" }[r.kind];
       return `<div class="calday"><small>${pd.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })} · ${status}</small><b class="calref" id="calRef">${r.refs.length ? `${esc(r.refs.join("; "))}<span class="calsep"> | </span><span class="calzh">${esc(r.refs.map(zhRef).join("；"))}</span>` : "—"}</b></div>`; };
     sh.innerHTML = `<div class="calback" data-close="1"></div>
       <div class="calcard" role="dialog" aria-modal="true" aria-label="Reading plan calendar">
@@ -5613,13 +5675,15 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     const missing = onToday ? missedList(pk) : [];
     const aheadI = onToday && todayDone ? nextAheadIdx(pk) : null;
     const cGroups = onToday ? catchGroups(pk, missing) : [], cZh = !S.par && readVer() === "cuvs";
-    const extrasHtml = !onToday ? "" : (cGroups.length ? `<div class="catchup"><div class="eyebrow">${cZh ? "未读的经文 Missed passages" : "Missed passages"}</div>
-        ${(catchAll ? cGroups : cGroups.slice(0, 4)).map(g => `<div class="catchrow2"><button class="catchgo" data-cbook="${g.b}"><b>${esc(cZh ? zhRef(g.label) : g.label)}</b><span aria-hidden="true">›</span></button><button class="catchtick" data-ctick="${g.b}" aria-label="I've read ${esc(g.label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><small>${cZh ? "已读" : "I've read"}</small></button></div>`).join("")}
-        ${cGroups.length > 4 && !catchAll ? `<button class="linkish" id="catchMore">${cGroups.length - 4} more</button>` : ""}</div>` : "")
+    const cCount = cGroups.reduce((n, g) => n + g.items.length, 0), cOpen = !!S.catchOpen;
+    const extrasHtml = !onToday ? "" : (cGroups.length ? `<div class="catchup ${cOpen ? "open" : ""}"><button class="catchhead" id="catchToggle" aria-expanded="${cOpen}"><span class="eyebrow">${cZh ? "未读的经文 Missed passages" : "Missed passages"}</span><span class="catchn">${cZh ? `${cCount} 段未读` : `${cCount} unread`}</span><svg class="catchchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        ${!cOpen ? "" : (catchAll ? cGroups : cGroups.slice(0, 4)).map(g => `<div class="catchrow2"><button class="catchgo" data-cbook="${g.b}"><b>${esc(cZh ? zhRef(g.label) : g.label)}</b><span aria-hidden="true">›</span></button><button class="catchtick" data-ctick="${g.b}" aria-label="I've read ${esc(g.label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><small>${cZh ? "已读" : "I've read"}</small></button></div>`).join("")}
+        ${cOpen && cGroups.length > 4 && !catchAll ? `<button class="linkish" id="catchMore">${cGroups.length - 4} more</button>` : ""}</div>` : "")
       + (aheadI != null ? `<button class="aheadbtn" data-go="${aheadI}"><span class="ah-l"><small>Read ahead · ${esc(shortDay(dateOfIdx(pk, aheadI)))}</small><b>${esc(label(plan.days[aheadI]))}</b></span><span class="ah-h">+${heartSvg(true)}</span></button>` : "");
     const wire = () => {
       t.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { viewIdx = +b.dataset.go; rereading = false; render(); $("today").scrollIntoView({ behavior: "smooth", block: "start" }); });
       if ($("catchMore")) $("catchMore").onclick = () => { catchAll = true; render(); };
+      if ($("catchToggle")) $("catchToggle").onclick = () => { S.catchOpen = !S.catchOpen; save(); render(); };
       t.querySelectorAll("[data-cbook]").forEach(b => b.onclick = () => openCatch(+b.dataset.cbook));
       t.querySelectorAll("[data-ctick]").forEach(b => b.onclick = () => { const bk = +b.dataset.ctick, g = catchGroups(planKey(), missedList(planKey())).find(x => x.b === bk); if (!g) return;
         confirmSheet(`Mark ${g.label} as read?`, "You may have read it somewhere else and that's perfectly fine!", "Yes, I've read it", false, () => catchUp(bk, true)); });
@@ -5750,7 +5814,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     t.querySelectorAll(".step").forEach(b => b.onclick = () => { step = b.dataset.step; editing = null; if (focusRead) { focusRead = false; document.body.classList.remove("focusread"); } rerender(); });
     if (step === "read") {
       $("readFull").onclick = () => { focusRead = !focusRead; document.body.classList.toggle("focusread", focusRead); rerender(); if (!focusRead) $("today").scrollIntoView({ block: "start" }); };
-      const el = readerFor === key + "|" + readSig() && readerEl ? readerEl : S.par ? buildParallel(day, key) : buildReader(day, key, nextDay);
+      const el = readerFor === key + "|" + readSig() && readerEl ? readerEl : S.par ? buildParallel(day, key) : buildReader(day, key, nextDay, plan.days.slice(idx + 1, idx + 6));
       $("readerSlot").replaceWith(el);
       if (el._restore) el._restore(); else el.scrollTop = readerScroll;
       if ($("verPick")) $("verPick").onchange = e => { S.readVer = S.reflVer = e.target.value; save(); rerender(); };
@@ -6095,8 +6159,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   function memMenu(m, btn) { if (menuToggle(btn)) return;
       const mm = document.createElement("div"); mm.id = "memMenu"; mm.className = "memmenu"; mm.setAttribute("role", "menu");
       mm.innerHTML = `<button role="menuitem" data-act="restart">Restart</button><button role="menuitem" class="danger" data-act="remove">Remove</button>`;
-      document.body.appendChild(mm); menuAt = Date.now(); const r = btn.getBoundingClientRect();
-      mm.style.top = (r.bottom + window.scrollY + 6) + "px"; mm.style.left = Math.max(12, r.right + window.scrollX - mm.offsetWidth) + "px";
+      placeMenu(mm, btn); menuAt = Date.now();
       mm.querySelectorAll("[data-act]").forEach(x => x.onclick = () => { closeMenus();
         if (x.dataset.act === "restart") confirmSheet(`Restart ${m.ref}?`, "Your progress on this verse goes back to the first step.", "Restart", false, () => {
           Object.assign(m, { rung: 1, recall: [] }); ["learned", "gi", "next", "revDay", "doneDay", "treasured"].forEach(k => delete m[k]);
@@ -7474,6 +7537,16 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   let menuAt = 0, menuFor = null;
   function closeMenus() { const m = $("memMenu"); if (m) m.remove(); menuFor = null; }
   // tapping the same ⋮ again closes its menu
+  // put a ⋮ menu just under its button, inside the same card (so tablet and desktop scaling apply to both)
+  function placeMenu(m, btn) {
+    const host = btn.closest(".card, .calcard") || document.body;
+    if (host !== document.body) { if (getComputedStyle(host).position === "static") host.style.position = "relative"; host.appendChild(m); }
+    else document.body.appendChild(m);
+    const hr = host === document.body ? { left: -window.scrollX, top: -window.scrollY, width: 1 } : host.getBoundingClientRect(), br = btn.getBoundingClientRect();
+    const k = host === document.body ? 1 : (hr.width / host.offsetWidth) || 1;   // the card's own zoom
+    const left = (br.right - hr.left) / k - m.offsetWidth, top = (br.bottom - hr.top) / k + 6;
+    m.style.left = (left < 8 ? Math.max(8, (br.left - hr.left) / k) : left) + "px"; m.style.top = top + "px";   // a ⋮ on the left opens its menu to the right
+  }
   const menuToggle = btn => { const k = btn.dataset.tend || btn.dataset.memmore || btn; if ($("memMenu") && menuFor === k) { closeMenus(); return true; } closeMenus(); menuFor = k; return false; };
   // a tap can arrive as more than one click on phones: the one that opened a menu mustn't close it
   document.addEventListener("click", e => { const m = $("memMenu"); if (!m || m.contains(e.target) || Date.now() - menuAt < 450 || (e.target.closest && e.target.closest("[data-memmore], [data-tend]"))) return; m.remove(); });
@@ -7482,8 +7555,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     const m = document.createElement("div"); m.id = "memMenu"; m.className = "memmenu"; m.setAttribute("role", "menu");
     const shep = p.role === "shepherd";
     m.innerHTML = `${canAppoint(p) ? `<button role="menuitem" data-act="shep">${shep ? "Stop being a shepherd" : "Appoint as shepherd"}</button>` : ""}${canRemove(p) ? `<button role="menuitem" class="danger" data-act="remove">Remove from flock</button>` : ""}`;
-    document.body.appendChild(m); menuAt = Date.now();
-    const r = btn.getBoundingClientRect(); m.style.top = (r.bottom + window.scrollY + 6) + "px"; m.style.left = Math.max(12, r.right + window.scrollX - m.offsetWidth) + "px";
+    placeMenu(m, btn); menuAt = Date.now();
     m.querySelectorAll("[data-act]").forEach(x => x.onclick = () => { closeMenus(); x.dataset.act === "shep" ? confirmShepherd(p) : confirmRemove(p); });
   }
   function confirmSheet(title, body, yes, danger, onYes) {
@@ -7670,7 +7742,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       ${people.length ? `<div class="row"><select id="handTo" class="field grow plainsel"><option value="">Select New Founder</option>${people.map(p => `<option value="${esc(p.uid)}" ${handTo === p.uid ? "selected" : ""}>${esc(p.displayName || "Someone")}</option>`).join("")}</select><button class="btn" id="handGo">Hand on</button></div>
 ` : `<p class="planline">When someone else joins, you can hand the flock to them.</p>`}
       ${adminMsg ? `<p class="badmsg">${esc(adminMsg)}</p>` : ""}
-      <button class="linkish" id="manDone">Done</button></div>`;
+      <button class="donebtn founddone" id="manDone"><span class="db-ico" aria-hidden="true">${SHEEP_MINI}</span><span>Done</span><span class="db-arrow" aria-hidden="true">→</span></button></div>`;
   }
   function wireManage(c) {
     const fail = m => () => { adminMsg = m; renderFellowship(); };
@@ -8131,7 +8203,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.11";
+  const APP_VERSION = "2.15.16";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -8370,7 +8442,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   function layout() {
     const w = window.innerWidth, h = window.innerHeight, root = document.documentElement;
     const wide = w >= 900 && h >= 560 && w > h * 1.05, tab = !wide && w >= 600;
-    const z = wide ? Math.max(1, Math.min(w / 2 / 520, matchMedia("(pointer: fine)").matches ? 1.25 : 1.4)) : tab ? Math.max(1, Math.min(w / 480, 1.75)) : 1;
+    const z = wide ? 1.1 * Math.max(1, Math.min(w / 2 / 520, matchMedia("(pointer: fine)").matches ? 1.25 : 1.4)) : tab ? Math.max(1, Math.min(w / 640, 1.3)) : 1;
     root.classList.toggle("lay-wide", wide); root.classList.toggle("lay-tab", tab); root.style.setProperty("--z", z.toFixed(3));
     if (typeof fitDock === "function" && document.body.classList.contains("docked")) fitDock();
   }
@@ -8653,7 +8725,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     }
     // hearts: today's passage feeds, reading ahead earns one early, catching up earns none
     let nh = h, pop = "Yum!";
-    if (!already && kind === "today") { if (h === 0) { S.rescued = t; S.rescueCount = (S.rescueCount || 0) + 1; nh = 3; pop = "Home!"; } else { nh = Math.min(5, h + 1); pop = h >= 4 ? "Full!" : "+♥"; } }
+    if (!already && kind === "today") { if (h === 0) { S.rescued = t; S.rescueCount = (S.rescueCount || 0) + 1; nh = 1; pop = "Home!"; } else { nh = Math.min(5, h + 1); pop = h >= 4 ? "Full!" : "+♥"; } }
     else if (!already && kind === "ahead") { nh = Math.min(5, Math.max(1, h + 1)); pop = "+♥"; S.covered = (S.covered || []).filter(d => d >= addDays(t, -60)); const dd = dateOfIdx(pk, i); if (!S.covered.includes(dd)) S.covered.push(dd); }
     else if (kind === "catch") pop = "Caught up!";
     S.heartsAtFeed = nh; S.lastFed = t;
