@@ -16,7 +16,7 @@ Plain HTML/JavaScript with no build step. Firebase (Google sign-in and the Fires
 | `manifest.webmanifest`, `icons/` | Home-screen app name and icons |
 | `version.json` | The current version number; when it changes, everyone is asked to update |
 | `zh/` | The Chinese Union Version (simplified), one file per book |
-| `esv-relay/worker.js` | The small relay that fetches the ESV (see below) |
+| `en/` | The Berean Standard Bible (BSB), one file per book |
 | `questions/` | The reflection questions for every chapter |
 | `zq/` | The same questions in Chinese, used when Reflect is set to CUVS |
 | `firestore.rules` | Database security rules; published in the Firebase console (it does nothing on GitHub) |
@@ -32,32 +32,18 @@ Plain HTML/JavaScript with no build step. Firebase (Google sign-in and the Fires
 
 No database indexes are needed: every list the app reads works with Firestore's automatic ones.
 
-## Bible versions: ESV and CUVS
+## Bible versions: BSB and CUVS
 
-The Read step offers two versions, picked from the menu beside Full screen:
+The Read step offers two versions, picked from the menu beside Full screen. Both are public domain and ship with the app, so they work offline and need no setup:
 
-- **CUVS**: the Chinese Union Version with new punctuation (和合本 新标点), simplified characters, 神 edition. It is public domain and ships with the app in `zh/` (from eBible.org via the open-bibles collection), so it works offline.
-- **ESV**: the English Standard Version, straight from Crossway's ESV API, so it is always Crossway's current text. Crossway allows this free for non-commercial apps (no charges, ads or donation asks), on three conditions the app already follows: the key is kept private, no more than 500 verses (and no more than half of any book) are kept on a phone, and the ESV notice with a link to esv.org is shown in Settings.
+- **BSB**: the Berean Standard Bible, in modern English, in `en/` (from eBible.org via the open-bibles collection).
+- **CUVS**: the Chinese Union Version with new punctuation (和合本 新标点), simplified characters, 神 edition, in `zh/`.
 
-The 文A button shows both together, CUVS first and ESV second. The button beside it switches between one above the other (the default) and side by side. Scroll either half and the other follows, verse by verse.
+The 文A button shows both together, CUVS first and BSB second. The button beside it switches between one above the other (the default) and side by side. Scroll either half and the other follows, verse by verse.
 
-Only these two versions are used. Until the ESV is connected, English passages show "The ESV isn't connected yet." Each day the app also keeps the next day's ESV chapter, so the next reading opens offline. If an old `bible/` folder is still on GitHub from an earlier version, it can be deleted.
+Picking CUVS in Reflect (the menu beside the passage name when choosing what to reflect on) turns the whole Reflect step into Chinese, questions included. In Remember, a verse is learned in the language its reference was typed in; the wording follows the language of the Today card, and the 文A button shows the other language underneath.
 
-Picking CUVS in Reflect (the menu beside the passage name when choosing what to reflect on) turns the whole Reflect step into Chinese, questions included. In Remember, a verse is learned in Chinese if the reference was typed in Chinese or that day's reflection was in Chinese; the 文A button shows the other language underneath.
-
-The ESV notice is in Settings, at the bottom.
-
-### Connecting the ESV (once, about 15 minutes)
-
-1. Make an account at https://api.esv.org and create an application (describe WordPasture as a free, non-commercial Bible-reading app). Copy its key.
-2. Make a free account at https://dash.cloudflare.com. Go to **Workers & Pages → Create → Worker**, name it `wordpasture-esv`, and deploy the starter.
-3. Choose **Edit code**, replace everything with the contents of `esv-relay/worker.js`, and deploy.
-4. In the worker's **Settings → Variables and Secrets**, add:
-   - `ESV_KEY` as a **Secret**, with your key;
-   - `ALLOWED_ORIGINS` as **Text**, with the app's address, e.g. `https://yourname.github.io`.
-5. Copy the worker's address (like `https://wordpasture-esv.yourname.workers.dev`) and put it in `index.html` at `const ESV_RELAY = "";` (or send it to Claude to put in).
-
-The free Cloudflare plan allows 100,000 requests a day; the ESV API allows 5,000 a day. Each reader uses one request per new chapter.
+The BSB's public-domain notice is in Settings, at the bottom. If an old `esv-relay/` or `bible/` folder is still on GitHub from an earlier version, it can be deleted.
 
 ## Releasing a change
 
@@ -70,7 +56,7 @@ The free Cloudflare plan allows 100,000 requests a day; the ESV API allows 5,000
 
 - **iPhone:** open the app's address in **Safari** → **Share** → **Add to Home Screen**.
 - **Android:** open it in **Chrome**; the app offers **Add to home screen** (or ⋮ → *Install app*).
-- The app shows these steps itself after someone's first reading, and any time in *Settings › On your phone*.
+- The app shows these steps itself after someone's first reading, and any time in *Settings › On your phone/tablet*; on a phone or tablet the welcome screen also offers it before sign-up.
 - Installed, it opens full screen with the lamb icon and **works offline**: the app, the Bible, the questions and the flock's latest data are kept on the phone, and anything done offline is sent when the signal returns.
 
 ## Sign-in
@@ -137,7 +123,7 @@ When someone signs in on a second phone, or comes back to the app, the two copie
 
 - **Flocks are separate.** Folds, members, reflections, questions, hearts, notes, replies and the flock plan all belong to one flock. Someone in two flocks switches between them by tapping the flock name on their fold card.
 - **One plan at a time.** You follow one reading plan: a personal one, or one flock's plan. Each flock's founder sets its plan.
-- **Read, Reflect, Remember.** The day's passage opens right in the app (ESV, or CUVS from `zh/`), with highlighting, a full-screen reading mode, a calendar, and passage-specific questions (in `questions/`).
+- **Read, Reflect, Remember.** The day's passage opens right in the app (BSB from `en/`, or CUVS from `zh/`), with highlighting, a full-screen reading mode, a calendar, and passage-specific questions (in `questions/`).
 - **New here?** The first time someone opens the app they're asked whether they'd like a walkthrough; it can be taken again from Settings.
 - **Reflect your way:** guided prompts, or "write freely" for those who prefer their own structure. Questions to think about show one at a time.
 - **Reward stories:** every book and collection reward has a short line about the passage behind it, marked "In the Bible" (the thing or event is in the passage) or "A picture" (it stands for what the passage teaches). It shows under the reward in the celebration and in its detail sheet.

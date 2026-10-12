@@ -1454,7 +1454,7 @@ html.booting .wrap { visibility: hidden; }
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.14.13 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Scripture quotations marked ESV are from the ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. <a href="https://www.esv.org" target="_blank" rel="noopener">esv.org</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.0 · October 2026</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -4913,59 +4913,19 @@ html.booting .wrap { visibility: hidden; }
   }
 
   // ---------- the passage text ----------
-  // Two versions to read: ESV (English) and CUVS (Chinese Union Version, simplified, new punctuation).
-  // CUVS is public domain and ships with the app (zh/). ESV comes from Crossway's ESV API through a small
-  // relay that keeps the key private (see README); its terms allow keeping at most 500 verses, and no more
-  // than half of any book, on the phone, so only recent chapters (today's and the next) are kept.
-  const ESV_RELAY = "";   // the relay's address, e.g. "https://wordpasture-esv.<name>.workers.dev"
-  const VERS = { esv: "ESV", cuvs: "CUVS" };
+  // Two versions to read, both public domain and both kept in the app, so they work offline:
+  // BSB (Berean Standard Bible, English, en/) and CUVS (Chinese Union Version, simplified, new punctuation, zh/).
+  const VERS = { bsb: "BSB", cuvs: "CUVS" };
   const BOOKS_ZH = ["创世记","出埃及记","利未记","民数记","申命记","约书亚记","士师记","路得记","撒母耳记上","撒母耳记下","列王纪上","列王纪下","历代志上","历代志下","以斯拉记","尼希米记","以斯帖记","约伯记","诗篇","箴言","传道书","雅歌","以赛亚书","耶利米书","耶利米哀歌","以西结书","但以理书","何西阿书","约珥书","阿摩司书","俄巴底亚书","约拿书","弥迦书","那鸿书","哈巴谷书","西番雅书","哈该书","撒迦利亚书","玛拉基书","马太福音","马可福音","路加福音","约翰福音","使徒行传","罗马书","哥林多前书","哥林多后书","加拉太书","以弗所书","腓立比书","歌罗西书","帖撒罗尼迦前书","帖撒罗尼迦后书","提摩太前书","提摩太后书","提多书","腓利门书","希伯来书","雅各书","彼得前书","彼得后书","约翰一书","约翰二书","约翰三书","犹大书","启示录"];
-  const zhCache = {};
+  const zhCache = {}, enCache = {};
   const getJson = (u, cache, b) => cache[b] || (cache[b] = fetch(u).then(r => { if (!r.ok) throw new Error("load"); return r.json(); }).catch(e => { delete cache[b]; throw e; }));
   function loadZh(b) { return getJson("zh/" + b + ".json", zhCache, b); }
-  // ESV: one chapter at a time, kept on the phone within Crossway's limits
-  const ESV_KEPT = "wp-esv", esvMem = {};
-  const esvName = b => b === 21 ? "Song of Solomon" : BOOKS[b][0];
-  function esvKept() { try { return JSON.parse(localStorage.getItem(ESV_KEPT) || "{}") || {}; } catch (e) { return {}; } }
-  function esvKeep(k, d) {
-    const st = esvKept(); st[k] = { t: Date.now(), d };
-    const verses = x => new Set(x.d.map(s => s[0])).size, keys = () => Object.keys(st).sort((a, b) => st[a].t - st[b].t);
-    // no more than half of a book (books of one or two chapters are exempt), and no more than 500 verses in all
-    const b = +k.split(":")[0], n = BOOKS[b][1], ofBook = keys().filter(x => +x.split(":")[0] === b);
-    if (n > 2) while (ofBook.length > Math.floor(n / 2)) delete st[ofBook.shift()];
-    let total = Object.values(st).reduce((s, x) => s + verses(x), 0);
-    for (const x of keys()) { if (total <= 500 || x === k) continue; total -= verses(st[x]); delete st[x]; }
-    try { localStorage.setItem(ESV_KEPT, JSON.stringify(st)); } catch (e) {}
-  }
-  // the ESV API's plain-text passage: paragraphs indented 2 spaces, poetry lines 4 or more, verses marked [n]
-  function parseEsv(txt) {
-    const out = []; let v = 0, gap = true, prose = true;
-    String(txt).replace(/\s*\(ESV\)\s*$/, "").split("\n").forEach(line => {
-      if (!line.trim()) { gap = true; return; }
-      const ind = line.match(/^ */)[0].length, poem = ind >= 4, body = line.trim().replace(/\s+/g, " ");
-      let kind = poem ? (gap || prose ? 3 : 2) : 1; gap = false; prose = !poem;
-      const parts = body.split(/\[(\d+)\]\s*/);
-      const add = t => { t = t.trim(); if (!t) return; out.push(kind ? [v || 1, t, kind] : [v || 1, t]); kind = 0; };
-      add(parts[0]);
-      for (let i = 1; i < parts.length; i += 2) { v = +parts[i]; add(parts[i + 1] || ""); }
-    });
-    if (out.length && !out[0][2]) out[0][2] = 1;
-    return out;
-  }
-  function esvChapter(b, c) {
-    const k = b + ":" + c; if (esvMem[k]) return esvMem[k];
-    const kept = esvKept()[k];
-    return esvMem[k] = fetch(ESV_RELAY + "?q=" + encodeURIComponent(esvName(b) + " " + c))
-      .then(r => { if (!r.ok) throw new Error("esv " + r.status); return r.json(); })
-      .then(j => { const d = parseEsv((j.passages || [])[0] || ""); if (!d.length) throw new Error("esv empty"); esvKeep(k, d); return d; })
-      .catch(e => { delete esvMem[k]; if (kept) return kept.d; throw e; });
-  }
+  function loadEn(b) { return getJson("en/" + b + ".json", enCache, b); }
   function loadCh(ver, b, c) {
     if (ver === "cuvs") return loadZh(b).then(bk => ({ ver, ch: bk[c - 1] || [] }));
-    if (!ESV_RELAY) return Promise.reject(new Error("noesv"));
-    return esvChapter(b, c).then(ch => ({ ver: "esv", ch }));
+    return loadEn(b).then(bk => ({ ver: "bsb", ch: bk[c - 1] || [] }));
   }
-  const loadFail = e => e && e.message === "noesv" ? "The ESV isn't connected yet." : "The passage couldn't load. Please check your connection and try again.";
+  const loadFail = () => "The passage couldn't load. Please check your connection and try again.";
   // the words of some verses in one version
   const verseText = (ver, st) => loadCh(ver, st.b, st.c).then(r => r.ch.filter(([v]) => v >= st.v1 && v <= st.v2).map(x => x[1]).join(ver === "cuvs" ? "" : " ").replace(/\s+/g, " ").trim());
   // English references in Chinese: "Matthew 5:16" → "马太福音 5:16"
@@ -4980,15 +4940,15 @@ html.booting .wrap { visibility: hidden; }
       books.ver = ver; return books;
     });
   }
-  const readVer = () => S.readVer === "cuvs" ? "cuvs" : "esv";                       // the version picked for single reading
-  const reflVer = () => (S.reflVer || readVer()) === "cuvs" ? "cuvs" : "esv";      // the version picked in Reflect
+  const readVer = () => S.readVer === "cuvs" ? "cuvs" : "bsb";                       // the version picked for single reading
+  const reflVer = () => (S.reflVer || readVer()) === "cuvs" ? "cuvs" : "bsb";      // the version picked in Reflect
   const rlang = ds => (ds && ds.reflect && editing !== "reflect" && ds.lang) ? ds.lang : reflVer() === "cuvs" ? "zh" : "en";
   const hlKey = (ver, b, c) => (ver === "web" ? "" : ver + "|") + b + ":" + c;     // WEB highlights keep their original keys
   // words to highlight: English by spaces; Chinese by character, with punctuation kept with its character
   const ZH_TOK = /〔[^〕]*〕|[「『（［“‘]*(?:[\uD800-\uDBFF][\uDC00-\uDFFF]|\S)[，。；：、？！」』）］”’…—]*/g;
   const verToks = (ver, text) => ver === "cuvs" ? (text.match(ZH_TOK) || []) : text.split(" ");
   function chaptersHtml(day, books, withHl, ver) {
-    ver = ver || books.ver || "esv";
+    ver = ver || books.ver || "bsb";
     const zh = ver === "cuvs", gl = zh ? "" : " ";
     return day.map((e, i) => {
       const [b, c] = e, items = books[i][c - 1] || [];
@@ -5010,7 +4970,7 @@ html.booting .wrap { visibility: hidden; }
   const LAY_LR = `<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3" width="7" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="11" y="3" width="7" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 7h3M4 10h3M4 13h2M13 7h3M13 10h3M13 13h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
   // 文A: Chinese and English together
   const ZH_EN = `<svg viewBox="0 0 32 32" aria-hidden="true"><g stroke="#23302A" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M18.8 11H27a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3v4l-3.6-4h-9.6z" fill="#EEF1EF"/><path d="M5 5h15.9l-5 14H9.6L6 23v-4H5a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z" fill="#8FDCD3"/><path d="M22.4 1L11.6 31" fill="none"/><path d="M10.6 6.9v1.5M6.7 9.3h7.8M8.2 10.3c1 3.2 3.3 5.6 5.6 6.4M12.9 10.3c-1 3.2-3.3 5.6-5.6 6.4M19.7 22.4l3.1-8.4 3.1 8.4M20.9 19.6h3.9" fill="none"/></g><path d="M4.6 8.6c0-1 .7-1.7 1.6-1.9" stroke="#fff" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".8"/></svg>`;
-  // the ESV / CUVS menu
+  // the BSB / CUVS menu
   const verSelect = (id, v, label) => `<select class="verpick" id="${id}" aria-label="${label || "Bible version"}">${Object.entries(VERS).map(([k, n]) => `<option value="${k}" ${v === k ? "selected" : ""}>${n}</option>`).join("")}</select>`;
   const SHEEP_MINI = `<svg viewBox="0 0 40 30" aria-hidden="true"><g fill="#fff" stroke="#3B2B25" stroke-width="1.6"><circle cx="12" cy="16" r="6"/><circle cx="19" cy="12" r="6.5"/><circle cx="26" cy="16" r="6"/><circle cx="19" cy="19" r="6.5"/></g><ellipse cx="31" cy="12.5" rx="5" ry="5.5" fill="#F1CDB4" stroke="#3B2B25" stroke-width="1.6"/><circle cx="32.5" cy="12" r="1" fill="#3B2B25"/><path d="M14 24v4M24 24v4" stroke="#3B2B25" stroke-width="2" stroke-linecap="round"/></svg>`;
 
@@ -5065,7 +5025,6 @@ html.booting .wrap { visibility: hidden; }
     const ver = readVer();
     loadDay(ver, day).then(books => {
       el.dataset.ver = books.ver; el.classList.toggle("zh", books.ver === "cuvs");
-      if (ver === "esv" && nextDay) setTimeout(() => loadDay("esv", nextDay).catch(() => {}), 1500);   // keep tomorrow's chapter for reading offline
       el.innerHTML = `<div class="rd-inner${day.length === 1 ? " single" : ""}">` + chaptersHtml(day, books, true)
         + `<div class="endwall"><span class="endmark">${SHEEP_MINI}</span><b>The end of today's reading</b></div>`
         + (nextDay ? `<div class="nextnote"><span>Keep going?</span><b>Up next: ${esc(label(nextDay))}</b><small>Keep scrolling to read ahead</small></div><div class="nextread"></div>` : `<div class="nextnote"><b>You've reached the end of this plan.</b></div>`)
@@ -5124,20 +5083,20 @@ html.booting .wrap { visibility: hidden; }
     if (sp && sp.className.includes("hl-") && (!sel || sel.isCollapsed)) { tapTarget = [sp]; showHlBar(); }
   };
   const readSig = () => S.par ? "par" : readVer();
-  // Two versions side by side or one above the other: CUVS first, ESV second (like the 文A button).
+  // Two versions side by side or one above the other: CUVS first, BSB second (like the 文A button).
   // Whichever half you're scrolling leads; the other follows, matched verse by verse.
   let parScroll = null;
   function buildParallel(day, key) {
     const el = document.createElement("div");
     el.className = "reader par lay-" + (S.parLay === "lr" ? "lr" : "tb"); el.id = "reader";
-    el.innerHTML = [["cuvs", "Chinese Union Version"], ["esv", "English Standard Version"]].map(([v, n]) => `<div class="rpane${v === "cuvs" ? " zh" : ""}" data-ver="${v}" tabindex="0" aria-label="${n}"><p class="loading">Opening the scroll…</p></div>`).join("");
+    el.innerHTML = [["cuvs", "Chinese Union Version"], ["bsb", "Berean Standard Bible"]].map(([v, n]) => `<div class="rpane${v === "cuvs" ? " zh" : ""}" data-ver="${v}" tabindex="0" aria-label="${n}"><p class="loading">Opening the scroll…</p></div>`).join("");
     const [pa, pb] = el.children, hold = S.steps && S.steps.key === key ? S.steps.hold : null;
     const wrap = html => `<div class="rd-inner${day.length === 1 ? " single" : ""}">${html}<div class="endwall"><span class="endmark">${SHEEP_MINI}</span><b>The end of today's reading</b></div></div>`;
     const link = linkPanes(pa, pb, p => { parScroll = { i: p === pa ? 0 : 1, y: p.scrollTop }; progressFrom(p, p.scrollHeight - p.clientHeight); });
     const fail = (p, e) => { p.innerHTML = `<p class="loading">${loadFail(e)}</p>`; };
     let n = 0; const both = () => { if (++n < 2) return; markHeld(el, hold); requestAnimationFrame(() => { link.rebuild(); el._restore(); progressFrom(pb, pb.scrollHeight - pb.clientHeight); }); };
     loadDay("cuvs", day).then(zh => { pa.innerHTML = wrap(chaptersHtml(day, zh, true, "cuvs")); both(); }).catch(e => { fail(pa, e); both(); });
-    loadDay("esv", day).then(en => { pb.innerHTML = wrap(chaptersHtml(day, en, true, "esv")); both(); }).catch(e => { fail(pb, e); both(); });
+    loadDay("bsb", day).then(en => { pb.innerHTML = wrap(chaptersHtml(day, en, true, "bsb")); both(); }).catch(e => { fail(pb, e); both(); });
     el.addEventListener("click", readerTap(el));
     el._restore = () => { if (!parScroll) return; const p = el.children[parScroll.i]; p.scrollTop = parScroll.y; link.follow(p); };
     el._measure = () => link.rebuild();
@@ -5560,7 +5519,7 @@ html.booting .wrap { visibility: hidden; }
     if (step === "read") {
       panel = `<div class="readtools"><button class="readfull" id="readFull" aria-pressed="${focusRead}">${focusRead ? (cn ? "✕ 关闭全屏" : "✕ Close full screen") : (cn ? "⤢ 全屏" : "⤢ Full screen")}</button><span class="rt-sp"></span>
           ${S.par ? `<button class="rtbtn" id="parLay" aria-label="${S.parLay === "lr" ? "Side by side. Switch to one above the other" : "One above the other. Switch to side by side"}">${S.parLay === "lr" ? LAY_LR : LAY_TB}</button>`
-            : `<select class="verpick" id="verPick" aria-label="Bible version">${Object.entries({ esv: "ESV", cuvs: "CUVS" }).map(([k, n]) => `<option value="${k}" ${readVer() === k ? "selected" : ""}>${n}</option>`).join("")}</select>`}
+            : `<select class="verpick" id="verPick" aria-label="Bible version">${Object.entries({ bsb: "BSB", cuvs: "CUVS" }).map(([k, n]) => `<option value="${k}" ${readVer() === k ? "selected" : ""}>${n}</option>`).join("")}</select>`}
           <button class="rtbtn bil" id="parBtn" aria-pressed="${!!S.par}" aria-label="${S.par ? "Back to one version" : "Read Chinese and English together"}">${ZH_EN}</button></div><div id="readerSlot"></div>
         <div class="hlbar" id="hlbar" hidden role="toolbar" aria-label="Highlight">
           ${["r", "b", "g", "o"].map(c => `<button class="hlc hl-${c}" data-c="${c}" aria-label="${{ r: "Red", b: "Blue", g: "Green", o: "Orange" }[c]}"></button>`).join("")}
@@ -5641,7 +5600,7 @@ html.booting .wrap { visibility: hidden; }
       $("readerSlot").replaceWith(el);
       if (el._restore) el._restore(); else el.scrollTop = readerScroll;
       if ($("verPick")) $("verPick").onchange = e => { S.readVer = S.reflVer = e.target.value; save(); rerender(); };
-      $("parBtn").onclick = () => { S.par = !S.par; if (S.par) S.reflVer = "esv"; else S.reflVer = readVer(); save(); rerender(); };
+      $("parBtn").onclick = () => { S.par = !S.par; if (S.par) S.reflVer = "bsb"; else S.reflVer = readVer(); save(); rerender(); };
       if ($("parLay")) $("parLay").onclick = () => { S.parLay = S.parLay === "lr" ? "tb" : "lr"; save(); if (readerEl && readerEl._relayout) readerEl._relayout(S.parLay); rerender(); };
       if (el._measure) { el._measure(); }
       t.querySelectorAll(".hlc").forEach(b => { b.addEventListener("pointerdown", e => e.preventDefault()); b.onclick = () => applyHighlight(b.dataset.c); });
@@ -5861,7 +5820,7 @@ html.booting .wrap { visibility: hidden; }
     return { ok, pass: errors <= Math.floor(n / 30), errors };
   }
   const shownWords = (text, zh) => zh ? (String(text).match(ZH_TOK) || []) : String(text).split(/\s+/).filter(Boolean);
-  // a memory verse in Chinese and English: m.lang is the one practised, m.zh (CUVS) and m.en (ESV) the texts
+  // a memory verse in Chinese and English: m.lang is the one practised, m.zh (CUVS) and m.en (BSB) the texts
   const CJK = /[\u3400-\u9fff]/g;
   const memNorm = (w, zh) => zh ? String(w).replace(/[^\u3400-\u9fff]/g, "") : norm(w);
   const memIsZh = m => m.lang === "zh";
@@ -5871,17 +5830,17 @@ html.booting .wrap { visibility: hidden; }
   const zhClean = t => String(t || "").replace(/〔[^〕]*〕/g, "");
   // the language a new memory verse starts in: Chinese if today's reflection, or the reference typed, is Chinese
   const memDefaultLang = typed => String(typed || "").trim() ? (hasZh(typed) ? "zh" : "en") : (cardZh() || (S.steps && S.steps.reflect ? S.steps.lang === "zh" : reflVer() === "cuvs")) ? "zh" : "en";
-  const memBoth = r => Promise.all([verseText("esv", r).catch(() => null), verseText("cuvs", r).then(zhClean).catch(() => null)]).then(([en, zh]) => ({ en, zh }));
+  const memBoth = r => Promise.all([verseText("bsb", r).catch(() => null), verseText("cuvs", r).then(zhClean).catch(() => null)]).then(([en, zh]) => ({ en, zh }));
   const memFilling = new Set();
   function memFill(m) {   // verses kept before both languages were stored: fetch them once
-    if (memFilling.has(m.id) || (m.zh && (m.en || !ESV_RELAY))) return;
+    if (memFilling.has(m.id) || (m.zh && m.en)) return;
     const r = m.r || parseRef(m.ref); if (!r) return;
     memFilling.add(m.id);
     memBoth(r).then(({ en, zh }) => { m.r = r; m.lang = m.lang || "en"; if (en) m.en = en; if (zh) m.zh = zh; m.text = memTarget(m); save(); renderVerse(); });
   }
   const dualBtn = () => `<button class="rtbtn bil memdual" id="memDual" aria-pressed="${!!S.memDual}" aria-label="${S.memDual ? "Show one language" : "Show Chinese and English together"}">${ZH_EN}</button>`;
   const memHead = (eyebrow, rest, back) => `<div class="memhead">${back ? `<button class="memback" id="memBackTop" aria-label="Back to your verses"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ""}<div class="memhead-t"><div class="eyebrow">${eyebrow}</div>${rest}</div>${dualBtn()}</div>`;
-  const altVerse = (m, cls) => S.memDual && memOther(m) ? `<p class="memverse alt ${memIsZh(m) ? "" : "zh"} ${cls || ""}"><small>${memIsZh(m) ? "ESV" : "CUVS"} · ${esc(memRef(m, !memIsZh(m)))}</small>${esc(memOther(m))}</p>` : "";
+  const altVerse = (m, cls) => S.memDual && memOther(m) ? `<p class="memverse alt ${memIsZh(m) ? "" : "zh"} ${cls || ""}"><small>${memIsZh(m) ? "BSB" : "CUVS"} · ${esc(memRef(m, !memIsZh(m)))}</small>${esc(memOther(m))}</p>` : "";
   // which words hide on a gap rung: a fair spread, different each day
   function gapsFor(ws, every, zh) { const seed = dayNum(today()) + memSeed; return ws.map((w, i) => (zh ? memNorm(w, true).length > 0 : norm(w).length > 2) && (i + seed) % every === 0); }
   const firstLetters = (text, zh) => zh ? String(text).replace(/[\u3400-\u9fff]+/g, x => x[0] + "＿".repeat(x.length - 1))
@@ -6170,9 +6129,9 @@ html.booting .wrap { visibility: hidden; }
       ${(S.mem || []).length ? `<button class="linkish" id="vCancel">${T.cancel}</button>` : ""}`;
     let found = null;
     const show = () => { const prev = $("vPrev"); if (!found || !prev) return; const zh = found.lang === "zh", main = zh ? found.zh : found.en, other = zh ? found.en : found.zh;
-      prev.innerHTML = main ? `<b>${esc(zh ? zhRef(found.ref) : found.ref)}</b> <span class="${zh ? "zh" : ""}">${esc(main)}</span><small>${zh ? "CUVS" : "ESV"}</small>`
-          + (S.memDual && other ? `<span class="vprev-alt ${zh ? "" : "zh"}">${esc(other)}<small>${zh ? "ESV" : "CUVS"}</small></span>` : "")
-        : `<span class="hint">${zh ? T.noLoad : loadFail(ESV_RELAY ? null : new Error("noesv"))}</span>`;
+      prev.innerHTML = main ? `<b>${esc(zh ? zhRef(found.ref) : found.ref)}</b> <span class="${zh ? "zh" : ""}">${esc(main)}</span><small>${zh ? "CUVS" : "BSB"}</small>`
+          + (S.memDual && other ? `<span class="vprev-alt ${zh ? "" : "zh"}">${esc(other)}<small>${zh ? "BSB" : "CUVS"}</small></span>` : "")
+        : `<span class="hint">${zh ? T.noLoad : loadFail()}</span>`;
       $("vSave").disabled = !main; };
     const look = () => { const q = $("vRef").value, r = parseRef(q), prev = $("vPrev"), btn = $("vSave");
       if (!q.trim()) { found = null; btn.disabled = true; prev.innerHTML = `<span class="hint">${T.typeHint}</span>`; return; }
@@ -8014,7 +7973,7 @@ html.booting .wrap { visibility: hidden; }
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.14.13";
+  const APP_VERSION = "2.15.0";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -8368,8 +8327,8 @@ html.booting .wrap { visibility: hidden; }
     ["#bibleBtn", "Your Bible", "See how much of each book you've read. Every book you finish unlocks a reward."],
     ["#today .steps", "Read · Reflect · Remember", "Three small steps: read the passage, write what you see of God, and learn a verse by heart."],
     ["#readFull", "Full screen", "Read with nothing else on the screen. Tap again to close it."],
-    ["#verPick", "Bible version", "Choose ESV (English) or CUVS (the Chinese Union Version)."],
-    ["#parBtn", "Chinese and English together", "The 文A button shows CUVS and ESV together. Scroll either one and the other follows, verse by verse. Tap it again to go back to one version."],
+    ["#verPick", "Bible version", "Choose BSB (the Berean Standard Bible, in English) or CUVS (the Chinese Union Version)."],
+    ["#parBtn", "Chinese and English together", "The 文A button shows CUVS and BSB together. Scroll either one and the other follows, verse by verse. Tap it again to go back to one version."],
     ["#parLay", "Layout", "Switch between one above the other and side by side."],
     ["#reader", "The passage", "Scroll to read. Press and drag over words to highlight them, or tap a verse number to pick the whole verse. Then choose a colour, or Hold it for your reflection."],
     ["#toReflect", "Done reading?", "When you reach the end, tap here to move on to Reflect."],
@@ -8384,7 +8343,7 @@ html.booting .wrap { visibility: hidden; }
   // the first time someone opens Reflect, and the first time they open Remember, a short walk through it (no asking)
   const TOUR_REFL = {
     en: [
-      ["#holdChange", "What you're reflecting on", "Tap here to pick the verses that stood out to you. The ESV / CUVS menu there switches the whole Reflect step between English and Chinese."],
+      ["#holdChange", "What you're reflecting on", "Tap here to pick the verses that stood out to you. The BSB / CUVS menu there switches the whole Reflect step between English and Chinese."],
       ["#thinkBtn", "Questions to think about", "Stuck? The light bulb gives you questions about today's passage, one at a time."],
       ["#answer", "What you see of God", "Write what this passage shows you about God, or about Jesus. A few words is plenty."],
       ["#respondBox", "What you'll do", "Then one thing you can do today because of it."],
@@ -8395,7 +8354,7 @@ html.booting .wrap { visibility: hidden; }
       ["#editReflect", "Change it later", "You can edit your reflection any time today."]
     ],
     zh: [
-      ["#holdChange", "默想的经文", "点这里选出触动你的经节。那里的 ESV / CUVS 选单可以把整个默想部分切换成中文或英文。"],
+      ["#holdChange", "默想的经文", "点这里选出触动你的经节。那里的 BSB / CUVS 选单可以把整个默想部分切换成中文或英文。"],
       ["#thinkBtn", "思考问题", "不知道写什么？点灯泡，会一题一题给你关于今天经文的问题。"],
       ["#answer", "你看见的神", "写下这段经文让你看见神或耶稣的什么。写几个字就够了。"],
       ["#respondBox", "你要怎么做", "然后写下一件你今天因此可以去做的事。"],
