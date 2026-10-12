@@ -1333,15 +1333,31 @@ html.booting .wrap { visibility: hidden; }
 /* the loading screen: a lamb, a line of farm words, and swaying grass */
 #loader { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--ground, #EEF3EA); transition: opacity .35s ease, visibility 0s linear .35s; }
 html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: none; }
-#loader .ldsheep svg { width: 96px; height: 72px; display: block; overflow: visible; }
+#loader .ldsheep { display: flex; flex-direction: column; align-items: center; }
+#loader .ldsheep img { width: 104px; height: 104px; display: block; border-radius: 24px; box-shadow: 0 8px 20px -10px rgba(47,107,63,.45); }
+#loader .ldshadow { display: block; width: 70px; height: 8px; margin-top: 8px; border-radius: 50%; background: rgba(47,107,63,.14); animation: ldshade 1.1s ease-in-out infinite; }
+@keyframes ldshade { 45% { transform: scaleX(.8); opacity: .6; } }
 #loader .ldbob { animation: ldhop 1.1s ease-in-out infinite; transform-origin: 50% 100%; }
-@keyframes ldhop { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-7px); } 60% { transform: translateY(0) scaleY(.96); } }
+@keyframes ldhop { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-10px); } 60% { transform: translateY(0) scaleY(.97); } }
 #loader .ldtext { margin: 0; font: 600 15px var(--body, system-ui); color: #4C6A55; letter-spacing: .01em; }
 #loader .ldgrass { display: flex; gap: 6px; }
 #loader .ldgrass i { width: 7px; height: 7px; border-radius: 50%; background: #7FB36F; animation: ldgrow 1.2s ease-in-out infinite; }
 #loader .ldgrass i:nth-child(2) { animation-delay: .2s; } #loader .ldgrass i:nth-child(3) { animation-delay: .4s; }
 @keyframes ldgrow { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.1); } }
-@media (prefers-reduced-motion: reduce) { #loader .ldbob, #loader .ldgrass i { animation: none; } }
+@media (prefers-reduced-motion: reduce) { #loader .ldbob, #loader .ldgrass i, #loader .ldshadow { animation: none; } }
+
+/* missed passages: one row per book, with an "I've read" tick */
+.catchrow2 { display: flex; align-items: stretch; gap: 6px; }
+.catchrow2 .catchgo { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid color-mix(in srgb, var(--heart) 28%, var(--line)); background: color-mix(in srgb, var(--heart) 5%, var(--card)); color: var(--ink); cursor: pointer; text-align: left; font: inherit; }
+.catchrow2 .catchgo b { font-family: var(--scripture); font-style: italic; font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.catchrow2 .catchgo span { color: var(--muted); font-size: 20px; line-height: 1; }
+.catchrow2 .catchtick { flex: none; width: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 4px 2px; border-radius: 12px; border: 1.5px solid color-mix(in srgb, var(--accent) 35%, var(--line)); background: var(--card); color: var(--accent); cursor: pointer; font: inherit; }
+.catchrow2 .catchtick svg { width: 20px; height: 20px; }
+.catchrow2 .catchtick small { font-size: 10.5px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
+.calsheet > .catchcard { height: min(88vh, 100%); max-height: 100% !important; overflow: hidden; }
+.catchcard .catchreader { flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px 8px 8px; }
+.catchcard .catchnote { margin: -4px 0 0; text-align: center; font-size: 13px; }
+.catchcard .donebtn[disabled] { opacity: .5; filter: grayscale(.4); }
 </style>
 
 <script>
@@ -1356,12 +1372,13 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
 })();
 </script>
 <div id="loader" role="status" aria-live="polite">
-  <div class="ldsheep" aria-hidden="true"><svg viewBox="0 0 64 48"><g class="ldbob"><ellipse cx="33" cy="45" rx="20" ry="2.6" fill="rgba(47,107,63,.15)"/><g fill="#5a4038"><rect x="20" y="33" width="4" height="10" rx="2"/><rect x="29" y="34" width="4" height="9" rx="2"/><rect x="37" y="34" width="4" height="9" rx="2"/><rect x="45" y="33" width="4" height="10" rx="2"/></g><g fill="#fff" stroke="#3B2B25" stroke-width="1.8"><circle cx="22" cy="27" r="8"/><circle cx="31" cy="21" r="9"/><circle cx="41" cy="21" r="9"/><circle cx="49" cy="27" r="8"/><circle cx="36" cy="31" r="9"/></g><g transform="translate(14 23)"><ellipse cx="0" cy="0" rx="7.5" ry="8.5" fill="#F3D9C4" stroke="#3B2B25" stroke-width="1.8"/><circle cx="-2.6" cy="-0.6" r="1.3" fill="#3B2B25"/><circle cx="2.8" cy="-0.6" r="1.3" fill="#3B2B25"/><ellipse cx="0" cy="3.6" rx="1.8" ry=".9" fill="#E88C98"/></g></g></svg></div>
+  <div class="ldsheep" aria-hidden="true"><div class="ldbob"><img id="ldImg" alt=""></div><i class="ldshadow"></i></div>
   <p class="ldtext" id="ldText">Opening the gate…</p>
   <div class="ldgrass" aria-hidden="true"><i></i><i></i><i></i></div>
 </div>
 <script>
-(function () {   // a few words while the pasture gets ready
+(function () {   // our lamb (the app's own icon), and a few words while the pasture gets ready
+  var ic = document.querySelector("link[rel=apple-touch-icon]"), im = document.getElementById("ldImg"); if (ic && im) im.src = ic.href;
   var said = ["Opening the gate…", "Calling the lambs home…", "Filling the water trough…", "Laying out fresh hay…", "Counting the flock…"], n = 0;
   var t = setInterval(function () { var el = document.getElementById("ldText"); if (!el || !document.getElementById("loader")) return clearInterval(t); n = (n + 1) % said.length; el.textContent = said[n]; }, 1400);
   setTimeout(function () { document.documentElement.classList.remove("booting"); }, 9000);   // never stay on this screen
@@ -1467,7 +1484,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.6 · 12 October 2026, 10:59 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.8 · 12 October 2026, 11:39 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -4352,6 +4369,65 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   // missed passages: before today, not read
   function missedList(key) { const t = todayIdxOf(key), p = getPlan(key), lim = t == null ? (() => { let d = today(); while (indexOn(key, d) == null) d = addDays(d, -1); return indexOn(key, d) + 1; })() : t;
     const from = joinedOn(key), out = []; for (let i = 0; i < Math.min(lim, p.days.length); i++) if (!isDoneIdx(key, i) && (!from || dateOfIdx(key, i) >= from)) out.push(i); return out; }
+  // missed passages, gathered by book: each book's chapters from the missed days that haven't been caught up yet
+  function catchGroups(key, missing) {
+    const p = getPlan(key), parts = ((S.catchParts || {})[key]) || {}, by = new Map();
+    missing.forEach(i => (p.days[i] || []).forEach(e => { const b = e[0]; if ((parts[i] || []).includes(b)) return;
+      if (!by.has(b)) by.set(b, { b, items: [], entries: [] }); const g = by.get(b); if (!g.items.includes(i)) g.items.push(i); g.entries.push(e); }));
+    return [...by.values()].map(g => Object.assign(g, { label: label(g.entries).replace(new RegExp("; (?:" + BOOKS[g.b][0] + "|Psalm) ", "g"), ", ") }));
+  }
+  // a catch-up counts on the day it was meant for: no lost heart, no broken streak, not shown as missed
+  function catchUp(b, elsewhere) {
+    const pk = planKey(), g = catchGroups(pk, missedList(pk)).find(x => x.b === b); if (!g) return;
+    const keys = ["planDone", "chRead", "fedDays", "covered", "lastFed", "heartsAtFeed", "streak", "best", "total", "daysRead", "catchParts", "books"], before = JSON.parse(JSON.stringify(keys.reduce((o, k) => (o[k] = S[k], o), {})));
+    const p = getPlan(pk), hNow = hearts(); let done = 0, latest = null;
+    S.catchParts = S.catchParts || {}; S.catchParts[pk] = S.catchParts[pk] || {}; S.planDone = S.planDone || {}; S.planDone[pk] = S.planDone[pk] || {}; S.chRead = S.chRead || {}; S.covered = S.covered || []; S.fedDays = S.fedDays || [];
+    g.items.forEach(i => {
+      const d = dateOfIdx(pk, i), parts = S.catchParts[pk][i] = (S.catchParts[pk][i] || []).concat([b]);
+      (p.days[i] || []).filter(e => e[0] === b).forEach(([bb, c]) => { if (!S.chRead[bb + ":" + c]) S.chRead[bb + ":" + c] = d; });
+      if ([...new Set((p.days[i] || []).map(e => e[0]))].every(x => parts.includes(x))) {
+        S.planDone[pk][i] = d; delete S.catchParts[pk][i]; done++; S.total += 1;
+        if (!S.fedDays.includes(d)) S.fedDays.push(d); if (!S.covered.includes(d)) S.covered.push(d);
+        if (!latest || d > latest) latest = d;
+      }
+    });
+    if (done) {
+      S.fedDays.sort(); S.fedDays = S.fedDays.slice(-400); S.daysRead = Math.max(S.daysRead || 0, S.fedDays.length);
+      // hearts come back for the days that are no longer missed, and the streak is counted again from the days read
+      const hBack = Math.min(5, hNow + done);
+      if (latest && (!S.lastFed || latest > S.lastFed)) S.lastFed = latest;
+      S.heartsAtFeed = hBack + missed();
+      const fed = new Set(S.fedDays.concat(S.covered)); let d = fed.has(today()) ? today() : addDays(today(), -1), n = 0;
+      for (let k = 0; k < 400; k++) { if (isReadingDay(d)) { if (fed.has(d)) n++; else break; } d = addDays(d, -1); }
+      S.streak = n; S.best = Math.max(S.best || 0, n);
+      const finished = [...new Set(g.entries.map(e => e[0]))].filter(bk => !S.books.includes(bk) && Array.from({ length: BOOKS[bk][1] }, (_, c) => S.chRead[bk + ":" + (c + 1)]).every(Boolean));
+      if (finished.length) { S.books.push(...finished); S.newBooks = (S.bookDay === today() ? S.newBooks : []).concat(finished); S.bookDay = today(); }
+      checkUnlocks(); touchDirectory();
+    }
+    save(); render(); popText("♥");
+    toast(`${g.label} marked as read${elsewhere ? "" : " — well done"}. Tap to undo.`, () => { Object.assign(S, before); save(); render(); });
+  }
+  // a missed book's passages, back to back; Done once they've been read to the end
+  function openCatch(b) {
+    const pk = planKey(), g = catchGroups(pk, missedList(pk)).find(x => x.b === b); if (!g) return;
+    const ver = readVer(), zh = ver === "cuvs";
+    let sh = $("catchSheet"); if (!sh) { sh = document.createElement("div"); sh.id = "catchSheet"; sh.className = "calsheet"; document.body.appendChild(sh); }
+    sh.innerHTML = `<div class="calback" data-close="1"></div>
+      <section class="calcard catchcard" role="dialog" aria-modal="true" aria-label="${esc(g.label)}">
+        <div class="calhead"><div><div class="eyebrow">${zh ? "补读" : "Catch up"}</div><p class="cardtitle">${esc(zh ? zhRef(g.label) : g.label)}</p></div><div class="calnav"><button data-close="1" aria-label="Close">✕</button></div></div>
+        <div class="reader catchreader ${zh ? "zh" : ""}" id="catchReader"><p class="loading">${zh ? "正在打开…" : "Opening…"}</p></div>
+        <button class="donebtn" id="catchDone" disabled><span class="db-ico" aria-hidden="true">${SHEEP_MINI}</span><span>${zh ? "读完了" : "Done"}</span><span class="db-arrow" aria-hidden="true">→</span></button>
+        <p class="planline catchnote" id="catchNote">${zh ? "读到最后就可以按“读完了”。" : "Read to the end to finish."}</p>
+      </section>`;
+    const close = () => sh.remove();
+    sh.querySelectorAll("[data-close]").forEach(x => x.onclick = close);
+    const r = $("catchReader"), btn = $("catchDone");
+    const check = () => { if (r.scrollTop + r.clientHeight >= r.scrollHeight - 12) { btn.disabled = false; $("catchNote").textContent = zh ? "读完了，按下面的按钮。" : "All read. Tap Done."; } };
+    r.addEventListener("scroll", check, { passive: true });
+    loadDay(ver, g.entries).then(books => { r.innerHTML = chaptersHtml(g.entries, books, false, ver); r.scrollTop = 0; setTimeout(check, 60); })
+      .catch(e => { r.innerHTML = `<p class="loading">${loadFail(e)}</p>`; });
+    btn.onclick = () => { if (btn.disabled) return; close(); catchUp(b, false); };
+  }
   function nextAheadIdx(key) { const t = todayIdxOf(key), p = getPlan(key); let i = t == null ? (() => { let d = today(); while (indexOn(key, d) == null) d = addDays(d, 1); return indexOn(key, d); })() : t + 1; while (i < p.days.length && isDoneIdx(key, i)) i++; return i < p.days.length ? i : null; }
   const shortDay = d => parseYmd(d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
   // the start date that makes plan day i fall on today
@@ -5475,13 +5551,16 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
     const fed = fedToday();
     const missing = onToday ? missedList(pk) : [];
     const aheadI = onToday && todayDone ? nextAheadIdx(pk) : null;
-    const extrasHtml = !onToday ? "" : (missing.length ? `<div class="catchup"><div class="eyebrow">Catch up</div>
-        ${(catchAll ? missing : missing.slice(0, 4)).map(i => `<button class="catchrow" data-go="${i}"><small>${esc(shortDay(dateOfIdx(pk, i)))}</small><b>${esc(label(plan.days[i]))}</b><span aria-hidden="true">›</span></button>`).join("")}
-        ${missing.length > 4 && !catchAll ? `<button class="linkish" id="catchMore">${missing.length - 4} more to catch up on</button>` : ""}</div>` : "")
+    const cGroups = onToday ? catchGroups(pk, missing) : [], cZh = !S.par && readVer() === "cuvs";
+    const extrasHtml = !onToday ? "" : (cGroups.length ? `<div class="catchup"><div class="eyebrow">${cZh ? "未读的经文 Missed passages" : "Missed passages"}</div>
+        ${(catchAll ? cGroups : cGroups.slice(0, 4)).map(g => `<div class="catchrow2"><button class="catchgo" data-cbook="${g.b}"><b>${esc(cZh ? zhRef(g.label) : g.label)}</b><span aria-hidden="true">›</span></button><button class="catchtick" data-ctick="${g.b}" aria-label="I've read ${esc(g.label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><small>${cZh ? "已读" : "I've read"}</small></button></div>`).join("")}
+        ${cGroups.length > 4 && !catchAll ? `<button class="linkish" id="catchMore">${cGroups.length - 4} more</button>` : ""}</div>` : "")
       + (aheadI != null ? `<button class="aheadbtn" data-go="${aheadI}"><span class="ah-l"><small>Read ahead · ${esc(shortDay(dateOfIdx(pk, aheadI)))}</small><b>${esc(label(plan.days[aheadI]))}</b></span><span class="ah-h">+${heartSvg(true)}</span></button>` : "");
     const wire = () => {
       t.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { viewIdx = +b.dataset.go; rereading = false; render(); $("today").scrollIntoView({ behavior: "smooth", block: "start" }); });
       if ($("catchMore")) $("catchMore").onclick = () => { catchAll = true; render(); };
+      t.querySelectorAll("[data-cbook]").forEach(b => b.onclick = () => openCatch(+b.dataset.cbook));
+      t.querySelectorAll("[data-ctick]").forEach(b => b.onclick = () => catchUp(+b.dataset.ctick, true));
       if ($("backToday")) $("backToday").onclick = () => { viewIdx = null; render(); };
       if ($("calBtn")) $("calBtn").onclick = () => { calOpen = true; calMonth = null; calPick = null; renderCal(); };
       if ($("bibleBtn")) $("bibleBtn").onclick = () => { bibleSheet = true; bookOpen = null; renderBible(); };
@@ -7989,7 +8068,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.6";
+  const APP_VERSION = "2.15.8";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
