@@ -1322,6 +1322,13 @@ html.booting .wrap { visibility: hidden; }
 #tsize { display: flex !important; gap: 0; padding: 3px; border-radius: 14px; width: auto; align-items: stretch; }
 #tsize button { flex: none; width: 34px !important; height: 38px; padding: 0 0 9px !important; border-radius: 10px; display: flex; align-items: flex-end; justify-content: center; line-height: 1; font-family: var(--body); font-weight: 600; }
 #tsize button[data-v="s"] { font-size: 14px; } #tsize button[data-v="m"] { font-size: 18px; } #tsize button[data-v="l"] { font-size: 23px; }
+/* memory verses: the same upright Bible type as the reader, English and Chinese */
+.memverse, .cloze, .cloze .blank, .letters, .vprev, .vprev span, .vprev-alt, .memverse.diff, .memverse.diff span, .memtype { font-style: normal !important; }
+.memverse:not(.zh), .cloze:not(.zh), .cloze:not(.zh) .blank, .vprev > span:not(.zh):not(.hint):not(.vprev-alt), .vprev-alt:not(.zh) { font-family: var(--bible) !important; }
+.cloze.zh .blank { font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif !important; }
+.acctid { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.acctid code { font: 600 12px ui-monospace, Menlo, monospace; color: var(--ink); user-select: all; -webkit-user-select: all; }
+.acctid .linkish { font-size: 12px; }
 </style>
 
 <script>
@@ -1458,7 +1465,7 @@ html.booting .wrap { visibility: hidden; }
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.4 · 12 October 2026, 10:38 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.5 · 12 October 2026, 10:51 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -7241,11 +7248,12 @@ html.booting .wrap { visibility: hidden; }
     if (sk.hidden) return;
     const mail = B.email ? B.email() : "";
     const founderOf = (S.flocks || []).filter(f => f.id === S.flockId && amFounder() && othersIn() > 0);
-    sk.innerHTML = `<div class="accthead"><div class="accttext"><h3>Your account</h3><b>${esc(myName() || mail || "Signed in")}${isAdminMe ? `<span class="adminstar" title="Admin" aria-label="admin">★</span>` : ""}</b>${myName() && mail ? `<small class="acctmail">${esc(mail)}</small>` : ""}</div>${isAdminMe ? `<button class="adminpill" id="adminOpen"><span aria-hidden="true">★</span> Admin</button>` : ""}</div>
+    sk.innerHTML = `<div class="accthead"><div class="accttext"><h3>Your account</h3><b>${esc(myName() || mail || "Signed in")}${isAdminMe ? `<span class="adminstar" title="Admin" aria-label="admin">★</span>` : ""}</b>${myName() && mail ? `<small class="acctmail">${esc(mail)}</small>` : ""}${!isAdminMe && me ? `<small class="acctid">Account ID <code>${esc(me.uid)}</code> <button class="linkish inl" id="acId">Copy</button></small>` : ""}</div>${isAdminMe ? `<button class="adminpill" id="adminOpen"><span aria-hidden="true">★</span> Admin</button>` : ""}</div>
       ${acctMsg ? `<p class="badmsg">${esc(acctMsg)}</p>` : ""}${acctOk ? `<p class="okmsg">${esc(acctOk)}</p>` : ""}
       <div class="row acctlinks"><button class="linkish" data-privacy="1">Privacy note</button><button class="linkish dangerlink" id="acDel" ${delBusy ? "disabled" : ""}>${delBusy ? "Deleting…" : "Delete my account"}</button><button class="linkish" id="acOut">Sign out</button></div>`;
     const on = (id, fn) => { const el = $(id); if (el) el.onclick = fn; };
     on("adminOpen", () => openAdmin());
+    on("acId", async () => { try { await navigator.clipboard.writeText(me.uid); toast("Account ID copied", () => {}); } catch (e) { toast("Couldn't copy on this phone. Press and hold the ID to copy it.", () => {}); } });
     on("acOut", () => confirmSheet("Sign out?", `${S.name} stays safe. Sign in again with the same Google account.`, "Sign out", false, async () => { try { localStorage.removeItem(LS); } catch (e) {} await B.signOut(); location.reload(); }));
     on("acDel", () => {
       const founderOf = (S.flocks || []).filter(f => f.id === S.flockId && amFounder() && othersIn() > 0);
@@ -7979,7 +7987,7 @@ html.booting .wrap { visibility: hidden; }
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.4";
+  const APP_VERSION = "2.15.5";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
