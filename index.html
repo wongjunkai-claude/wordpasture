@@ -1318,10 +1318,10 @@ html.has-flock #inboxBtn[hidden] { display: grid !important; }
 html.booting .wrap { visibility: hidden; }
 #fellowCard .maptip { min-height: 90px; display: grid; place-items: center; margin: 0; border: 1.5px dashed var(--line); border-radius: 14px; box-sizing: border-box; }
 #fellowCard .mapinfo { min-height: 90px; box-sizing: border-box; }
-/* text size: three A's on one baseline, growing */
-#tsize { align-items: stretch; }
-#tsize button { height: 42px; padding: 0 0 8px; display: flex; align-items: flex-end; justify-content: center; line-height: 1; font-family: var(--body); font-weight: 600; }
-#tsize button[data-v="s"] { font-size: 14px; } #tsize button[data-v="m"] { font-size: 19px; } #tsize button[data-v="l"] { font-size: 25px; }
+/* text size: three A's on one baseline, growing, evenly spaced */
+#tsize { display: flex !important; gap: 0; padding: 3px; border-radius: 14px; width: auto; align-items: stretch; }
+#tsize button { flex: none; width: 34px !important; height: 38px; padding: 0 0 9px !important; border-radius: 10px; display: flex; align-items: flex-end; justify-content: center; line-height: 1; font-family: var(--body); font-weight: 600; }
+#tsize button[data-v="s"] { font-size: 14px; } #tsize button[data-v="m"] { font-size: 18px; } #tsize button[data-v="l"] { font-size: 23px; }
 </style>
 
 <script>
@@ -1458,7 +1458,7 @@ html.booting .wrap { visibility: hidden; }
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.2 · 12 October 2026, 10:16 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.4 · 12 October 2026, 10:38 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -7979,7 +7979,7 @@ html.booting .wrap { visibility: hidden; }
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.2";
+  const APP_VERSION = "2.15.4";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
