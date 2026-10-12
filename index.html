@@ -1381,6 +1381,9 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
 .celeblist li:not(.celebstory) > .clart { grid-row: 1 / span 2; }
 .celeblist li:not(.celebstory) > .cltext { grid-column: 2; align-self: end; }
 .celeblist li:not(.celebstory) > [data-use] { grid-column: 2; justify-self: start; align-self: start; }
+/* "Reflecting on" runs straight on into the passage, wrapping under it on the left */
+.journal .jhold { text-align: left; }
+.journal .jhold .jlink { display: inline; text-align: left; overflow-wrap: break-word; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 </style>
 
 <script>
@@ -1507,7 +1510,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.10 · 12 October 2026, 11:55 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.11 · 13 October 2026, 12:11 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -5619,7 +5622,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
       if ($("catchMore")) $("catchMore").onclick = () => { catchAll = true; render(); };
       t.querySelectorAll("[data-cbook]").forEach(b => b.onclick = () => openCatch(+b.dataset.cbook));
       t.querySelectorAll("[data-ctick]").forEach(b => b.onclick = () => { const bk = +b.dataset.ctick, g = catchGroups(planKey(), missedList(planKey())).find(x => x.b === bk); if (!g) return;
-        confirmSheet(`Mark ${g.label} as read?`, "It counts as read on the days it was planned for, so no hearts are lost and your streak carries on.", "Yes, I've read it", false, () => catchUp(bk, true)); });
+        confirmSheet(`Mark ${g.label} as read?`, "You may have read it somewhere else and that's perfectly fine!", "Yes, I've read it", false, () => catchUp(bk, true)); });
       if ($("backToday")) $("backToday").onclick = () => { viewIdx = null; render(); };
       if ($("calBtn")) $("calBtn").onclick = () => { calOpen = true; calMonth = null; calPick = null; renderCal(); };
       if ($("bibleBtn")) $("bibleBtn").onclick = () => { bibleSheet = true; bookOpen = null; renderBible(); };
@@ -5696,7 +5699,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
         const chips = ["wonder", "pray"].filter(k => !has(k));
         const free = freeDraft;
         panel = `<div class="journal ${free ? "freewrite" : ""} ${L === "zh" ? "zhui" : ""}">
-            <div class="jtop"><p class="jhold">${R.on} <button class="jlink" id="holdChange">${esc(holdLabel(holdDraft, day, L))}</button></p><button class="thinkbtn ${thinkOpen ? "on" : ""}" id="thinkBtn" aria-expanded="${thinkOpen}" aria-label="${R.think}">${BULB}</button></div>
+            <div class="jtop"><p class="jhold">${R.on} <span class="jlink" id="holdChange" role="button" tabindex="0">${esc(holdLabel(holdDraft, day, L))}</span></p><button class="thinkbtn ${thinkOpen ? "on" : ""}" id="thinkBtn" aria-expanded="${thinkOpen}" aria-label="${R.think}">${BULB}</button></div>
             ${thinkOpen ? `<div class="think" id="think"><span class="small">${R.think}</span><div class="thinkone" id="thinkList"><p class="tq-wait">${R.finding}</p></div><div class="pager" id="thinkPager" hidden><button class="pgbtn" id="thinkPrev" aria-label="Previous question">‹</button><span id="thinkCount"></span><button class="pgbtn" id="thinkNext" aria-label="Next question">›</button></div></div>` : ""}
             ${free ? `<label class="jl" for="answer">${R.mine}</label><textarea class="jt freebox" id="answer" rows="6" placeholder="${esc(R.freePh)}">${esc(answerDraft)}</textarea>`
               : `${line("", R.see, R.seePh, answerDraft, "answer")}
@@ -5797,6 +5800,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
         if ($("respondBox")) $("respondBox").addEventListener("input", e => { respondDraft = e.target.value; upd(); });
         $("freeToggle").onclick = () => { freeDraft = !freeDraft; S.freeWrite = freeDraft; rerender(); const a = $("answer"); if (a) a.focus(); };
         $("holdChange").onclick = () => { holdPicking = true; rerender(); };
+        $("holdChange").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); holdPicking = true; rerender(); } };
         $("thinkBtn").onclick = () => { thinkOpen = !thinkOpen; rerender(); };
         if ($("think")) paintThink(day);
         t.querySelectorAll("[data-add]").forEach(b => b.onclick = () => { extraDraft.open[b.dataset.add] = true; const k = b.dataset.add; rerender(); const el = $("x_" + k); if (el) el.focus(); });
@@ -8127,7 +8131,7 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.10";
+  const APP_VERSION = "2.15.11";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
