@@ -452,6 +452,8 @@ details.mini summary { padding: 4px 0; font-size: 14px; color: var(--muted); }
 .lg.lg-done { background: var(--accent); } .lg.lg-today { background: var(--gold); } .lg.lg-planned { background: var(--line); }
 .calnav button { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font: 700 16px var(--body); cursor: pointer; display: grid; place-items: center; }
 .calnav button:hover { border-color: var(--accent); color: var(--accent); }
+.calnav button.restartpill { width: auto; padding: 0 13px 0 10px; border-radius: 99px; gap: 5px; display: inline-flex; align-items: center; font: 600 13px var(--body); color: var(--accent); white-space: nowrap; }
+.restartpill svg { width: 15px; height: 15px; flex: none; }
 .readfoot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; color: var(--muted); }
 .readfoot a { color: var(--accent); font-weight: 700; }
 .opt { font-weight: 400; }
@@ -1714,7 +1716,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.43 · 13 October 2026, 9:32 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.45 · 13 October 2026, 10:13 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -4618,7 +4620,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // a catch-up counts on the day it was meant for: no lost heart, no broken streak, not shown as missed
   function catchUp(b, elsewhere) {
     const pk = planKey(), g = catchGroups(pk, missedList(pk)).find(x => x.b === b); if (!g) return;
-    const keys = ["planDone", "chRead", "fedDays", "covered", "lastFed", "heartsAtFeed", "streak", "best", "total", "daysRead", "catchParts", "books", "lateRead", "catchLate"], before = JSON.parse(JSON.stringify(keys.reduce((o, k) => (o[k] = S[k], o), {})));
+    const keys = ["planDone", "chRead", "chSince", "fedDays", "covered", "lastFed", "heartsAtFeed", "streak", "best", "total", "daysRead", "catchParts", "books", "lateRead", "catchLate"], before = JSON.parse(JSON.stringify(keys.reduce((o, k) => (o[k] = S[k], o), {})));
     const p = getPlan(pk), hNow = hearts(); let done = 0, latest = null;
     S.catchParts = S.catchParts || {}; S.catchParts[pk] = S.catchParts[pk] || {}; S.planDone = S.planDone || {}; S.planDone[pk] = S.planDone[pk] || {}; S.chRead = S.chRead || {}; S.covered = S.covered || []; S.fedDays = S.fedDays || [];
     S.lateRead = S.lateRead || {}; S.lateRead[pk] = S.lateRead[pk] || {}; S.catchLate = S.catchLate || {}; S.catchLate[pk] = S.catchLate[pk] || {};
@@ -4626,7 +4628,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     g.items.forEach(i => {
       const d = dateOfIdx(pk, i), parts = S.catchParts[pk][i] = (S.catchParts[pk][i] || []).concat([b]);
       if (!elsewhere) S.catchLate[pk][i] = 1;
-      else (p.days[i] || []).filter(e => e[0] === b).forEach(([bb, c]) => { if (!S.chRead[bb + ":" + c]) S.chRead[bb + ":" + c] = d; });
+      else (p.days[i] || []).filter(e => e[0] === b).forEach(([bb, c]) => noteCh(bb + ":" + c, d));
       if (![...new Set((p.days[i] || []).map(e => e[0]))].every(x => parts.includes(x))) return;
       // read late, here in the app: off the list, but the day stays missed (no hearts back, no streak, no reward progress)
       if (S.catchLate[pk][i]) { S.lateRead[pk][i] = today(); delete S.catchParts[pk][i]; delete S.catchLate[pk][i]; late++; return; }
@@ -5019,7 +5021,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     ["covered", "fedDays", "books", "seen", "dressSeen", "inboxRead"].forEach(k => { if (L[k] || R[k]) out[k] = uni(k); });
     out.fedDays.sort(); (out.covered || []).sort();
     const earliest = (a, b) => { const o = Object.assign({}, a || {}); Object.keys(b || {}).forEach(k => { o[k] = o[k] && o[k] <= b[k] ? o[k] : b[k]; }); return o; };
-    out.chRead = earliest(L.chRead, R.chRead); out.heartFor = earliest(L.heartFor, R.heartFor); out.feasts = earliest(L.feasts, R.feasts); out.fellowJoined = earliest(L.fellowJoined, R.fellowJoined);
+    out.chRead = earliest(L.chRead, R.chRead); out.chSince = earliest(L.chSince, R.chSince);
+    if (L.bibleStart || R.bibleStart) out.bibleStart = [L.bibleStart, R.bibleStart].filter(Boolean).sort().pop(); out.heartFor = earliest(L.heartFor, R.heartFor); out.feasts = earliest(L.feasts, R.feasts); out.fellowJoined = earliest(L.fellowJoined, R.fellowJoined);
     out.planDone = {}; new Set([...Object.keys(L.planDone || {}), ...Object.keys(R.planDone || {})]).forEach(k => { out.planDone[k] = earliest((L.planDone || {})[k], (R.planDone || {})[k]); });
     ["total", "daysRead", "best", "cheersSent", "rescueCount"].forEach(k => { out[k] = Math.max(L[k] || 0, R[k] || 0); });
     // today's hearts and streak come from whichever copy was fed most recently
@@ -6686,8 +6689,21 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   ];
   const SECTION_ZH = { "The Law": "律法书", "History": "历史书", "Poetry & Wisdom": "诗歌智慧书", "The Prophets": "先知书", "Gospels & Acts": "福音书与使徒行传", "Letters": "书信", "Revelation": "启示录" };
   let bibleOpen = null, bookOpen = null;
+  // Starting over only resets this count. Every chapter ever read, the books finished and the rewards they earned all stay.
   function chaptersRead() {
-    return new Set(Object.keys(S.chRead || {}));
+    if (!S.bibleStart) return new Set(Object.keys(S.chRead || {}));
+    return new Set(Object.entries(S.chSince || {}).filter(([, d]) => d >= S.bibleStart).map(([k]) => k));
+  }
+  function noteCh(k, d) {
+    S.chRead = S.chRead || {}; if (!S.chRead[k]) S.chRead[k] = d;
+    if (S.bibleStart) { S.chSince = S.chSince || {}; if (!S.chSince[k]) S.chSince[k] = today(); }
+  }
+  function startBibleOver() {
+    confirmSheet("Start your Bible over?", "Your Bible goes back to 0% so you can read it through again. The books you've finished and the rewards you've earned stay yours.", "Start over", false, () => {
+      const was = { bibleStart: S.bibleStart, chSince: S.chSince };
+      S.bibleStart = today(); S.chSince = {}; save(); renderBible();
+      toast("Started over · tap to undo", () => { S.bibleStart = was.bibleStart; S.chSince = was.chSince; save(); renderBible(); });
+    });
   }
   let bibleSheet = false;
   const BIBLE_ICON = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 9.5c0-1.9 1.6-3.5 3.5-3.5H37v32H14.5c-1.9 0-3.5 1.6-3.5 3.5z" fill="#8C5A35" stroke="#3B2B25" stroke-width="2.4" stroke-linejoin="round"/><path d="M11 41.5c0-1.9 1.6-3.5 3.5-3.5H37v5H14.5c-1.9 0-3.5-.6-3.5-1.5z" fill="#FFFDF8" stroke="#3B2B25" stroke-width="2.4" stroke-linejoin="round"/><path d="M24 14v13M19 18.5h10" stroke="#F2C14E" stroke-width="3" stroke-linecap="round"/><path d="M31 38v8l-2.5-1.8L26 46v-8" fill="#C8423A" stroke="#3B2B25" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
@@ -6713,12 +6729,13 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const scroll = sh.querySelector(".calcard") ? sh.querySelector(".calcard").scrollTop : 0;
     sh.innerHTML = `<div class="calback" data-close="1"></div>
       <section class="calcard biblecard" role="dialog" aria-modal="true" aria-label="Your Bible">
-        <div class="calhead"><div><div class="eyebrow">Your Bible <span lang="zh-Hans">我的圣经</span></div><p class="cardtitle">${pct(all, allT)}% read <span class="bzh-t" lang="zh-Hans">已阅读</span></p></div><div class="calnav"><button data-close="1" aria-label="Close">✕</button></div></div>
+        <div class="calhead"><div><div class="eyebrow">Your Bible <span lang="zh-Hans">我的圣经</span></div><p class="cardtitle">${pct(all, allT)}% read <span class="bzh-t" lang="zh-Hans">已阅读</span></p></div><div class="calnav">${all ? `<button class="restartpill" id="bibleRestart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M4.5 4.5v4h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Start over</button>` : ""}<button data-close="1" aria-label="Close">✕</button></div></div>
         ${secs}
       </section>`;
     sh.querySelector(".calcard").scrollTop = scroll;
     sh.querySelectorAll("[data-close]").forEach(x => x.onclick = () => { bibleSheet = false; renderBible(); });
     sh.querySelectorAll("[data-b]").forEach(x => x.onclick = () => { const v = +x.dataset.b; bookOpen = bookOpen === v ? null : v; renderBible(); });
+    if ($("bibleRestart")) $("bibleRestart").onclick = startBibleOver;
   }
 
   // ---------- meadow keepsakes ----------
@@ -8923,7 +8940,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.43";
+  const APP_VERSION = "2.15.45";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -9324,7 +9341,6 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const firstOther = sel => () => [...document.querySelectorAll(sel)].find(el => el.querySelector("[data-heart],[data-unheart]"));
   const byLabel = (root, text) => () => { const h = [...document.querySelectorAll(root + " .eyebrow, " + root + " span.small")].find(e => e.textContent.trim().toLowerCase().startsWith(text.toLowerCase())); const nx = h && h.nextElementSibling, one = nx && /^(UL|OL)$/.test(nx.tagName) && nx.children.length > 2 ? nx.firstElementChild : nx; return h ? [h, one].filter(Boolean) : null; };
   const tchunk = (head, ...kids) => ({ head, kids });
-  const MISSED_TXT = "Days you've missed, ready to catch up. Tap one to read it here, or tick I've read if you read it elsewhere.";
   const TOUR = [
     tchunk(["#screen", "Your lamb", "Read each day to keep your lamb fed and happy. A small daily rhythm, with a friend to look after."],
       [["#hearts", "#heartInfo"], "Hearts", "Reading feeds your lamb, a reflection adds a heart, and a missed day takes one away. Tap the i for more."],
@@ -9344,9 +9360,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#parBtn", "Both together", "Chinese and English side by side, scrolling together verse by verse."],
       ["#parLay", "Layout", "One above the other, or side by side."],
       ["#reader", "The passage", "Drag over words to highlight them, or tap a verse number. Use in Reflect takes it straight into your reflection."],
-      ["#toReflect", "I'm done reading", "Tap when you've read, here or in another Bible app. Your lamb is fed; no reflection needed."],
-      ["#today .aheadbtn", "Read ahead", "Going away? Read the next day's passage early."],
-      ["#today .catchhead", "Missed passages", MISSED_TXT]),
+      ["#toReflect", "I'm done reading", "Tap when you've read, here or in another Bible app. That feeds your lamb. Reflect too to earn a heart."],
+      ["#today .aheadbtn", "Read ahead", "Going away? Read the next day's passage early."]),
     tchunk([() => document.querySelector("#groupCard .grtitle"), "Your fold", "Your small group, reading together."],
       ["#grOthers", "Other folds", "Visit the other folds in your flock and cheer them on."],
       ["#flockPill", "Your flock", "Your flocks and their codes. Invite a friend, switch, join or start one."],
@@ -9402,7 +9417,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const SEC_TOURS = {
     reflect: { root: "#today #answer", ok: () => step === "reflect" && !holdPicking, steps: () => rlang(S.steps) === "zh" ? REFL_ZH : REFL_EN },
     remember: { root: "#today #vRef", ok: () => step === "remember", steps: () => memDefaultLang("") === "zh" ? MEM_ZH : MEM_EN },
-    missed: { root: "#today .catchup", inView: true, steps: () => [["#today .catchhead", "Missed passages", MISSED_TXT]] },
+    // only there when something's been missed; opened up so each part can be shown
+    missed: { root: "#today .catchup", inView: true, prep: () => { const t = $("catchToggle"); if (t && t.getAttribute("aria-expanded") !== "true") t.click(); }, steps: () => [tchunk(
+      ["#today .catchhead", "Missed passages", "Days in your plan you haven't read yet. This only shows when there's something to catch up on."],
+      ["#today .catchgo", "Catch up", "Tap a passage to read it right here."],
+      ["#today .catchtick", "I've read", "Read it in another Bible app? Tick it off here."])] },
     inbox: { root: "#inboxSheet .iblist .ib", steps: () => [
       ["#inboxSheet .iblist .ib", "Your inbox", "Newest first. Tap anything to open it."],
       ["#ibAll", "Mark all read", "Clear every red dot in one tap."],
@@ -9423,6 +9442,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#flockSheet .flocklist", "Your flocks", "Tap one to switch. Its code lets friends join you."],
       ["#flockSheet .flockshare", "Invite", "Share an invitation straight to a friend."],
       ["#flockSheet .evenrow", "Join or start", "Join another flock with its code, or start your own."]] },
+    bible: { root: "#bibleSheet .blist", steps: () => [tchunk(
+      ["#bibleSheet .bsec", "Your Bible", "Every book, chapter by chapter. Tap a book to see which chapters you've read."],
+      ["#bibleRestart", "Start over", "Read it through again from 0%. Books finished and rewards earned stay yours."])] },
     farm: { root: "#visitSheet .farmwrap", steps: () => [
       ["#visitSheet .farmwrap", "The farm", "Every fold in your flock. Tap one to visit, read their reflections and cheer them on."]] },
     news: { root: "#newsSheet #nwText", steps: () => [
@@ -9499,9 +9521,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
   const tourOK = () => B && (B.mode === "firebase" || PREVIEW || /tour/.test(location.hash));
   // the first time a section is open on screen, walk through it once
-  let secTimer = 0;
+  let secTimer = 0, tourHold = false;
   function secCheck() {
-    if (!tourOK() || tourAt >= 0 || $("tourAsk") || $("celebSheet") || $("annSheet") || $("weekSheet") || !S.name || document.querySelector(".wrap.gated")) return;
+    if (!tourOK() || tourAt >= 0 || tourHold || $("tourAsk") || $("celebSheet") || $("annSheet") || $("weekSheet") || !S.name || document.querySelector(".wrap.gated")) return;
     const seen = S.tourSec || {}, over = [...document.querySelectorAll(".calsheet:not(.dock):not([hidden]), #adminSheet")].filter(vis).pop();   // only what's on top
     // everything new on screen at once goes into one walk (a reflection with a question, say)
     const due = Object.entries(SEC_TOURS).filter(([k, t]) => { if (seen[k] || (t.ok && !t.ok())) return false;
@@ -9510,15 +9532,25 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       return true; });
     if (!due.length) return;
     S.tourSec = Object.assign({}, seen, ...due.map(([k]) => ({ [k]: today() }))); save();
-    startTour(due.flatMap(([, t]) => t.steps()));
+    const preps = due.filter(([, t]) => t.prep); preps.forEach(([, t]) => t.prep());
+    if (preps.length) { tourHold = true; setTimeout(() => { tourHold = false; startTour(due.flatMap(([, t]) => t.steps())); }, 200); }   // held while it opens
+    else startTour(due.flatMap(([, t]) => t.steps()));
   }
   const maybeStepTour = () => { if (!secTimer) secTimer = setTimeout(() => { secTimer = 0; secCheck(); }, 450); };
   new MutationObserver(() => { if (tourAt < 0) maybeStepTour(); }).observe(document.body, { childList: true, subtree: true });
   document.addEventListener("scroll", () => { if (tourAt < 0 && !(S.tourSec || {}).missed) maybeStepTour(); }, { passive: true, capture: true });
   function endTour() { tourAt = -1; tourEl0 = null; cancelAnimationFrame(tourTick); ["tourSpot", "tourTip"].forEach(id => { const e = $(id); if (e) e.remove(); }); maybeStepTour(); }
   // the part of an element you can actually see, inside whatever box scrolls it
+  // a solid drop edge (like the 3D bottom of the big buttons) counts as part of the button
+  const solidEdge = el => { const o = { l: 0, t: 0, r: 0, b: 0 }; if (isRange(el)) return o;
+    (getComputedStyle(el).boxShadow || "").split(/,(?![^(]*\))/).forEach(sh => { if (/inset|none/.test(sh)) return;
+      const m = sh.replace(/rgba?\([^)]*\)|#[0-9a-f]+|[a-z]+\([^)]*\)/gi, "").match(/-?[\d.]+px/g); if (!m || m.length < 2) return;
+      const [x, y, blur = 0, spread = 0] = m.map(parseFloat); if (blur > 2) return;
+      o.l = Math.max(o.l, spread - x); o.r = Math.max(o.r, spread + x); o.t = Math.max(o.t, spread - y); o.b = Math.max(o.b, spread + y); });
+    return o; };
   function seenRect(els) {
     let r = unionRect(els);
+    if (els.length === 1) { const e = solidEdge(els[0]); r = { left: r.left - e.l, top: r.top - e.t, right: r.right + e.r, bottom: r.bottom + e.b }; }
     for (let p = nodeOf(els[0]).parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
       const cs = getComputedStyle(p); if (!/(auto|scroll|hidden)/.test(cs.overflowY + cs.overflowX) || p.scrollHeight <= p.clientHeight + 1 && p.scrollWidth <= p.clientWidth + 1) continue;
       const c = p.getBoundingClientRect(); r = { left: Math.max(r.left, c.left), top: Math.max(r.top, c.top), right: Math.min(r.right, c.right), bottom: Math.min(r.bottom, c.bottom) };
@@ -9610,7 +9642,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     S.planDone = S.planDone || {}; S.planDone[pk] = S.planDone[pk] || {};
     if (!already) S.planDone[pk][i] = t;
     S.chRead = S.chRead || {};
-    day.forEach(([b, c]) => { if (!S.chRead[b + ":" + c]) S.chRead[b + ":" + c] = t; });
+    day.forEach(([b, c]) => noteCh(b + ":" + c, t));
     S.total += 1;
     { const fz = feastToday(); if (fz) { S.feasts = S.feasts || {}; S.feasts[fz] = S.feasts[fz] || t; } }
     const ds0 = S.steps || {};
