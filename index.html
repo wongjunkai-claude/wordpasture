@@ -875,14 +875,14 @@ body.no-vn .reader .vn { display: none; }
 .vstart .btn { min-width: 180px; padding-inline: 28px; }
 .jtop { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .jtop .jhold { flex: 1; min-width: 0; }
-.thinkbtn { flex: none; width: 36px; height: 36px; margin: -6px -4px 0 0; border: 0; border-radius: 12px; background: transparent; display: grid; place-items: center; cursor: pointer; transition: transform .25s cubic-bezier(.3,1.6,.5,1), background .2s; }
-.thinkbtn svg { width: 28px; height: 28px; }
-.jtools { flex: none; position: relative; width: 36px; height: 36px; margin: -6px -4px 0 0; }
-.jtools .bankbtn { position: absolute; top: 38px; left: 0; }
+.thinkbtn { flex: none; width: 40px; height: 40px; margin: -6px -4px 0 0; padding: 0; border: 0; border-radius: 12px; background: transparent; display: grid; place-items: center; cursor: pointer; transition: transform .25s cubic-bezier(.3,1.6,.5,1), background .2s; }
+.thinkbtn svg { width: 31px; height: 31px; }
+.jtools { flex: none; position: relative; width: 40px; height: 40px; margin: -6px -4px 0 0; }
+.jtools .bankbtn { position: absolute; top: 48px; left: 0; }
 
 .jtools .thinkbtn { margin: 0; }
 .bankbtn { position: relative; }
-.bankbtn svg { width: 26px; height: 26px; }
+.bankbtn svg { width: 29px; height: 29px; }
 .bankbtn.on { background: color-mix(in srgb, #6B5CA5 16%, transparent); }
 .bankbtn .bankn { position: absolute; top: -2px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 99px; background: #6B5CA5; color: #fff; font: 700 10px/16px var(--body); font-style: normal; text-align: center; }
 .bankcard { max-height: min(86vh, 720px); display: flex; flex-direction: column; }
@@ -930,7 +930,7 @@ html.lay-tab .bqbody, html.lay-wide .bqbody { max-height: calc(12 * 1.5em); }
 .bankpanel > .small { font-weight: 700; color: #6B5CA5; }
 .jdonetools { position: absolute; top: 10px; right: 10px; display: flex; align-items: center; gap: 6px; }
 .jdonetools .jedit { position: static; }
-.jdonetools .bankbtn { width: 34px; height: 34px; margin: 0; }
+.jdonetools .bankbtn { width: 38px; height: 38px; margin: 0; }
 .thinkbtn:hover { transform: rotate(-8deg) scale(1.08); }
 .thinkbtn.on { background: color-mix(in srgb, #FFD95A 30%, transparent); }
 .think { margin: 2px 0 10px; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, #FFD95A 16%, var(--card)); display: flex; flex-direction: column; gap: 6px; }
@@ -1320,7 +1320,7 @@ html:not(.lay-wide) body.docked .pane-right, html:not(.lay-wide) body.docked .pa
 .tourask { align-items: center; text-align: center; }
 .tourlamb { width: 64px; height: 52px; margin: 0 auto; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--accent) 12%, var(--card)); }
 .tourlamb svg { width: 46px; height: 36px; }
-.tourspot { position: fixed; z-index: 80; border-radius: 18px; box-shadow: 0 0 0 9999px rgba(18,26,22,.62); pointer-events: none; outline: 3px solid #F2C14E; outline-offset: 0; }
+.tourspot { position: fixed; left: 0; top: 0; z-index: 80; pointer-events: none; overflow: visible; }
 .tourtip { position: fixed; z-index: 81; background: var(--card); color: var(--ink); border-radius: 18px; padding: 16px 16px 12px; box-shadow: 0 16px 40px -12px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 6px; animation: tipin .18s ease-out; }
 @keyframes tipin { from { opacity: 0; } }
 .tourtip b { font: 600 19px var(--display); padding-right: 30px; }
@@ -1714,7 +1714,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.42 · 13 October 2026, 6:36 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.43 · 13 October 2026, 9:32 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -5995,7 +5995,15 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if (key !== stepKey) { stepKey = key; step = null; editing = null; holdDraft = undefined; holdPicking = false; extraDraft = freshExtra(); }
     const ds = dayState(key); ds.idx = idx; ds.plan = pk;
     const doneHere = isDoneIdx(pk, idx);
-    const L = rlang(ds), R = RT[L], EX = extraOf(L), emptyHint = () => freeDraft ? R.hintFree : (L === "zh" ? R.hintGuided : "Write a few words under “Here I see God…” and “today I will…” to submit."), submitHint = () => reflHeartDue(idx) ? (L === "zh" ? "提交后" + S.name + "会得到一颗心。" : `Submitting earns ${S.name} a heart.`) : "";
+    const L = rlang(ds), R = RT[L], EX = extraOf(L), emptyHint = () => {
+      // say exactly what's still needed: 3 words for what you see of God, 2 for what you'll do, or 5 when writing freely
+      const more = (n, w) => n === 1 ? "1 more word" : `${n} more words`;
+      if (freeDraft) { const n = Math.max(0, 5 - words(answerDraft)); return L === "zh" ? (n === 5 ? R.hintFree : "再多写几个字就能提交。") : n === 5 ? "Write at least 5 words to submit." : `Just ${more(n)} to submit.`; }
+      const a = Math.max(0, 3 - words(answerDraft)), b = Math.max(0, 2 - words(respondDraft));
+      if (L === "zh") return a && b ? R.hintGuided + "两项都写了就能提交。" : a ? "第一项再多写几个字就能提交。" : "第二项再多写几个字就能提交。";
+      return a === 3 && b === 2 ? "Write at least 3 words under “Here I see God…” and 2 under “today I will…” to submit."
+        : a && b ? `Just ${more(a)} under “Here I see God…” and ${more(b)} under “today I will…” to submit.`
+        : a ? `Just ${more(a)} under “Here I see God…” to submit.` : `Just ${more(b)} under “today I will…” to submit.`; }, submitHint = () => reflHeartDue(idx) ? (L === "zh" ? "提交后" + S.name + "会得到一颗心。" : `Submitting earns ${S.name} a heart.`) : "";
     const q = QUESTIONS[(dayNum(today()) + idx) % QUESTIONS.length];
     let doneHtml = "";
     if (fed && onToday) {
@@ -8806,11 +8814,20 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
 
   // ---------- visiting and settings sheets ----------
   function setVisit(open) { $("visitSheet").hidden = !open; if (open) { mapPick = null; renderFellowship(); } }
-  $("inboxBtn").addEventListener("click", e => { e.stopPropagation(); inboxOpen = true; renderInbox(); });
+  // only one thing open at a time: the wardrobe or pasture closes before the inbox or settings opens
+  function closeDocks(then) {
+    if (dressOpen) setDress(false);
+    if (homeOpen) {
+      if (draft && JSON.stringify(draft) !== JSON.stringify(S.home)) { confirmSheet("Leave your pasture?", "Your changes to the pasture haven't been saved.", "Leave", false, () => { setHomeSheet(false); then(); }); return; }
+      setHomeSheet(false);
+    }
+    then();
+  }
+  $("inboxBtn").addEventListener("click", e => { e.stopPropagation(); closeDocks(() => { inboxOpen = true; renderInbox(); }); });
   $("visitBack").onclick = () => setVisit(false);
   let setOpen = false, clearingHl = false;
   function setSettings(open) { setOpen = open; $("setSheet").hidden = !open; clearingHl = false; if (!open) { acctMode = ""; acctMsg = ""; acctOk = ""; } if (open) renderSettings(); }
-  $("setBtn").addEventListener("click", e => { e.stopPropagation(); setSettings(true); });
+  $("setBtn").addEventListener("click", e => { e.stopPropagation(); closeDocks(() => setSettings(true)); });
   $("setBack").onclick = () => setSettings(false);
   $("setClose").onclick = () => setSettings(false);
   document.addEventListener("keydown", e => { if (e.key === "Escape") { if (setOpen) setSettings(false); if (!$("visitSheet").hidden) setVisit(false); } });
@@ -8906,7 +8923,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.42";
+  const APP_VERSION = "2.15.43";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -9307,6 +9324,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const firstOther = sel => () => [...document.querySelectorAll(sel)].find(el => el.querySelector("[data-heart],[data-unheart]"));
   const byLabel = (root, text) => () => { const h = [...document.querySelectorAll(root + " .eyebrow, " + root + " span.small")].find(e => e.textContent.trim().toLowerCase().startsWith(text.toLowerCase())); const nx = h && h.nextElementSibling, one = nx && /^(UL|OL)$/.test(nx.tagName) && nx.children.length > 2 ? nx.firstElementChild : nx; return h ? [h, one].filter(Boolean) : null; };
   const tchunk = (head, ...kids) => ({ head, kids });
+  const MISSED_TXT = "Days you've missed, ready to catch up. Tap one to read it here, or tick I've read if you read it elsewhere.";
   const TOUR = [
     tchunk(["#screen", "Your lamb", "Read each day to keep your lamb fed and happy. A small daily rhythm, with a friend to look after."],
       [["#hearts", "#heartInfo"], "Hearts", "Reading feeds your lamb, a reflection adds a heart, and a missed day takes one away. Tap the i for more."],
@@ -9326,7 +9344,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#parBtn", "Both together", "Chinese and English side by side, scrolling together verse by verse."],
       ["#parLay", "Layout", "One above the other, or side by side."],
       ["#reader", "The passage", "Drag over words to highlight them, or tap a verse number. Use in Reflect takes it straight into your reflection."],
-      ["#toReflect", "I'm done reading", "Tap when you've read, here or in another Bible app. Your lamb is fed; no reflection needed."]),
+      ["#toReflect", "I'm done reading", "Tap when you've read, here or in another Bible app. Your lamb is fed; no reflection needed."],
+      ["#today .aheadbtn", "Read ahead", "Going away? Read the next day's passage early."],
+      ["#today .catchhead", "Missed passages", MISSED_TXT]),
     tchunk([() => document.querySelector("#groupCard .grtitle"), "Your fold", "Your small group, reading together."],
       ["#grOthers", "Other folds", "Visit the other folds in your flock and cheer them on."],
       ["#flockPill", "Your flock", "Your flocks and their codes. Invite a friend, switch, join or start one."],
@@ -9345,8 +9365,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#holdChange", "What you're reflecting on", "Tap to pick the verses that stood out to you."],
       ["#thinkBtn", "Questions to think about", "Stuck? The light bulb offers questions on today's passage."],
       ["#bankBtn", "Question bank", "Questions others have asked on this passage, kept with their answers. Ask yours, or help answer."]),
-    ["#answer", "Here I see God", "What this passage shows you about God, or Jesus. A few words is plenty."],
-    ["#respondBox", "Today I will", "One thing you can do today because of it."],
+    [["text:#today label[for=answer]", "#answer"], "Here I see God", "What this passage shows you about God, or Jesus. A few words is plenty."],
+    [["text:#today label[for=respondBox]", "#respondBox"], "Today I will", "One thing you can do today because of it."],
     ["#today .jadd", "Add more", "Add a prayer, or a question you'd like help with."],
     ["#freeToggle", "Write freely", "Rather skip the prompts? Write it your own way."],
     ["#today .sharepick", "Share with", "Keep it personal, or share it with your fold or the whole flock."],
@@ -9357,8 +9377,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#holdChange", "默想的经文", "点这里选出触动你的经节。"],
       ["#thinkBtn", "思考问题", "不知道写什么？点灯泡，会给你关于今天经文的问题。"],
       ["#bankBtn", "问题库", "别人对这段经文提过的问题和回答都在这里。可以提问，也可以帮忙回答。"]),
-    ["#answer", "你看见的神", "写下这段经文让你看见神或耶稣的什么。几个字就够了。"],
-    ["#respondBox", "今天我要", "写下一件你今天因此可以去做的事。"],
+    [["text:#today label[for=answer]", "#answer"], "你看见的神", "写下这段经文让你看见神或耶稣的什么。几个字就够了。"],
+    [["text:#today label[for=respondBox]", "#respondBox"], "今天我要", "写下一件你今天因此可以去做的事。"],
     ["#today .jadd", "想多写一点", "可以加一段祷告，或一个想请大家帮忙的问题。"],
     ["#freeToggle", "自由书写", "不想用提示？就用你自己的方式写。"],
     ["#today .sharepick", "分享给", "只留给自己，或分享给你的羊圈或整个羊群。"],
@@ -9382,6 +9402,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const SEC_TOURS = {
     reflect: { root: "#today #answer", ok: () => step === "reflect" && !holdPicking, steps: () => rlang(S.steps) === "zh" ? REFL_ZH : REFL_EN },
     remember: { root: "#today #vRef", ok: () => step === "remember", steps: () => memDefaultLang("") === "zh" ? MEM_ZH : MEM_EN },
+    missed: { root: "#today .catchup", inView: true, steps: () => [["#today .catchhead", "Missed passages", MISSED_TXT]] },
     inbox: { root: "#inboxSheet .iblist .ib", steps: () => [
       ["#inboxSheet .iblist .ib", "Your inbox", "Newest first. Tap anything to open it."],
       ["#ibAll", "Mark all read", "Clear every red dot in one tap."],
@@ -9484,13 +9505,16 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const seen = S.tourSec || {}, over = [...document.querySelectorAll(".calsheet:not(.dock):not([hidden]), #adminSheet")].filter(vis).pop();   // only what's on top
     // everything new on screen at once goes into one walk (a reflection with a question, say)
     const due = Object.entries(SEC_TOURS).filter(([k, t]) => { if (seen[k] || (t.ok && !t.ok())) return false;
-      const el = document.querySelector(t.root); return vis(el) && (!over || over.contains(el)); });
+      const el = document.querySelector(t.root); if (!vis(el) || (over && !over.contains(el))) return false;
+      if (t.inView) { const r = el.getBoundingClientRect(); if (r.top > innerHeight - 60 || r.bottom < 60) return false; }   // only once it's been scrolled to
+      return true; });
     if (!due.length) return;
     S.tourSec = Object.assign({}, seen, ...due.map(([k]) => ({ [k]: today() }))); save();
     startTour(due.flatMap(([, t]) => t.steps()));
   }
   const maybeStepTour = () => { if (!secTimer) secTimer = setTimeout(() => { secTimer = 0; secCheck(); }, 450); };
   new MutationObserver(() => { if (tourAt < 0) maybeStepTour(); }).observe(document.body, { childList: true, subtree: true });
+  document.addEventListener("scroll", () => { if (tourAt < 0 && !(S.tourSec || {}).missed) maybeStepTour(); }, { passive: true, capture: true });
   function endTour() { tourAt = -1; tourEl0 = null; cancelAnimationFrame(tourTick); ["tourSpot", "tourTip"].forEach(id => { const e = $(id); if (e) e.remove(); }); maybeStepTour(); }
   // the part of an element you can actually see, inside whatever box scrolls it
   function seenRect(els) {
@@ -9509,27 +9533,36 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if (!tourSeq.length) return endTour();
     tourAt = Math.min(tourAt, tourSeq.length - 1);
     const st = tourSeq[tourAt], els = st.els, n = tourSeq.length;
-    const ur = unionRect(els), tall = ur.height > window.innerHeight * 0.55;
+    const tall = unionRect(els).height > window.innerHeight * 0.55;
     nodeOf(els[0]).scrollIntoView({ block: tall ? "start" : "center", inline: "nearest", behavior: "auto" });
     let spot = $("tourSpot"), tip = $("tourTip");
-    if (!spot) { spot = document.createElement("div"); spot.id = "tourSpot"; spot.className = "tourspot"; document.body.appendChild(spot); }
+    if (!spot) { spot = document.createElementNS("http://www.w3.org/2000/svg", "svg"); spot.id = "tourSpot"; spot.setAttribute("class", "tourspot"); spot.setAttribute("aria-hidden", "true"); document.body.appendChild(spot); }
     if (!tip) { tip = document.createElement("div"); tip.id = "tourTip"; tip.className = "tourtip"; tip.setAttribute("role", "dialog"); tip.setAttribute("aria-modal", "true"); document.body.appendChild(tip); }
     tip.innerHTML = `<button class="tourx" id="tourX" aria-label="End the walkthrough">✕</button><b>${esc(st.title)}</b><p>${esc(st.text)}</p>
       <div class="pager"><button class="pgbtn" id="tourPrev" aria-label="Back" ${tourAt === 0 ? "disabled" : ""}>‹</button><span>${tourAt + 1} of ${n}</span>${tourAt === n - 1 ? `<button class="btn primary small-btn" id="tourEnd">Done</button>` : `<button class="pgbtn" id="tourNext" aria-label="Next">›</button>`}</div>`;
-    const rad = els.length === 1 ? radiusOf(els[0]) : 14;
     let last = "";
+    // each part gets its own snug hole; parts that touch join into one lit shape with one gold edge
     const place = () => {
       if (tourAt < 0) return;
       if (!els.every(e => nodeOf(e).isConnected)) { paintTour(); return; }
-      const r = seenRect(els), pad = 6, vh = window.innerHeight, vw = window.innerWidth;
-      const L = Math.max(3, r.left - pad), T = Math.max(3, r.top - pad), R = Math.min(vw - 3, r.right + pad), Bm = Math.min(vh - 3, r.bottom + pad);
-      const w = Math.max(0, R - L), h = Math.max(0, Bm - T), tw = Math.min(360, vw - 24), th = tip.offsetHeight;
+      const pad = 6, ring = 3, vh = window.innerHeight, vw = window.innerWidth;
+      const holes = els.map(e => { const r = seenRect([e]); if (!r.width || !r.height) return null;
+        const L = Math.max(3, r.left - pad), T = Math.max(3, r.top - pad), R = Math.min(vw - 3, r.right + pad), Bm = Math.min(vh - 3, r.bottom + pad), w = Math.max(0, R - L), h = Math.max(0, Bm - T);
+        return { L, T, R, Bm, w, h, rad: Math.min(radiusOf(e) + pad, Math.min(w, h) / 2) }; }).filter(Boolean);
+      if (!holes.length) { tourTick = requestAnimationFrame(place); return; }
+      const L = Math.min(...holes.map(x => x.L)), T = Math.min(...holes.map(x => x.T)), R = Math.max(...holes.map(x => x.R)), Bm = Math.max(...holes.map(x => x.Bm));
+      const tw = Math.min(360, vw - 24), th = tip.offsetHeight;
       const room = { below: vh - Bm - 10, above: T - 10 };
       const top = room.below >= th + 4 ? Bm + 10 : room.above >= th + 4 ? T - th - 10 : room.below >= room.above ? vh - th - 12 : 12;
       const left = Math.max(12, Math.min(vw - tw - 12, (L + R) / 2 - tw / 2));
-      const key = [L, T, w, h, tw, top, left].map(Math.round).join();
+      const key = holes.map(x => [x.L, x.T, x.w, x.h].map(Math.round).join()).join("|") + [vw, vh, tw, top, left].map(Math.round).join();
       if (key !== last) { last = key;
-        Object.assign(spot.style, { left: L + "px", top: T + "px", width: w + "px", height: h + "px", borderRadius: Math.min(rad + pad, Math.min(w, h) / 2) + "px" });
+        const rr = (x, g, fill) => `<rect x="${x.L - g}" y="${x.T - g}" width="${x.w + 2 * g}" height="${x.h + 2 * g}" rx="${x.rad + g}" fill="${fill}"/>`;
+        spot.setAttribute("width", vw); spot.setAttribute("height", vh); spot.setAttribute("viewBox", `0 0 ${vw} ${vh}`);
+        spot.dataset.box = [L, T, R - L, Bm - T].map(Math.round).join();
+        spot.innerHTML = `<defs><mask id="tsHole" maskUnits="userSpaceOnUse" x="0" y="0" width="${vw}" height="${vh}"><rect width="${vw}" height="${vh}" fill="#fff"/>${holes.map(x => rr(x, 0, "#000")).join("")}</mask>
+          <mask id="tsRing" maskUnits="userSpaceOnUse" x="0" y="0" width="${vw}" height="${vh}">${holes.map(x => rr(x, ring, "#fff")).join("")}${holes.map(x => rr(x, 0, "#000")).join("")}</mask></defs>
+          <rect width="${vw}" height="${vh}" fill="rgba(18,26,22,.62)" mask="url(#tsHole)"/><rect width="${vw}" height="${vh}" fill="#F2C14E" mask="url(#tsRing)"/>`;
         Object.assign(tip.style, { width: tw + "px", left: left + "px", top: Math.max(12, Math.min(vh - th - 12, top)) + "px" }); }
       tourTick = requestAnimationFrame(place);   // follows the page while it scrolls or settles
     };

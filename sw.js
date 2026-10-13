@@ -1,7 +1,7 @@
 // WordPasture service worker: lets the app open and read offline, and keeps the Bible text close at hand.
 // The app itself (index.html) is always fetched fresh when there's a connection, so updates arrive straight away;
 // the saved copy is only used when offline. "Update now" in the app clears everything here and starts again.
-const VERSION = "wp-2.15.42";
+const VERSION = "wp-2.15.43";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "firebase-config.js", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-180.png",
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
   // Firebase's own code (the version is in the address, so a saved copy never goes stale); keep in step with FB_VERSION in index.html
