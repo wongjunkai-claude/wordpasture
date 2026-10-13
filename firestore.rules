@@ -42,6 +42,16 @@ service cloud.firestore {
     match /flocks/{fid}/{rest=**} {
       allow read, delete: if isAdmin();
     }
+    // Secret missions (encourage someone in your fold): only the person on the mission and the super admin can see them.
+    match /missions/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create, update: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && id == request.auth.uid + '_' + request.resource.data.day
+        && request.resource.data.status in ['given', 'done', 'skipped']
+        && shortText(request.resource.data.day, 10);
+      allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
     // A permanent record of what the super admin has done: it can be added to and read, never changed or erased.
     match /adminlog/{id} {
       allow read, create: if isAdmin();
@@ -51,10 +61,15 @@ service cloud.firestore {
     match /announcements/{id} {
       allow read: if signedIn();
       allow create: if isAdmin()
-        && request.resource.data.keys().hasOnly(['title', 'text', 'by', 'at'])
+        && request.resource.data.keys().hasOnly(['title', 'text', 'by', 'at', 'flocks'])
         && shortText(request.resource.data.title, 80) && shortText(request.resource.data.text, 1000)
-        && request.resource.data.by == request.auth.uid;
+        && request.resource.data.by == request.auth.uid
+        && (!('flocks' in request.resource.data) || request.resource.data.flocks is list);
       allow delete: if isAdmin();
+    }
+    // The super admin sees reports from every flock.
+    match /{path=**}/reports/{id} {
+      allow read: if isAdmin();
     }
     // How much the app uses the database each day, counted by everyone's app, for the super admin's usage view.
     match /usage/{day} {
@@ -93,6 +108,15 @@ service cloud.firestore {
     function flockRefl(fid, rid) { return /databases/$(database)/documents/flocks/$(fid)/reflections/$(rid); }
     function foldRefl(fid, gid, rid) { return /databases/$(database)/documents/flocks/$(fid)/groups/$(gid)/reflections/$(rid); }
     // a reply or heart must match the reflection it's on, and the person must be able to see that reflection
+    function onQuestion(fid, d) {
+      return d.scope == 'q' && exists(/databases/$(database)/documents/flocks/$(fid)/questions/$(d.reflId))
+        && get(/databases/$(database)/documents/flocks/$(fid)/questions/$(d.reflId)).data.uid == d.toUid;
+    }
+    function onFoldQuestion(fid, d) {
+      return d.scope == 'fq' && d.groupId == myGroup(fid)
+        && exists(/databases/$(database)/documents/flocks/$(fid)/groups/$(d.groupId)/questions/$(d.reflId))
+        && get(/databases/$(database)/documents/flocks/$(fid)/groups/$(d.groupId)/questions/$(d.reflId)).data.uid == d.toUid;
+    }
     function onRefl(fid, d) {
       return (d.scope == 'flock' && exists(flockRefl(fid, d.reflId)) && get(flockRefl(fid, d.reflId)).data.uid == d.toUid)
         || (d.scope == 'group' && d.groupId == myGroup(fid) && exists(foldRefl(fid, d.groupId, d.reflId)) && get(foldRefl(fid, d.groupId, d.reflId)).data.uid == d.toUid);
@@ -122,14 +146,20 @@ service cloud.firestore {
       allow delete: if isFounder(resource.data.flockId) || isAdmin();
     }
 
-    // A founder's announcements to their own flock: everyone in it can read them; only the founder sends or removes them.
+    // Messages: the founder to the whole flock or any folds; a shepherd to their own fold, or to some lambs in it ('to');
+    // anyone else to their own whole fold. Everyone in the flock can read them (each person's app shows only the ones meant for them).
+    // The sender, the founder or the super admin can remove them.
     match /flocks/{fid}/news/{id} {
       allow read: if isMember(fid);
-      allow create: if isFounder(fid)
-        && request.resource.data.keys().hasOnly(['title', 'text', 'by', 'at'])
+      allow create: if request.resource.data.keys().hasOnly(['title', 'text', 'by', 'at', 'groups', 'byName', 'to'])
         && shortText(request.resource.data.title, 80) && shortText(request.resource.data.text, 1000)
-        && request.resource.data.by == request.auth.uid;
-      allow delete: if isFounder(fid) || isAdmin();
+        && request.resource.data.by == request.auth.uid
+        && (!('groups' in request.resource.data) || request.resource.data.groups is list)
+        && (!('to' in request.resource.data) || (request.resource.data.to is list && request.resource.data.to.size() <= 50))
+        && (isFounder(fid)
+            || (isShepherd(fid) && request.resource.data.groups == [myGroup(fid)])
+            || (isMember(fid) && request.resource.data.groups == [myGroup(fid)] && !('to' in request.resource.data)));
+      allow delete: if isFounder(fid) || isAdmin() || (signedIn() && resource.data.by == request.auth.uid);
     }
 
     match /flocks/{fid} {
@@ -157,6 +187,20 @@ service cloud.firestore {
         allow read: if true;
         allow create, update: if isFounder(fid) && shortText(request.resource.data.name, 40);
         allow delete: if isFounder(fid);
+
+        // A question shared with the fold only: the fold reads and answers it.
+        match /questions/{id} {
+          allow read: if isMember(fid) && (myGroup(fid) == gid || resource.data.uid == request.auth.uid);
+          allow create, update: if isMember(fid) && myGroup(fid) == gid
+            && request.resource.data.uid == request.auth.uid
+            && id.matches(request.auth.uid + '_.*')
+            && request.resource.data.groupId == gid
+            && shortText(request.resource.data.wonder, 600)
+            && shortText(request.resource.data.ref, 80)
+            && shortText(request.resource.data.day, 10)
+            && shortText(request.resource.data.name, 40);
+          allow delete: if isMember(fid) && (resource.data.uid == request.auth.uid || tendsFold(fid, gid));
+        }
 
         // Fold-only reflections: only that fold can read them.
         match /reflections/{id} {
@@ -251,9 +295,12 @@ service cloud.firestore {
           || resource.data.fromUid == request.auth.uid
           || tendsFold(fid, resource.data.toGroup));
       }
+      // Notes are private: only the sender and the person they're for can read them.
+      // Someone the founder or super admin has muted can't send notes (and isn't told).
       match /notes/{id} {
-        allow read: if isMember(fid);
+        allow read: if signedIn() && (resource.data.fromUid == request.auth.uid || resource.data.toUid == request.auth.uid);
         allow create: if isMember(fid)
+          && !exists(/databases/$(database)/documents/flocks/$(fid)/muted/$(request.auth.uid))
           && request.resource.data.fromUid == request.auth.uid
           && request.resource.data.toUid is string
           && request.resource.data.toUid != request.auth.uid
@@ -264,7 +311,25 @@ service cloud.firestore {
           && shortText(request.resource.data.fromName, 40);
         allow delete: if isMember(fid) && (resource.data.toUid == request.auth.uid
           || resource.data.fromUid == request.auth.uid
-          || tendsFold(fid, resource.data.toGroup));
+          || isFounder(fid));
+        // the person a note is for can send a heart back for it
+        allow update: if signedIn() && resource.data.toUid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hearted'])
+          && request.resource.data.hearted is bool;
+      }
+      // A note reported by the person it was sent to: a copy for the founder (and the super admin) to look at.
+      match /reports/{id} {
+        allow read, delete: if isFounder(fid);
+        allow create: if isMember(fid)
+          && request.resource.data.reporterUid == request.auth.uid
+          && exists(/databases/$(database)/documents/flocks/$(fid)/notes/$(id))
+          && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.toUid == request.auth.uid
+          && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.fromUid == request.resource.data.fromUid
+          && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.text == request.resource.data.text;
+      }
+      // People muted by the founder or the super admin: their notes aren't sent. Only the founder and the super admin can see this list.
+      match /muted/{uid} {
+        allow read, create, delete: if isFounder(fid) || isAdmin();
       }
 
       // Whole-flock reflections: everyone in the flock can read them.
@@ -296,15 +361,16 @@ service cloud.firestore {
       }
 
       // Replies to a reflection's question: they follow the reflection. A fold-only reflection's replies stay in the fold.
+      // scope 'q': an answer to a question on its own (from a fold-only reflection), seen by the whole flock like the question.
       match /replies/{id} {
-        allow read: if isMember(fid) && (resource.data.scope == 'flock'
+        allow read: if isMember(fid) && (resource.data.scope == 'flock' || resource.data.scope == 'q'
           || resource.data.groupId == myGroup(fid)
           || resource.data.fromUid == request.auth.uid
           || resource.data.toUid == request.auth.uid);
         allow create: if isMember(fid)
           && request.resource.data.fromUid == request.auth.uid
           && request.resource.data.reflId is string
-          && onRefl(fid, request.resource.data)
+          && (onRefl(fid, request.resource.data) || onQuestion(fid, request.resource.data) || onFoldQuestion(fid, request.resource.data))
           && shortText(request.resource.data.text, 400)
           && shortText(request.resource.data.fromName, 40);
         allow delete: if isMember(fid) && (resource.data.fromUid == request.auth.uid
@@ -323,6 +389,32 @@ service cloud.firestore {
           && id == request.resource.data.reflId + '__' + request.auth.uid
           && request.resource.data.toUid != request.auth.uid
           && onRefl(fid, request.resource.data)
+          && shortText(request.resource.data.fromName, 40);
+        allow delete: if isMember(fid) && (resource.data.fromUid == request.auth.uid
+          || resource.data.toUid == request.auth.uid
+          || tendsFold(fid, resource.data.groupId));
+      }
+
+      // "Me too": someone has the same question. One per person per question (the id is fixed); never on your own.
+      match /metoo/{id} {
+        allow read: if isMember(fid);
+        allow create: if isMember(fid)
+          && request.resource.data.uid == request.auth.uid
+          && id == request.resource.data.qid + '__' + request.auth.uid
+          && request.resource.data.owner != request.auth.uid
+          && request.resource.data.qid is string;
+        allow delete: if isMember(fid) && (resource.data.uid == request.auth.uid || isFounder(fid));
+      }
+
+      // A thumbs up on an answer. One per person per answer (the id is fixed); never on your own.
+      match /rthumbs/{id} {
+        allow read: if isMember(fid);
+        allow create: if isMember(fid)
+          && request.resource.data.fromUid == request.auth.uid
+          && id == request.resource.data.replyId + '__' + request.auth.uid
+          && request.resource.data.toUid != request.auth.uid
+          && exists(/databases/$(database)/documents/flocks/$(fid)/replies/$(request.resource.data.replyId))
+          && get(/databases/$(database)/documents/flocks/$(fid)/replies/$(request.resource.data.replyId)).data.fromUid == request.resource.data.toUid
           && shortText(request.resource.data.fromName, 40);
         allow delete: if isMember(fid) && (resource.data.fromUid == request.auth.uid
           || resource.data.toUid == request.auth.uid
