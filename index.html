@@ -1157,10 +1157,9 @@ html.lay-wide body.focusread #today .reader .para, html.lay-wide body.focusread 
 .notelist .nwho { min-width: 0; }
 .notelist .nmeta { display: flex; flex-direction: column; min-width: 0; }
 .notelist .nfoot .replypill { flex: none; }
-.notelist .nactcol { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-.notelist .nactcol.two { margin-top: -34px; }
-.notelist .nactcol .cheerbtns, .notelist .nhead .cheerbtns { align-self: flex-end; }   /* the heart rises beside the last line of the message, the Reply pill stays on the time line */
-.notelist .nmsg > p { padding-right: 54px; }   /* the words stop short of the pills */
+.notelist .nhead .cheerbtns { align-self: center; align-items: center; }
+.notelist .nhead .mini.nmore { width: 22px !important; min-width: 0; height: 28px; margin: 0 -6px 0 -2px; padding: 0; border-color: transparent !important; background: none; color: var(--muted); display: grid; place-items: center; }
+.notelist .nhead .mini.nmore svg { width: 17px; height: 17px; fill: currentColor; }
 .cheerbtns .mini.replypill, .mini.replypill { display: inline-flex; align-items: center; justify-content: center; gap: 5px; width: 94px !important; height: 28px !important; min-height: 0; padding: 0; border-radius: 999px; color: var(--accent); font: 600 13px var(--body); }
 .mini.replypill svg { width: 15px; height: 15px; flex: none; }
 .notelist .ndel { color: var(--muted); font-style: italic; }
@@ -1608,7 +1607,8 @@ html:not(.booting) #loader { opacity: 0; visibility: hidden; pointer-events: non
 /* founder's tools: Done like every other main button */
 .manage .founddone { align-self: stretch; margin-top: 6px; }
 /* the hearts' i: its own layer, so it doesn't flicker over the moving pasture */
-.heartwrap, .hinfo { transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; will-change: transform; }
+.heartwrap, .hinfo, .hpop { transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; will-change: transform; }
+/* the card now floats above the page, outside .heartwrap, so it needs its own layer too (without it iPhones flicker or hide it over the 3D pasture) */
 
 /* missed passages fold away: the heading shows how many are unread */
 .catchup .catchhead { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 2px 0; }
@@ -1766,7 +1766,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.55 · 14 October 2026, 10:49 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.58 · 14 October 2026, 11:51 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -5162,14 +5162,18 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     $("hearts").innerHTML = [0,1,2,3,4].map(i => heartSvg(i < h)).join("");
     if (!$("heartInfo").onclick) { const pop = $("heartPop"), btn = $("heartInfo"), shut = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
       // the card floats above the page, so the lamb's box can never clip it (it used to be cut off at the bottom)
+      // Opening it never closes it again by itself: on iPhones (and inside the Claude app's preview) the page can resize or
+      // fire a stray tap right after it opens, and either used to shut it at once, which looked like a flicker.
+      let openedAt = 0;
+      const place = () => { const br = btn.getBoundingClientRect(), hr = $("hearts").getBoundingClientRect();
+        Object.assign(pop.style, { position: "absolute", zIndex: 60, transform: "translateZ(0)", left: (Math.max(8, hr.left - 2) + scrollX) + "px", top: (br.bottom + 6 + scrollY) + "px" });
+        const r = pop.getBoundingClientRect(), over = r.right - (document.documentElement.clientWidth - 8); if (over > 0) pop.style.left = (Math.max(8, r.left - over) + scrollX) + "px"; };
       btn.onclick = e => { e.stopPropagation(); const open = pop.hidden;
-        if (open) { if (pop.parentElement !== document.body) document.body.appendChild(pop);
-          const br = btn.getBoundingClientRect(), hr = $("hearts").getBoundingClientRect(), k = 1;
-          Object.assign(pop.style, { position: "fixed", zIndex: 60, transformOrigin: "top left", transform: `scale(${k})`, left: Math.max(8, hr.left - 2 * k) + "px", top: (br.bottom + 6) + "px" }); }
-        pop.hidden = !open; btn.setAttribute("aria-expanded", String(open));
-        if (open) { const r = pop.getBoundingClientRect(), over = r.right - (window.innerWidth - 8); if (over > 0) pop.style.left = Math.max(8, r.left - over) + "px"; } };
-      window.addEventListener("scroll", () => { if (!pop.hidden) shut(); }, { passive: true, capture: true }); window.addEventListener("resize", () => { if (!pop.hidden) shut(); });
-      document.addEventListener("click", e => { if (!pop.hidden && !pop.contains(e.target)) shut(); }); document.addEventListener("keydown", e => { if (e.key === "Escape") shut(); }); }
+        if (open) { if (pop.parentElement !== document.body) document.body.appendChild(pop); pop.style.visibility = "hidden"; pop.hidden = false; place(); pop.style.visibility = ""; openedAt = Date.now(); }
+        else shut();
+        btn.setAttribute("aria-expanded", String(open)); };
+      window.addEventListener("resize", () => { if (!pop.hidden) place(); });   // follows the page instead of closing
+      document.addEventListener("click", e => { if (!pop.hidden && Date.now() - openedAt > 400 && !pop.contains(e.target) && !btn.contains(e.target)) shut(); }); document.addEventListener("keydown", e => { if (e.key === "Escape") shut(); }); }
     const lamb = $("lamb");
     lamb.classList.toggle("faint", lost);
     lamb.classList.toggle("hungry", !lost && (h <= 2 || !fedToday()));
@@ -8124,9 +8128,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const left = (br.right - hr.left) / k - m.offsetWidth, top = (br.bottom - hr.top) / k + 6;
     m.style.left = (left < 8 ? Math.max(8, (br.left - hr.left) / k) : left) + "px"; m.style.top = top + "px";   // a ⋮ on the left opens its menu to the right
   }
-  const menuToggle = btn => { const k = btn.dataset.tend || btn.dataset.memmore || btn; if ($("memMenu") && menuFor === k) { closeMenus(); return true; } closeMenus(); menuFor = k; return false; };
+  const menuToggle = btn => { const k = btn.dataset.tend || btn.dataset.memmore || btn.dataset.nmore || btn; if ($("memMenu") && menuFor === k) { closeMenus(); return true; } closeMenus(); menuFor = k; return false; };
   // a tap can arrive as more than one click on phones: the one that opened a menu mustn't close it
-  document.addEventListener("click", e => { const m = $("memMenu"); if (!m || m.contains(e.target) || Date.now() - menuAt < 450 || (e.target.closest && e.target.closest("[data-memmore], [data-tend]"))) return; m.remove(); });
+  document.addEventListener("click", e => { const m = $("memMenu"); if (!m || m.contains(e.target) || Date.now() - menuAt < 450 || (e.target.closest && e.target.closest("[data-memmore], [data-tend], [data-nmore]"))) return; m.remove(); });
   function openMemberMenu(uid, btn) {
     if (menuToggle(btn)) return; const p = profOf(uid); if (!p) return;
     const m = document.createElement("div"); m.id = "memMenu"; m.className = "memmenu"; m.setAttribute("role", "menu");
@@ -8205,16 +8209,18 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       const replyBtn = latest && nReplyTo !== n.id && nEditKey !== key ? `<button class="mini foundbtn replypill" data-nreply="${esc(n.id)}" aria-label="Reply">${REPLY_SVG}<span>Reply</span></button>` : "";
       // the flag (or bin) sits on the name line; the heart (or pencil) sits at the bottom right, above the Reply pill when there is one
       const live = !x.deleted && nEditKey !== key;
-      const top = !live ? "" : own ? (canChange(x) ? `<span class="cheerbtns"><button class="mini foundbtn trashbtn" data-ndel="${esc(key)}" aria-label="Delete">${TRASH}</button></span>` : "")
-        : reported || ghost ? "" : `<span class="cheerbtns"><button class="mini foundbtn noteflag" data-${isNote ? "report" : "nrreport"}="${esc(x.id)}" aria-label="Report this">${FLAG}</button></span>`;
-      const low = !live ? "" : own ? (canChange(x) ? `<span class="cheerbtns"><button class="mini foundbtn" data-nedit="${esc(key)}" aria-label="Edit">${PENCIL}</button></span>` : "")
-        : isNote ? (B.heartNote ? `<span class="cheerbtns"><button class="mini heartbtn ${x.hearted ? "on" : ""}" data-nheart="${esc(x.id)}" aria-pressed="${!!x.hearted}" aria-label="${x.hearted ? "Take back your heart" : "Send a heart back for this note"}">${HEART}</button></span>` : "")
-        : `<span class="cheerbtns"><button class="mini heartbtn ${x.hearted ? "on" : ""}" data-nrheart="${esc(x.id)}" aria-pressed="${!!x.hearted}" aria-label="${x.hearted ? "Take back your heart" : "Send a heart for this reply"}">${HEART}</button></span>`;
+      // the heart (or pencil) and a ⋮ menu sit on the name line; Report or Delete live in the menu
+      const pill = !live ? "" : own ? (canChange(x) ? `<button class="mini foundbtn" data-nedit="${esc(key)}" aria-label="Edit">${PENCIL}</button>` : "")
+        : isNote ? (B.heartNote ? `<button class="mini heartbtn ${x.hearted ? "on" : ""}" data-nheart="${esc(x.id)}" aria-pressed="${!!x.hearted}" aria-label="${x.hearted ? "Take back your heart" : "Send a heart back for this note"}">${HEART}</button>` : "")
+        : `<button class="mini heartbtn ${x.hearted ? "on" : ""}" data-nrheart="${esc(x.id)}" aria-pressed="${!!x.hearted}" aria-label="${x.hearted ? "Take back your heart" : "Send a heart for this reply"}">${HEART}</button>`;
+      const trig = !live ? "" : own ? (canChange(x) ? `<button data-ndel="${esc(key)}" data-label="Delete" data-danger="1"></button>` : "")
+        : reported || ghost ? "" : `<button data-${isNote ? "report" : "nrreport"}="${esc(x.id)}" data-label="Report" data-danger="1"></button>`;
+      const dots = trig ? `<button class="mini more nmore" data-nmore="${esc(key)}" aria-label="More" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="18.5" r="2"/></svg></button><span class="ntrig" hidden>${trig}</span>` : "";
+      const top = pill || dots ? `<span class="cheerbtns nhacts">${pill}${dots}</span>` : "";
       const body = x.deleted ? `<p class="ndel">This response was deleted</p>`
         : nEditKey === key ? `<div class="nedit"><textarea id="nEditBox" maxlength="${NOTE_MAX}">${esc(nEditDraft)}</textarea><div class="nebar">${countHtml("nEditCount", nEditDraft)}<button class="btn small-btn" data-necancel>Cancel</button><button class="btn small-btn primary-soft" data-nesave="${esc(key)}">Save</button></div></div>`
         : `<p>${esc(x.text)}</p>`;
-      const col = low || replyBtn ? `<span class="nactcol ${low && replyBtn ? "two" : ""}">${low}${replyBtn}</span>` : "";
-      return `<div class="nmsg ${isNote ? "" : "nrep"} ${col ? "haspill" : ""}"><div class="nhead"><span class="nwho">${who}</span>${top}</div>${body}<div class="nfoot">${foot}${col}</div></div>`;
+      return `<div class="nmsg ${isNote ? "" : "nrep"}"><div class="nhead"><span class="nwho">${who}</span>${top}</div>${body}<div class="nfoot">${foot}${replyBtn}</div></div>`;
     };
     return `<div class="notesbox"><div class="eyebrow">Your private notes</div><ul class="notelist">${ns.map(n => {
       const reps = repsOf(n.id), last = reps.length ? reps[reps.length - 1] : n;
@@ -8261,6 +8267,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         else if (m.isNote) await B.editNote(m.x, text, prev); else await B.editNoteReply(m.x, text, prev);
         nEditKey = null; nEditDraft = ""; renderGroup();
       } catch (e) { b.disabled = false; groupMsg = "Couldn't save that just now."; renderGroup(); } });
+    c.querySelectorAll("[data-nmore]").forEach(b => b.onclick = e => { e.stopPropagation(); if (menuToggle(b)) return;
+      const trig = b.parentElement.querySelector(".ntrig"), mm = document.createElement("div"); mm.id = "memMenu"; mm.className = "memmenu"; mm.setAttribute("role", "menu");
+      mm.innerHTML = [...trig.children].map((t, i) => `<button role="menuitem" class="${t.dataset.danger ? "danger" : ""}" data-i="${i}">${esc(t.dataset.label)}</button>`).join("");
+      placeMenu(mm, b); menuAt = Date.now();
+      mm.querySelectorAll("[data-i]").forEach(x => x.onclick = () => { closeMenus(); trig.children[+x.dataset.i].click(); }); });
     c.querySelectorAll("[data-ndel]").forEach(b => b.onclick = () => { const m = findMsg(b.dataset.ndel); if (!m) return;
       if (!canChange(m.x)) { groupMsg = "Messages can be deleted for 7 days."; renderGroup(); return; }
       if (m.isNote) confirmSheet("Delete this note?", "The note and its replies will be deleted for both of you.", "Delete", true, async () => {
@@ -9188,7 +9199,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.55";
+  const APP_VERSION = "2.15.58";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
