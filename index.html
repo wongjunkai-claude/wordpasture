@@ -574,8 +574,22 @@ body.no-vn .reader .vn { display: none; }
 .brow small { color: var(--muted); font-variant-numeric: tabular-nums; }
 .brow .pbar { grid-column: 1 / -1; height: 5px; }
 .chgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 4px; padding: 6px 4px 12px; }
-.chgrid i { font-style: normal; font-size: 11px; font-weight: 700; text-align: center; padding: 6px 0; border-radius: 8px; background: color-mix(in srgb, var(--line) 60%, transparent); color: var(--muted); font-variant-numeric: tabular-nums; }
-.chgrid i.on { background: var(--accent); color: var(--accent-ink); }
+.chgrid button { border: 0; cursor: pointer; font-family: inherit; line-height: inherit; }
+.chgrid button:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
+.frdone[hidden] { display: none; }
+.readtools .backtoday { align-self: center; margin: 0; }
+.freeread #today .readtools { margin-top: -4px; }   /* the version pill sits a little higher (10% of its height) */
+.frdone { display: inline-block; vertical-align: middle; margin-left: 6px; padding: 2px 10px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font: 700 12.5px var(--body); font-style: normal; }
+.pager.freepager { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; margin-top: -5px !important; }   /* the sheep always sits in the middle */
+.pager.freepager > :first-child { justify-self: start; } .pager.freepager > :last-child { justify-self: end; }
+.freepager .btn { flex: none; width: auto; }
+.freepager { align-items: center; }
+.frsheep { width: 26px; height: 22px; opacity: .45; display: grid; place-items: center; }
+.frsheep svg { width: 26px; height: 22px; }
+.reader .endwall.freeend { padding: 0 0 10px; min-height: 0; }
+.freeread #hlHold { display: none; }
+.chgrid i, .chgrid button { font-style: normal; font-size: 11px; font-weight: 700; text-align: center; padding: 6px 0; border-radius: 8px; background: color-mix(in srgb, var(--line) 60%, transparent); color: var(--muted); font-variant-numeric: tabular-nums; }
+.chgrid i.on, .chgrid button.on { background: var(--accent); color: var(--accent-ink); }
 .trow:focus-visible, .brow:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .foot { text-align: center; font-size: 12px; color: var(--muted); }
 
@@ -671,6 +685,16 @@ body.no-vn .reader .vn { display: none; }
 .rungbar span:first-child { padding: 0 9px 0 1px; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%); border-radius: 8px 0 0 8px; }
 .rungbar span.done { background: var(--accent); color: var(--accent-ink); }
 .rungbar span.now { background: var(--gold); color: #fff; }
+.rungnav button { flex: 1 1 auto; min-width: 0; height: 30px; display: grid; place-items: center; padding: 0 8px; border: 0; cursor: pointer; font: inherit; color: var(--muted); background: color-mix(in srgb, var(--line) 70%, var(--card)); clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%, 8px 50%); }
+.rungnav button:first-child { padding: 0 9px 0 1px; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%); border-radius: 8px 0 0 8px; }
+.rungnav button.done { background: var(--accent); color: var(--accent-ink); }
+.rungnav button.now { background: var(--gold); color: #fff; }
+.rungnav .at b { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.rungtools { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0 -4px; }
+.rungtools small { color: var(--muted); font-size: 12.5px; }
+.versepanel .rungtools + .planline { margin-top: -6px; }
+.restartpill { flex: none; display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 12px 0 10px; border-radius: 99px; border: 1.5px solid var(--line); background: var(--card); color: var(--accent); font: 600 13px var(--body); cursor: pointer; white-space: nowrap; }
+.restartpill:hover { border-color: var(--accent); }
 .rungbar b { font: 800 clamp(9.5px, 3vw, 12px) var(--body); letter-spacing: -.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .versepanel .memhead + .rungrow { margin-top: -4px; }
 .versepanel .rungrow + .planline { margin-top: 0; }
@@ -847,9 +871,9 @@ body.no-vn .reader .vn { display: none; }
 .heartwrap { position: relative; display: flex; align-items: center; gap: 6px; pointer-events: auto; }
 .hinfo { width: 20px; height: 20px; border-radius: 50%; border: 0; padding: 0; background: rgba(255,255,255,.88); color: #3B2B25; font: italic 800 12px Georgia, serif; line-height: 20px; cursor: pointer; box-shadow: 0 2px 5px -2px rgba(59,43,37,.4); }
 .hinfo:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hpop { position: absolute; top: 28px; left: -2px; z-index: 6; width: 220px; padding: 12px 14px; border-radius: 14px; background: #FFFDF8; color: #23302A; box-shadow: 0 10px 26px -8px rgba(30,40,34,.45); font: 500 13.5px var(--body); display: flex; flex-direction: column; gap: 5px; text-align: left; }
+.hpop { position: absolute; top: 28px; left: -2px; z-index: 6; width: max-content; max-width: calc(100vw - 24px); padding: 12px 14px; border-radius: 14px; background: #FFFDF8; color: #23302A; box-shadow: 0 10px 26px -8px rgba(30,40,34,.45); font: 500 13.5px var(--body); display: flex; flex-direction: column; gap: 5px; text-align: left; }
 .hpop b { font: 600 15px var(--display); }
-.hpop p { margin: 0; display: flex; align-items: center; gap: 8px; }
+.hpop p { margin: 0; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 .hpop .up, .hpop .down { flex: none; width: 30px; text-align: center; font-weight: 800; border-radius: 99px; font-size: 12px; padding: 1px 0; }
 .hpop .up { color: #3E7F5A; background: #E2F0E6; } .hpop .down { color: #C8423A; background: #FBE4E2; }
 .hpop small { color: #5E6E64; font-size: 12.5px; line-height: 1.35; margin-top: 2px; }
@@ -1122,7 +1146,34 @@ html.lay-wide body.focusread #today .reader .para, html.lay-wide body.focusread 
 .rpbtns .trashwrap { margin-left: auto; }
 .cheerbtns .mini.trashbtn { color: var(--muted); }
 .notelist li.recv > div { width: 100%; }
-.notelist .nfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.notelist .nfoot { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+/* a note and its replies */
+.notelist li.nthread { flex-direction: column; gap: 0; transition: box-shadow .4s; }
+.notelist li.nthread.flash { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
+.notelist .nmsg { width: 100%; }
+.notelist .nreps { width: 100%; margin-top: 8px; padding-left: 12px; border-left: 2px solid color-mix(in srgb, var(--accent) 22%, var(--line)); display: flex; flex-direction: column; gap: 10px; }
+.notelist .nhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }
+.notelist .nhead .cheerbtns { flex: none; }
+.notelist .nwho { min-width: 0; }
+.notelist .nmeta { display: flex; flex-direction: column; min-width: 0; }
+.notelist .nfoot .replypill { flex: none; }
+.notelist .nactcol { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.notelist .nactcol.two { margin-top: -34px; }
+.notelist .nactcol .cheerbtns, .notelist .nhead .cheerbtns { align-self: flex-end; }   /* the heart rises beside the last line of the message, the Reply pill stays on the time line */
+.notelist .nmsg > p { padding-right: 54px; }   /* the words stop short of the pills */
+.cheerbtns .mini.replypill, .mini.replypill { display: inline-flex; align-items: center; justify-content: center; gap: 5px; width: 94px !important; height: 28px !important; min-height: 0; padding: 0; border-radius: 999px; color: var(--accent); font: 600 13px var(--body); }
+.mini.replypill svg { width: 15px; height: 15px; flex: none; }
+.notelist .ndel { color: var(--muted); font-style: italic; }
+.notelist .nedit, .notelist .ncompose { width: 100%; margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+.notelist .ncompose { margin-top: 10px; }
+.notelist .nedit textarea, .notelist .ncompose textarea { width: 100%; min-height: 64px; resize: vertical; border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 10px; font: inherit; font-size: 15px; background: var(--card); color: var(--ink); }
+.notelist .nebar { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.notelist .nebar .btn { flex: none; width: auto; }
+.notelist .ncount { margin-right: auto; }
+.notelist .ncount.quiet { visibility: hidden; }
+.rpprev { margin: 4px 0 2px; font-size: 13px; color: var(--muted); }
+.rpprev summary { cursor: pointer; font-weight: 600; }
+.rpprev p { margin: 4px 0 0; }
 .notelist .nacts { flex: none; }
 .cheerbtns .mini.noteflag { color: #D9483B; }
 .loved { color: var(--heart); font-weight: 600; }
@@ -1633,8 +1684,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       </svg>
       <div class="hud"><div class="heartwrap"><div class="hearts" id="hearts"><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg><svg viewBox="0 0 24 24" class="off"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg></div><button class="hinfo" id="heartInfo" aria-label="How hearts work" aria-expanded="false">i</button>
           <div class="hpop" id="heartPop" hidden role="dialog" aria-label="How hearts work"><b>Hearts</b>
-            <p><span class="up">+1</span> Reflect on today's passage</p><p><span class="up">+1</span> Reflect on a read-ahead</p><p><span class="down">−1</span> Each day you miss</p><p><span class="up">+1</span> "I've read" on a missed day</p>
-            <small>Reading alone feeds your lamb, so no heart is lost. At zero hearts it wanders off; read today's passage to bring it home with 1 heart.</small></div></div>
+            <p><span class="up">+1</span> Reflect on today's passage</p><p><span class="up">+1</span> Reflect on a read-ahead</p><p><span class="up">+1</span> "I've read" on a missed day</p><p><span class="down">−1</span> Each day you miss</p></div></div>
         <div class="hudicons">
           <button class="hudbtn" id="homeBtn" aria-label="Tend your pasture">
             <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 40V25" stroke="#3B2B25" stroke-width="2.8" stroke-linecap="round"/><path d="M24 30l-5-4M24 33l5-4" stroke="#3B2B25" stroke-width="2.2" stroke-linecap="round"/><circle cx="24" cy="17" r="10" fill="#8FCB72" stroke="#3B2B25" stroke-width="2.4"/><circle cx="20" cy="15" r="2" fill="#E8564A"/><circle cx="27.5" cy="19.5" r="2" fill="#E8564A"/><path d="M12 41h24" stroke="#5FA75A" stroke-width="2.6" stroke-linecap="round"/></svg>
@@ -1716,7 +1766,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.45 · 13 October 2026, 10:13 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.55 · 14 October 2026, 10:49 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -4366,7 +4416,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     });
 
     // --- camera: gentle drift, springs back after drag ---
-    if (dragX === null) az = ease(az, 0, 1.5, dt);
+    // the view stays wherever it was turned to (it used to swing back to the front)
     const A = az + (reduce ? 0 : 0.09 * Math.sin(t * 0.17));
     // keep every lamb and name tag in frame: back the camera off until they all fit
     fitMax = 0;
@@ -5111,7 +5161,14 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     // device
     $("hearts").innerHTML = [0,1,2,3,4].map(i => heartSvg(i < h)).join("");
     if (!$("heartInfo").onclick) { const pop = $("heartPop"), btn = $("heartInfo"), shut = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
-      btn.onclick = e => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", String(!pop.hidden)); };
+      // the card floats above the page, so the lamb's box can never clip it (it used to be cut off at the bottom)
+      btn.onclick = e => { e.stopPropagation(); const open = pop.hidden;
+        if (open) { if (pop.parentElement !== document.body) document.body.appendChild(pop);
+          const br = btn.getBoundingClientRect(), hr = $("hearts").getBoundingClientRect(), k = 1;
+          Object.assign(pop.style, { position: "fixed", zIndex: 60, transformOrigin: "top left", transform: `scale(${k})`, left: Math.max(8, hr.left - 2 * k) + "px", top: (br.bottom + 6) + "px" }); }
+        pop.hidden = !open; btn.setAttribute("aria-expanded", String(open));
+        if (open) { const r = pop.getBoundingClientRect(), over = r.right - (window.innerWidth - 8); if (over > 0) pop.style.left = Math.max(8, r.left - over) + "px"; } };
+      window.addEventListener("scroll", () => { if (!pop.hidden) shut(); }, { passive: true, capture: true }); window.addEventListener("resize", () => { if (!pop.hidden) shut(); });
       document.addEventListener("click", e => { if (!pop.hidden && !pop.contains(e.target)) shut(); }); document.addEventListener("keydown", e => { if (e.key === "Escape") shut(); }); }
     const lamb = $("lamb");
     lamb.classList.toggle("faint", lost);
@@ -5467,7 +5524,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   function markHeld(el, hold) { if (!el) return; el.querySelectorAll(".w.held").forEach(w => w.classList.remove("held"));
     ((hold && hold.sets) || []).forEach(st => el.querySelectorAll(`.w[data-k^="${st.b}:${st.c}:"]`).forEach(w => { const v = +w.dataset.v; if (v >= st.v1 && v <= st.v2 && !w.closest(".nextread")) w.classList.add("held"); })); }
   let readerFor = "", readerEl = null, readerScroll = 0;
-  function buildReader(day, key, nextDay, moreDays) {
+  function buildReader(day, key, nextDay, moreDays, free) {
     const el = document.createElement("div");
     el.className = "reader"; el.id = "reader"; el.tabIndex = 0;
     el.setAttribute("aria-label", "Passage text");
@@ -5478,10 +5535,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     loadDay(ver, day).then(books => {
       el.dataset.ver = books.ver; el.classList.toggle("zh", books.ver === "cuvs");
       el.innerHTML = `<div class="rd-inner${day.length === 1 ? " single" : ""}">` + chaptersHtml(day, books, true)
-        + `<div class="endwall"><span class="endmark">${SHEEP_MINI}</span><b>The end of today's reading</b></div>`
-        + (nextDay ? `<div class="nextnote"><span>Keep going?</span><b>Up next: ${esc(label(nextDay))}</b><small>Keep scrolling to read ahead, up to five days</small></div><div class="nextread"></div>` : `<div class="nextnote"><b>You've reached the end of this plan.</b></div>`)
+        + (free ? `<div class="endwall freeend"></div>` : `<div class="endwall"><span class="endmark">${SHEEP_MINI}</span><b>The end of today's reading</b></div>`)
+        + (free ? "" : nextDay ? `<div class="nextnote"><span>Keep going?</span><b>Up next: ${esc(label(nextDay))}</b><small>Keep scrolling to read ahead, up to five days</small></div><div class="nextread"></div>` : `<div class="nextnote"><b>You've reached the end of this plan.</b></div>`)
         + `</div>`;
-      measure(); progressFrom(el, barrier); markHeld(el, S.steps && S.steps.key === key ? S.steps.hold : null);
+      measure(); if (!free) progressFrom(el, barrier); else if (el._onEnd && barrier <= 4) el._onEnd(); markHeld(el, S.steps && S.steps.key === key ? S.steps.hold : null);
     }).catch(e => {
       el.innerHTML = `<p class="loading">${loadFail(e)}</p>`;
     });
@@ -5521,7 +5578,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       if (barrier === Infinity) measure();
       if (!unlocked && el.scrollTop > barrier) el.scrollTop = barrier;   // momentum stops at the end
       readerScroll = el.scrollTop;
-      progressFrom(el, barrier);
+      if (free) { if (el._onEnd && isFinite(barrier) && el.scrollTop >= barrier - 4) el._onEnd(); }
+      else progressFrom(el, barrier);   // reading a chapter of your own choosing never counts as today's reading
     }, { passive: true });
     el.addEventListener("click", readerTap(el));
     readerFor = key + "|" + readSig(); readerEl = el; readerScroll = 0;
@@ -5933,8 +5991,43 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     trying: "Keep going. <i>“He who began a good work in you will complete it.” · Philippians 1:6</i>",
     not: "That's all right. Tomorrow is a fresh start. <i>“His mercies are new every morning.” · Lamentations 3:22–23</i>" };
 
+  // a chapter picked from Your Bible: read it right here, then go back to today's reading
+  let freeRead = null;
+  function renderFreeRead(t) {
+    const [b, c] = freeRead, cn = readVer() === "cuvs" && !S.par, ref = BOOKS[b][0] + " " + c;
+    const prev = c > 1 ? [b, c - 1] : b > 0 ? [b - 1, BOOKS[b - 1][1]] : null, next = c < BOOKS[b][1] ? [b, c + 1] : b < 65 ? [b + 1, 1] : null;
+    const nm = x => (cn ? zhRef(BOOKS[x[0]][0] + " " + x[1]) : BOOKS[x[0]][0] + " " + x[1]);
+    document.body.classList.add("freeread");
+    t.innerHTML = `<div class="todayhead stacked">
+        <div class="eyebrow" id="todayLabel">${cn ? "我的圣经" : "Your Bible"}</div>
+        <p class="ref oneline ${cn ? "zhref" : ""}" id="todayRef">${esc(cn ? zhRef(ref) : ref)} <span class="frdone" id="frDone" hidden>✓ ${cn ? "已读" : "Read"}</span></p>
+        <div class="headicons"><button class="calbtn" id="calBtn" aria-label="Reading plan calendar">${calIcon()}</button><button class="calbtn biblebtn" id="bibleBtn" aria-label="How much of the Bible you've read">${BIBLE_ICON}</button></div>
+      </div>
+      <div class="readtools"><button class="linkish backtoday" id="backToday">‹ ${cn ? "回到今天的经文" : "Back to today's reading"}</button><span class="rt-sp"></span><select class="verpick" id="verPick" aria-label="Bible version">${Object.entries({ bsb: "BSB", cuvs: "CUVS" }).map(([k, n]) => `<option value="${k}" ${readVer() === k ? "selected" : ""}>${n}</option>`).join("")}</select></div>
+      <div id="readerSlot"></div>
+      <div class="hlbar" id="hlbar" hidden role="toolbar" aria-label="Highlight">${["r", "b", "g", "o"].map(c2 => `<button class="hlc hl-${c2}" data-c="${c2}" aria-label="${{ r: "Red", b: "Blue", g: "Green", o: "Orange" }[c2]}"></button>`).join("")}<button class="hlc clear" data-c="" aria-label="Remove highlight">✕</button></div>
+      <div class="pager freepager">${prev ? `<button class="btn small-btn" id="frPrev">‹ ${esc(nm(prev))}</button>` : "<span></span>"}<span class="frsheep" aria-hidden="true">${SHEEP_MINI}</span>${next ? `<button class="btn small-btn" id="frNext">${esc(nm(next))} ›</button>` : "<span></span>"}</div>`;
+    const key = "free:" + b + ":" + c, el = readerFor === key + "|" + readSig() && readerEl ? readerEl : buildReader([[b, c]], key, null, [], true);
+    $("readerSlot").replaceWith(el); el.scrollTop = 0;
+    // read to the end of the chapter: it counts in Your Bible (and towards finishing the book)
+    const k = b + ":" + c, mark = () => { const tag = $("frDone"); if (tag) tag.hidden = false; };
+    if (chaptersRead().has(k)) mark();
+    el._onEnd = () => { if (chaptersRead().has(k)) return mark(); noteCh(k, today());
+      S.books = S.books || [];
+      if (!S.books.includes(b) && Array.from({ length: BOOKS[b][1] }, (_, i) => S.chRead[b + ":" + (i + 1)]).every(Boolean)) { S.books.push(b); S.newBooks = (S.bookDay === today() ? S.newBooks || [] : []).concat([b]); S.bookDay = today(); }
+      checkUnlocks(); save(); mark(); popText("✓"); };
+    const go = x => { freeRead = x; readerFor = ""; render(); $("today").scrollIntoView({ block: "start" }); };
+    $("backToday").onclick = () => { freeRead = null; document.body.classList.remove("freeread"); readerFor = ""; step = "read"; render(); };
+    if ($("frPrev")) $("frPrev").onclick = () => go(prev); if ($("frNext")) $("frNext").onclick = () => go(next);
+    $("verPick").onchange = e => { S.readVer = S.reflVer = e.target.value; save(); readerFor = ""; render(); };
+    $("calBtn").onclick = () => { calOpen = true; calMonth = null; calPick = null; renderCal(); };
+    $("bibleBtn").onclick = () => { bibleSheet = true; bookOpen = b; renderBible(); };
+    t.querySelectorAll(".hlc").forEach(x => { x.addEventListener("pointerdown", e => e.preventDefault()); x.onclick = () => applyHighlight(x.dataset.c); });
+  }
   function renderToday(h, lost) {
     const t = $("today"), pk = planKey(), plan = getPlan(pk), len = plan.days.length;
+    if (freeRead) return renderFreeRead(t);
+    document.body.classList.remove("freeread");
     if (plan.none) {
       t.innerHTML = `<div><div class="eyebrow" id="todayLabel">${esc(plan.name)}</div><p class="ref">Not set yet</p></div>
         <p class="planline">The founder hasn't chosen this flock's readings yet. Pick another plan for now, and come back when they have.</p>
@@ -6325,6 +6418,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // the steps up the ladder, as arrows: one word on phones and upright tablets, a little more on wide screens
   const RUNG_SHORT = { en: ["", "Read", "Fill", "Stretch", "Cue", "Recite"], zh: ["", "慢读", "填空", "加深", "提示", "背诵"] };
   const rungBar = (m, lang) => `<div class="rungbar" role="img" aria-label="${m.learned ? "Learned" : `Rung ${m.rung} of 5`}">${[1, 2, 3, 4, 5].map(r => `<span class="${m.learned || r < m.rung ? "done" : r === m.rung ? "now" : ""}"><b>${RUNG_SHORT[lang][r]}</b></span>`).join("")}</div>`;
+  // in practice: rungs already reached can be tapped to look back and practise them again (progress isn't changed)
+  const rungNav = (m, lang, at) => { const top = m.learned ? 5 : m.rung;
+    return `<div class="rungbar rungnav" role="group" aria-label="Rungs">${[1, 2, 3, 4, 5].map(r => { const cls = `${m.learned || r < m.rung ? "done" : r === m.rung ? "now" : ""} ${r === at ? "at" : ""}`;
+      return r <= top ? `<button class="${cls}" data-rung="${r}" aria-pressed="${r === at}" aria-label="${RUNG_SHORT[lang][r]}"><b>${RUNG_SHORT[lang][r]}</b></button>` : `<span class="${cls}"><b>${RUNG_SHORT[lang][r]}</b></span>`; }).join("")}</div>`; };
   let memAdded = 0;
   const INTERVALS = [1, 3, 7, 14, 30, 60, 120];
   const RECALL_DAYS = 3;
@@ -6412,11 +6509,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       return;
     }
     // a practice session
-    const review = memView.mode === "review", res = memResult, rung = res && res.rung ? res.rung : review ? 5 : m.rung, zh = memIsZh(m), target = memTarget(m), ws = shownWords(target, zh), gl = zh ? "" : " ", zc = zh ? "zh" : "", ML = memLangOf(m), T = MT[ML];
+    const review = memView.mode === "review", peek = memView.peek || 0, res = memResult, rung = res && res.rung ? res.rung : peek || (review ? 5 : m.rung), zh = memIsZh(m), target = memTarget(m), ws = shownWords(target, zh), gl = zh ? "" : " ", zc = zh ? "zh" : "", ML = memLangOf(m), T = MT[ML];
     let body = "";
     if (rung === 1) {
       body = `<p class="planline">${T.readSlow}</p><p class="memverse big ${zc}">${esc(target)}</p>
-        <button class="btn primary-soft" id="memRead">${T.readIt(memReads)}</button>`;
+        ${peek ? "" : `<button class="btn primary-soft" id="memRead">${T.readIt(memReads)}</button>`}`;
     } else if (rung === 2 || rung === 3) {
       const hide = gapsFor(ws, rung === 2 ? 4 : 2, zh);
       body = `<p class="planline">${rung === 2 ? T.fill : T.more}</p><p class="cloze ${zc}">${ws.map((w, i) => {
@@ -6430,10 +6527,14 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         ${res ? `<p class="memverse diff ${zc}">${(() => { let k = 0; return ws.map(w => { const bad = zh ? (memNorm(w, true) ? res.ok[k++] === false : false) : res.ok[k++] === false; return `<span class="${bad ? "miss" : ""}">${esc(w)}</span>`; }).join(gl); })()}</p>` : `<textarea id="memType" class="memtype" autocapitalize="sentences" placeholder="${rung === 4 ? T.phLetters : T.phMem}">${esc(memDraft)}</textarea>`}`;
     }
     const verdict = res ? (res.pass ? `<p class="okmsg">${res.msg}</p>` : `<p class="badmsg">${res.msg}</p>`) : "";
-    const actions = res ? (res.pass ? (res.next ? `<div class="row"><button class="btn primary-soft grow" id="memNext">${T.keepGoing(T.rungs[m.rung])}</button><button class="btn grow" id="memStop">${T.enough}</button></div>` : `<button class="btn primary-soft" id="memStop">${T.done}</button>`)
+    const backTo = `<button class="btn grow" id="memAt">${ML === "zh" ? "回到" : "Back to"} ${esc(RUNG_SHORT[ML][review ? 5 : m.learned ? 5 : m.rung])}</button>`;
+    const actions = peek ? (res ? `<div class="row"><button class="btn primary-soft grow" id="memAgain2">${res.pass ? (ML === "zh" ? "再练一次" : "Practise again") : T.tryAgain}</button>${backTo}</div>`
+        : rung === 1 ? `<div class="row">${backTo}</div>` : `<button class="donebtn" id="memCheck" ><span class="db-ico" aria-hidden="true">${SHEEP_MINI}</span><span>${T.check}</span><span class="db-arrow" aria-hidden="true">→</span></button>`)
+      : res ? (res.pass ? (res.next ? `<div class="row"><button class="btn primary-soft grow" id="memNext">${T.keepGoing(T.rungs[m.rung])}</button><button class="btn grow" id="memStop">${T.enough}</button></div>` : `<button class="btn primary-soft" id="memStop">${T.done}</button>`)
         : `<div class="row"><button class="btn primary-soft grow" id="memRetry">${review ? T.withLetters : T.tryAgain}</button><button class="btn grow" id="memStop">${T.stopNow}</button></div>`)
       : (rung === 1 ? "" : `<button class="donebtn" id="memCheck" ><span class="db-ico" aria-hidden="true">${SHEEP_MINI}</span><span>${T.check}</span><span class="db-arrow" aria-hidden="true">→</span></button>`);
-    c.innerHTML = `${memHead(`${review ? T.reviewing : T.learning} · ${esc(memRef(m))}`, `<p class="cardtitle">${T.rungs[rung]}</p>`, true)}<div class="rungrow">${rungBar(m, ML)}</div>${body}${rung < 5 ? altVerse(m) : ""}${verdict}${actions}`;
+    c.innerHTML = `${memHead(`${review ? T.reviewing : T.learning} · ${esc(memRef(m))}`, `<p class="cardtitle">${T.rungs[rung]}</p>`, true)}<div class="rungrow">${rungNav(m, ML, rung)}</div>
+      <div class="rungtools">${peek ? `<small>${ML === "zh" ? "仅练习" : "Practice Only"}</small>` : "<span></span>"}<button class="restartpill" id="memAgain"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M4.5 4.5v4h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>${ML === "zh" ? "重新开始" : "Start over"}</button></div>${body}${rung < 5 ? altVerse(m) : ""}${verdict}${actions}`;
     const first = c.querySelector("input.blank:not([readonly])") || $("memType"); if (first && rung > 1) first.focus();
     if ($("memType")) $("memType").oninput = e => { memDraft = e.target.value; };
     if ($("memRead")) $("memRead").onclick = () => { memReads++; if (memReads >= 3) { cue("verse"); return passRung(m); } renderVerse(); };
@@ -6442,9 +6543,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         const hide = gapsFor(ws, rung === 2 ? 4 : 2, zh), ok = ws.map(() => true);
         c.querySelectorAll("input.blank").forEach(inp => { const i = +inp.dataset.i; ok[i] = memNorm(inp.value, zh) === memNorm(ws[i], zh); });
         const pass = ok.every(Boolean); memResult = { ok, pass, rung, msg: pass ? T.allRight : T.notQuite };
+        if (peek) { cue(pass ? "verse" : "tok"); renderVerse(); return; }
         if (pass) { cue("verse"); return passRung(m, true); } cue("tok"); renderVerse(); return;
       }
       const r = compareRecall(target, memDraft, zh); memResult = { ok: r.ok, pass: r.pass, rung };
+      if (peek) { memResult.msg = r.pass ? T.allRight : T.onceMore; cue(r.pass ? "verse" : "tok"); renderVerse(); return; }
       if (r.pass) { cue("verse"); return passRung(m, true); }
       cue("tok");
       memResult.msg = rung === 5 ? T.nearly : T.onceMore;
@@ -6454,6 +6557,12 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     };
     c.querySelectorAll("input.blank").forEach(inp => inp.addEventListener("keydown", e => { if (e.key === "Enter" && $("memCheck")) $("memCheck").click(); }));
     if ($("memRetry")) $("memRetry").onclick = () => { if (review) { memView = { id: m.id, mode: "learn" }; m.rung = Math.min(m.rung, 4); } memResult = null; memDraft = ""; memSeed++; renderVerse(); };
+    // tap a rung to look back at it; Start over clears this rung's attempt and begins it again
+    c.querySelectorAll("[data-rung]").forEach(b => b.onclick = () => { const r = +b.dataset.rung, home = review || m.learned ? 5 : m.rung;
+      memView.peek = r === home && !m.learned ? 0 : r; memResult = null; memDraft = ""; memReads = 0; memSeed++; renderVerse(); });
+    const again = () => { memResult = null; memDraft = ""; memReads = 0; memSeed++; renderVerse(); };
+    $("memAgain").onclick = again; if ($("memAgain2")) $("memAgain2").onclick = again;
+    if ($("memAt")) $("memAt").onclick = () => { memView.peek = 0; memResult = null; memDraft = ""; memReads = 0; renderVerse(); };
     if ($("memNext")) $("memNext").onclick = () => { memResult = null; memDraft = ""; memReads = 0; renderVerse(); };
     if ($("memStop")) $("memStop").onclick = () => { memView = null; memResult = null; memDraft = ""; renderVerse(); paintSteps(); };
     $("memBackTop").onclick = () => { memView = null; memResult = null; memDraft = ""; memReads = 0; renderVerse(); paintSteps(); };
@@ -6722,7 +6831,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       for (let b = sec.from; b <= sec.to; b++) {
         const n = bookStat(b), tot = BOOKS[b][1];
         rows.push(`<li><button class="brow ${bookOpen === b ? "open" : ""} ${n === tot ? "full" : ""}" data-b="${b}" aria-expanded="${bookOpen === b}"><span class="bname"><span>${esc(BOOKS[b][0])}</span><span class="bzh" lang="zh-Hans">${BOOKS_ZH[b]}</span></span><small>${n}/${tot}</small>${bar(n, tot)}</button>
-          ${bookOpen === b ? `<div class="chgrid" aria-label="Chapters of ${esc(BOOKS[b][0])}">${Array.from({ length: tot }, (_, i) => `<i class="${read.has(b + ":" + (i + 1)) ? "on" : ""}" title="Chapter ${i + 1}${read.has(b + ":" + (i + 1)) ? ", read" : ""}">${i + 1}</i>`).join("")}</div>` : ""}</li>`);
+          ${bookOpen === b ? `<div class="chgrid" aria-label="Chapters of ${esc(BOOKS[b][0])}">${Array.from({ length: tot }, (_, i) => `<button class="${read.has(b + ":" + (i + 1)) ? "on" : ""}" data-rc="${b}:${i + 1}" aria-label="Read ${esc(BOOKS[b][0])} ${i + 1}${read.has(b + ":" + (i + 1)) ? ", read" : ""}">${i + 1}</button>`).join("")}</div>` : ""}</li>`);
       }
       return `<div class="bsec"><div class="bsechead"><span>${sec.name}<span class="bsz" lang="zh-Hans">${SECTION_ZH[sec.name] || ""}</span></span></div><ul class="blist">${rows.join("")}</ul></div>`;
     }).join("");
@@ -6736,6 +6845,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     sh.querySelectorAll("[data-close]").forEach(x => x.onclick = () => { bibleSheet = false; renderBible(); });
     sh.querySelectorAll("[data-b]").forEach(x => x.onclick = () => { const v = +x.dataset.b; bookOpen = bookOpen === v ? null : v; renderBible(); });
     if ($("bibleRestart")) $("bibleRestart").onclick = startBibleOver;
+    sh.querySelectorAll("[data-rc]").forEach(x => x.onclick = () => { const [bk, ch] = x.dataset.rc.split(":").map(Number);
+      bibleSheet = false; renderBible(); freeRead = [bk, ch]; readerFor = ""; step = "read"; if (focusRead) { focusRead = false; document.body.classList.remove("focusread"); } render();
+      requestAnimationFrame(() => $("today").scrollIntoView({ behavior: "smooth", block: "start" })); });
   }
 
   // ---------- meadow keepsakes ----------
@@ -7106,7 +7218,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         async deleteFlock(f) {
           const c = n => F.collection(db, "flocks", f, n);
           try { const gs = await F.getDocs(c("groups")); for (const g of gs.docs) { await delAll(F.collection(db, "flocks", f, "groups", g.id, "reflections")); await delAll(F.collection(db, "flocks", f, "groups", g.id, "questions")).catch(() => {}); } } catch (e) {}
-          for (const n of ["reflections", "questions", "cheers", "notes", "replies", "rhearts", "rthumbs", "metoo", "removed", "config", "groups", "members"]) await delAll(c(n)).catch(() => {});
+          for (const n of ["reflections", "questions", "cheers", "notes", "noteReplies", "replies", "rhearts", "rthumbs", "metoo", "removed", "config", "groups", "members"]) await delAll(c(n)).catch(() => {});
           const fl = await F.getDoc(F.doc(db, "flocks", f)); const code = fl.exists() ? fl.data().code : "";
           if (code) await F.deleteDoc(F.doc(db, "codes", code)).catch(() => {});
           await F.deleteDoc(F.doc(db, "flocks", f));
@@ -7122,6 +7234,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
           catch (e) { const out = []; for (const f of (await F.getDocs(F.collection(db, "flocks"))).docs) (await F.getDocs(F.collection(db, "flocks", f.id, "reports"))).docs.forEach(d => out.push(Object.assign({ id: d.id, flockId: f.id }, d.data()))); return out; } },
         resolveReport(f, id) { return F.deleteDoc(F.doc(db, "flocks", f, "reports", id)); },
         deleteNote(f, id) { return F.deleteDoc(F.doc(db, "flocks", f, "notes", id)); },
+        deleteNoteReply(f, id) { return F.deleteDoc(F.doc(db, "flocks", f, "noteReplies", id)); },
         async muted() { const out = []; for (const f of (await F.getDocs(F.collection(db, "flocks"))).docs) { (await F.getDocs(F.collection(db, "flocks", f.id, "muted"))).docs.forEach(d => out.push(Object.assign({ id: d.id, flockId: f.id }, d.data()))); } return out; },
         mute(f, who, name) { return F.setDoc(F.doc(db, "flocks", f, "muted", who), { name: name || "", by: uid, at: Date.now() }); },
         unmute(f, who) { return F.deleteDoc(F.doc(db, "flocks", f, "muted", who)); },
@@ -7137,6 +7250,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
           try { const gs = await F.getDocs(c("groups")); for (const g of gs.docs) { await delAll(F.query(F.collection(db, "flocks", f, "groups", g.id, "reflections"), F.where("uid", "==", uid))).catch(() => {}); await delAll(F.query(F.collection(db, "flocks", f, "groups", g.id, "questions"), F.where("uid", "==", uid))).catch(() => {}); } } catch (e) {}
           await delAll(F.query(c("notes"), F.where("fromUid", "==", uid))).catch(() => {});
           await delAll(F.query(c("notes"), F.where("toUid", "==", uid))).catch(() => {});
+          await delAll(F.query(c("noteReplies"), F.where("fromUid", "==", uid))).catch(() => {});
+          await delAll(F.query(c("noteReplies"), F.where("toUid", "==", uid))).catch(() => {});
           await delAll(F.query(c("questions"), F.where("uid", "==", uid))).catch(() => {});
           await delAll(F.query(c("cheers"), F.where("fromUid", "==", uid))).catch(() => {});
           await delAll(F.query(c("cheers"), F.where("toUid", "==", uid))).catch(() => {});
@@ -7177,7 +7292,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       async flockNews() { const s = await F.getDocs(F.query(F.collection(db, "flocks", fid, "news"), F.orderBy("at", "desc"), F.limit(30))); return s.docs.map(d => Object.assign({ id: d.id }, d.data())); },
       async latestFlockNews() { try { const s = await F.getDocs(F.query(F.collection(db, "flocks", fid, "news"), F.orderBy("at", "desc"), F.limit(15))); return s.docs.map(d => Object.assign({ id: d.id, flockId: fid }, d.data())); } catch (e) { return []; } },
       // private notes: reported ones go to the founder; muted people's notes aren't sent
-      reportNote(n) { return F.setDoc(D("reports", n.id), { noteId: n.id, reporterUid: uid, fromUid: n.fromUid, fromName: n.fromName || "", toUid: n.toUid, toName: (n.toName || ""), text: n.text, day: n.day || "", at: Date.now(), flockId: fid,
+      reportNote(n) { return F.setDoc(D("reports", n.id), { noteId: n.id, reporterUid: uid, fromUid: n.fromUid, fromName: n.fromName || "", toUid: n.toUid, toName: (n.toName || ""), text: n.text, prev: n.prev || [], day: n.day || "", at: Date.now(), flockId: fid,
         fromGroup: n.fromGroup || "", fromFold: n.fromFold || "", toGroup: n.toGroup || "", toFold: n.toFold || "" }); },
       async listReports() { return list(await F.getDocs(C("reports"))); },
       resolveReport(id) { return F.deleteDoc(D("reports", id)); },
@@ -7186,6 +7301,21 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       unmute(who) { return F.deleteDoc(D("muted", who)); },
       deleteNote(id) { return F.deleteDoc(D("notes", id)); },
       heartNote(n, on) { return F.updateDoc(D("notes", n.id), { hearted: !!on }); },
+      // a private note's conversation: edits keep the earlier wording; replies live beside the notes
+      editNote(n, text, prev) { return F.updateDoc(D("notes", n.id), { text, prev, editedAt: ts() }); },
+      async sendNoteReply(r) { const ref = await F.addDoc(C("noteReplies"), Object.assign({}, r, { fromUid: uid, created: ts() })); F.updateDoc(D("notes", r.noteId), { lastDay: r.day }).catch(() => {}); return ref.id; },
+      watchNoteReplies(cb) { let a = [], b = []; const out = () => cb(a.concat(b));
+        const u1 = F.onSnapshot(F.query(C("noteReplies"), F.where("fromUid", "==", uid)), s => { a = list(s); out(); }, () => {});
+        const u2 = F.onSnapshot(F.query(C("noteReplies"), F.where("toUid", "==", uid)), s => { b = list(s); out(); }, () => {});
+        return () => { u1(); u2(); }; },
+      editNoteReply(x, text, prev) { return F.updateDoc(D("noteReplies", x.id), { text, prev, editedAt: ts() }); },
+      unsayNoteReply(x) { return F.updateDoc(D("noteReplies", x.id), { text: "", prev: [], deleted: true, editedAt: ts() }); },
+      deleteNoteReply(id) { return F.deleteDoc(D("noteReplies", id)); },
+      // a reply whose note is gone: checked first, so a note that's merely out of view is never touched
+      async clearOrphanReply(x) { let gone = false; try { gone = !(await F.getDoc(D("notes", x.noteId))).exists(); } catch (e) { gone = e && e.code === "permission-denied"; } if (gone) await F.deleteDoc(D("noteReplies", x.id)); },
+      heartNoteReply(x, on) { return F.updateDoc(D("noteReplies", x.id), { hearted: !!on }); },
+      reportNoteReply(x) { return F.setDoc(D("reports", x.id), { kind: "reply", replyId: x.id, noteId: x.noteId, reporterUid: uid, fromUid: x.fromUid, fromName: x.fromName || "", toUid: x.toUid, toName: x.toName || "", text: x.text, prev: x.prev || [], day: x.day || "", at: Date.now(), flockId: fid,
+        fromGroup: x.fromGroup || "", fromFold: x.fromFold || "", toGroup: x.toGroup || "", toFold: x.toFold || "" }); },
       watchFlock(cb) { return F.onSnapshot(F.doc(db, "flocks", fid), s => cb(s.exists() ? Object.assign({ id: s.id }, s.data()) : null), () => {}); },
       async newFlockCode(old, name) {
         const code = rc(6);
@@ -7245,7 +7375,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         const u2 = F.onSnapshot(F.query(C("notes"), F.where("toUid", "==", uid)), s => { b = list(s); out(); }, err);
         return () => { u1(); u2(); };
       },
-      watchNotes(since, cb) { let a = [], b = []; const out = () => cb(a.concat(b).filter(n => (n.day || "") >= since));
+      watchNotes(since, cb) { let a = [], b = []; const out = () => cb(a.concat(b).filter(n => (n.lastDay || n.day || "") >= since));
         const u1 = F.onSnapshot(F.query(C("notes"), F.where("fromUid", "==", uid)), s => { a = list(s); out(); }, () => {});
         const u2 = F.onSnapshot(F.query(C("notes"), F.where("toUid", "==", uid)), s => { b = list(s); out(); }, () => {});
         return () => { u1(); u2(); }; },
@@ -7334,6 +7464,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         P("u_esther", "Esther Yap", "Pip", "g4", day(5), 12, 0, null, { lost: true }),
         P("u_me", "You", "Lamb", "g1", "", 0, 0, null, { role: "shepherd" })
       ],
+      noteReps: [{ id: "nr1", noteId: "c2", noteFrom: "u_daniel", fromUid: "u_me", toUid: "u_daniel", fromName: "You", kind: "reply", text: "Thanks Daniel! I'll bring some snacks.", day: day(0), created: Date.now() - 5400e3 },
+        { id: "nr2", noteId: "c2", noteFrom: "u_daniel", fromUid: "u_daniel", toUid: "u_me", fromName: "Daniel Ong", kind: "reply", text: "Perfect! Mei is bringing drinks, so we're set.", day: day(0), created: Date.now() - 3600e3, editedAt: Date.now() - 3000e3, prev: [{ text: "Perfect, see you then!", at: Date.now() - 3600e3 }] }],
       cheers: [
         { id: "c1", toUid: "u_me", toGroup: "g1", fromUid: "u_grace", fromName: "Grace Lim", kind: "heart", text: "", day: day(0), created: Date.now() - 3600e3 },
         { id: "c2", toUid: "u_me", toGroup: "g1", fromUid: "u_daniel", fromName: "Daniel Ong", kind: "note", text: "Glad you're reading with us. See you at fold on Friday!", day: day(0), created: Date.now() - 7200e3 },
@@ -7407,7 +7539,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       { id: "u_rachel_m1", uid: "u_rachel", name: "Rachel Ng", toUid: "u_kai", toName: "Kai Chen", flockId: "f_youth", flockName: "Riverside Youth", foldName: "Mustard Seeds", day: day(4), status: "skipped", at: Date.now() - 4 * 864e5 }];
     let fid = "f_youth";
     const st = () => stores[fid];
-    const subs = { profiles: [], groups: [], cheers: [], sent: [], refl: [], rh: [], rp: [], cfg: [], flock: [], notes: [], qs: [], th: [] };
+    const subs = { profiles: [], groups: [], cheers: [], sent: [], refl: [], rh: [], rp: [], cfg: [], flock: [], notes: [], qs: [], th: [], nreps: [] };
     const fire = k => subs[k].forEach(f => f());
     // a little later, someone in your youth fold shares, so the alert can be seen
     setTimeout(() => { youth.refls.push({ id: "u_josh_r5", uid: "u_josh", name: "Joshua Tan", lambName: "Bramble", outfit: O(null, "bow", "blue"), groupId: "g1", scope: "group", ref: "Mark 2", passage: "40:2",
@@ -7441,7 +7573,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       async flockUnannounce(id) { const x = st(); x.news = (x.news || []).filter(n => n.id !== id); },
       async flockNews() { return (st().news || []).slice(); },
       async latestFlockNews() { return (st().news || []).map(n => Object.assign({ flockId: fid }, n)); },
-      async reportNote(n) { const x = st(); x.reports = x.reports || []; if (!x.reports.some(r => r.id === n.id)) x.reports.push({ id: n.id, noteId: n.id, reporterUid: "u_me", fromUid: n.fromUid, fromName: n.fromName, toUid: n.toUid, toName: "You", text: n.text, day: n.day, at: Date.now(), flockId: fid, fromGroup: n.fromGroup, fromFold: n.fromFold, toGroup: n.toGroup, toFold: n.toFold }); },
+      async reportNote(n) { const x = st(); x.reports = x.reports || []; if (!x.reports.some(r => r.id === n.id)) x.reports.push({ id: n.id, noteId: n.id, reporterUid: "u_me", fromUid: n.fromUid, fromName: n.fromName, toUid: n.toUid, toName: "You", text: n.text, prev: n.prev || [], day: n.day, at: Date.now(), flockId: fid, fromGroup: n.fromGroup, fromFold: n.fromFold, toGroup: n.toGroup, toFold: n.toFold }); },
       async listReports() { return (st().reports || []).map(r => Object.assign({}, r)); },
       async resolveReport(id) { const x = st(); x.reports = (x.reports || []).filter(r => r.id !== id); },
       async listMuted() { return (st().muted || []).map(m => Object.assign({}, m)); },
@@ -7482,6 +7614,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
           async reports() { return Object.values(stores).flatMap(sx => (sx.reports || []).map(r => Object.assign({ flockId: sx.info.id }, r))); },
           async resolveReport(f, id) { stores[f].reports = (stores[f].reports || []).filter(r => r.id !== id); },
           async deleteNote(f, id) { const sx = stores[f]; sx.cheers = sx.cheers.filter(x => x.id !== id); fire("notes"); fire("cheers"); },
+          async deleteNoteReply(f, id) { const sx = stores[f]; sx.noteReps = (sx.noteReps || []).filter(x => x.id !== id); fire("nreps"); },
           async muted() { return Object.values(stores).flatMap(sx => (sx.muted || []).map(m => Object.assign({ flockId: sx.info.id }, m))); },
           async mute(f, who, name) { const sx = stores[f]; sx.muted = (sx.muted || []).filter(m => m.id !== who).concat([{ id: who, name, by: "u_me", at: Date.now() }]); },
           async unmute(f, who) { const sx = stores[f]; sx.muted = (sx.muted || []).filter(m => m.id !== who); },
@@ -7512,7 +7645,19 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         if (c.kind === "note" && (s.muted || []).some(m => m.id === "u_me")) { const e = new Error("muted"); e.code = "permission-denied"; throw e; }
         s.sent.push(d); if (c.kind === "note") s.cheers.push(d); fire("sent"); fire("notes"); },
       watchMyCheers(cb) { return sub("cheers", () => cb(st().cheers.filter(x => x.toUid === "u_me"))); },
-      watchNotes(since, cb) { return sub("notes", () => cb(st().cheers.filter(x => x.kind === "note" && x.day >= since && (x.fromUid === "u_me" || x.toUid === "u_me")).map(x => Object.assign({}, x)))); },
+      watchNotes(since, cb) { return sub("notes", () => cb(st().cheers.filter(x => x.kind === "note" && (x.lastDay || x.day) >= since && (x.fromUid === "u_me" || x.toUid === "u_me")).map(x => Object.assign({}, x)))); },
+      async editNote(n, text, prev) { const s = st(); [s.cheers, s.sent].forEach(l => l.filter(x => x.id === n.id).forEach(x => Object.assign(x, { text, prev, editedAt: Date.now() }))); fire("notes"); },
+      async sendNoteReply(r) { const s = st(); if ((s.muted || []).some(m => m.id === "u_me")) { const e = new Error("muted"); e.code = "permission-denied"; throw e; }
+        if (!s.cheers.some(x => x.id === r.noteId)) { const e = new Error("gone"); e.code = "permission-denied"; throw e; }
+        const id = "nr" + Date.now(); (s.noteReps = s.noteReps || []).push(Object.assign({ id, fromUid: "u_me", created: Date.now() }, r));
+        s.cheers.filter(x => x.id === r.noteId).forEach(x => { x.lastDay = r.day; }); fire("nreps"); fire("notes"); return id; },
+      watchNoteReplies(cb) { return sub("nreps", () => cb((st().noteReps || []).filter(x => x.fromUid === "u_me" || x.toUid === "u_me").map(x => Object.assign({}, x)))); },
+      async editNoteReply(x, text, prev) { const y = (st().noteReps || []).find(z => z.id === x.id); if (y) Object.assign(y, { text, prev, editedAt: Date.now() }); fire("nreps"); },
+      async unsayNoteReply(x) { const y = (st().noteReps || []).find(z => z.id === x.id); if (y) Object.assign(y, { text: "", prev: [], deleted: true, editedAt: Date.now() }); fire("nreps"); },
+      async deleteNoteReply(id) { const s = st(); s.noteReps = (s.noteReps || []).filter(z => z.id !== id); fire("nreps"); },
+      async clearOrphanReply(x) { const s = st(); if (!s.cheers.some(c => c.id === x.noteId)) { s.noteReps = (s.noteReps || []).filter(z => z.id !== x.id); fire("nreps"); } },
+      async heartNoteReply(x, on) { const y = (st().noteReps || []).find(z => z.id === x.id); if (y) y.hearted = !!on; fire("nreps"); },
+      async reportNoteReply(x) { const s = st(); s.reports = s.reports || []; if (!s.reports.some(r => r.id === x.id)) s.reports.push({ id: x.id, kind: "reply", replyId: x.id, noteId: x.noteId, reporterUid: "u_me", fromUid: x.fromUid, fromName: x.fromName, toUid: x.toUid, toName: "You", text: x.text, prev: x.prev || [], day: x.day, at: Date.now(), flockId: fid, fromGroup: x.fromGroup || "", fromFold: x.fromFold || "", toGroup: x.toGroup || "", toFold: x.toFold || "" }); },
       watchSentToday(d, cb) { return sub("sent", () => cb(st().sent.filter(x => x.day === d))); },
       async deleteCheer(id) { const s = st(); s.cheers = s.cheers.filter(x => x.id !== id); s.sent = s.sent.filter(x => x.id !== id); fire("cheers"); fire("notes"); fire("sent"); },
       async saveReflection(id, r) { const s = st(), i = s.refls.findIndex(x => x.id === id), d = Object.assign({ id, uid: "u_me" }, r); if (i >= 0) s.refls[i] = d; else s.refls.push(d); fire("refl");
@@ -7612,7 +7757,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   async function enterFlock(fid) {
     unsubs.forEach(u => { try { u(); } catch (e) {} }); unsubs = [];
     if (flockUnsub) { try { flockUnsub(); } catch (e) {} flockUnsub = null; }
-    profilesAll = []; groupsAll = []; reflsAll = []; myCheers = []; myRHearts = []; myReplies = []; myThumbs = []; newsAll = []; sentToday = []; notesAll = []; questionsAll = []; qFlock = []; qFold = []; seenCheerIds = null;
+    profilesAll = []; groupsAll = []; reflsAll = []; myCheers = []; myRHearts = []; myReplies = []; myThumbs = []; newsAll = []; sentToday = []; notesAll = []; noteReps = []; notesLoaded = false; questionsAll = []; qFlock = []; qFold = []; seenCheerIds = null;
     viewGroup = null; composing = null; picking = false; myProfile = null; flockInfo = null; activeCfg = null; managing = false; mapPick = null; removingUid = null;
     S.flocks = S.flocks || [];
     if (!fid) { S.flockId = null; renderSocial(); push3D(); render(); return; }
@@ -8032,17 +8177,112 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   window.addEventListener("pagehide", () => { if (pendingRemoval) finishRemoval(); });
   function ago(d) { if (!d) return "not yet fed"; const n = between(d, today()); return n <= 0 ? "fed today" : n === 1 ? "fed yesterday" : "last fed " + n + " days ago"; }
   // notes are private: only the sender and the person they're for see them. The person they're for can report one to the founder.
-  const myNotes = () => notesAll.concat((S.ghostNotes || []).filter(n => n.flockId === S.flockId)).filter(n => me && (n.fromUid === me.uid || n.toUid === me.uid) && between(n.day || today(), today()) <= 14);
+  // A note is a little conversation: replies sit under it, the latest message carries the Reply pill,
+  // and it stays for 14 days from the latest message. Each message can be edited or deleted for 7 days.
+  const NOTE_MAX = 280, WEEK_MS = 7 * 864e5;
+  let noteReps = [], notesLoaded = false, nReplyTo = null, nReplyDraft = "", nEditKey = null, nEditDraft = "", orphanTried = new Set();
+  const msOf = v => v && v.seconds ? v.seconds * 1000 : +v || 0;
+  const fmtWhen = ms => ms ? new Date(ms).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "";
+  const allReps = () => noteReps.concat((S.ghostReplies || []).filter(x => x.flockId === S.flockId));
+  const repsOf = id => allReps().filter(x => x.noteId === id).sort((a, b) => tsOf(a) - tsOf(b));
+  const lastDayOf = n => repsOf(n.id).reduce((d, x) => (x.day || "") > d ? x.day : d, n.lastDay && n.lastDay > (n.day || "") ? n.lastDay : n.day || today());
+  const lastMsOf = n => Math.max(tsOf(n), ...repsOf(n.id).map(tsOf));
+  const canChange = x => Date.now() - (tsOf(x) || Date.now()) < WEEK_MS;
+  const myNotes = () => notesAll.concat((S.ghostNotes || []).filter(n => n.flockId === S.flockId)).filter(n => me && (n.fromUid === me.uid || n.toUid === me.uid) && between(lastDayOf(n), today()) <= 14);
+  const REPLY_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6.5L4.5 12l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12h8.5a6 6 0 0 1 6 6v.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+  const leftOf = t => NOTE_MAX - (t || "").length;
+  const countHtml = (id, t) => `<small class="ncount ${leftOf(t) <= 40 ? "" : "quiet"}" id="${id}">${leftOf(t)} left</small>`;
   function notesHtml(gid) {
     const here = new Set(membersOf(gid).map(p => p.uid));
-    const ns = myNotes().filter(n => here.has(n.toUid) || here.has(n.fromUid)).sort((a, b) => tsOf(b) - tsOf(a)).slice(0, 12);
+    const ns = myNotes().filter(n => here.has(n.toUid) || here.has(n.fromUid)).sort((a, b) => lastMsOf(b) - lastMsOf(a)).slice(0, 12);
     if (!ns.length) return "";
     const nm = uid => first((profOf(uid) || {}).displayName);
+    const msg = (x, n, isNote, latest) => {
+      const key = (isNote ? "n:" : "r:") + x.id, own = x.fromUid === me.uid, reported = (S.reported || []).includes(x.id), ghost = x.ghost || n.ghost;
+      const who = isNote ? (own ? `<b>You</b> <span class="to">to ${esc(nm(n.toUid))}</span>` : `<b>${esc(first(n.fromName))}</b> <span class="to">to you</span>`) : `<b>${own ? "You" : esc(first(x.fromName))}</b>`;
+      const edited = msOf(x.editedAt) && !x.deleted ? `<small>Edited ${esc(fmtWhen(msOf(x.editedAt)))}</small>` : "";
+      const foot = `<span class="nmeta"><small>${esc(fmtWhen(tsOf(x)))}${reported ? " · reported" : ""}${own && x.hearted ? ` · <span class="loved">♥ loved</span>` : ""}</small>${edited}</span>`;
+      const replyBtn = latest && nReplyTo !== n.id && nEditKey !== key ? `<button class="mini foundbtn replypill" data-nreply="${esc(n.id)}" aria-label="Reply">${REPLY_SVG}<span>Reply</span></button>` : "";
+      // the flag (or bin) sits on the name line; the heart (or pencil) sits at the bottom right, above the Reply pill when there is one
+      const live = !x.deleted && nEditKey !== key;
+      const top = !live ? "" : own ? (canChange(x) ? `<span class="cheerbtns"><button class="mini foundbtn trashbtn" data-ndel="${esc(key)}" aria-label="Delete">${TRASH}</button></span>` : "")
+        : reported || ghost ? "" : `<span class="cheerbtns"><button class="mini foundbtn noteflag" data-${isNote ? "report" : "nrreport"}="${esc(x.id)}" aria-label="Report this">${FLAG}</button></span>`;
+      const low = !live ? "" : own ? (canChange(x) ? `<span class="cheerbtns"><button class="mini foundbtn" data-nedit="${esc(key)}" aria-label="Edit">${PENCIL}</button></span>` : "")
+        : isNote ? (B.heartNote ? `<span class="cheerbtns"><button class="mini heartbtn ${x.hearted ? "on" : ""}" data-nheart="${esc(x.id)}" aria-pressed="${!!x.hearted}" aria-label="${x.hearted ? "Take back your heart" : "Send a heart back for this note"}">${HEART}</button></span>` : "")
+        : `<span class="cheerbtns"><button class="mini heartbtn ${x.hearted ? "on" : ""}" data-nrheart="${esc(x.id)}" aria-pressed="${!!x.hearted}" aria-label="${x.hearted ? "Take back your heart" : "Send a heart for this reply"}">${HEART}</button></span>`;
+      const body = x.deleted ? `<p class="ndel">This response was deleted</p>`
+        : nEditKey === key ? `<div class="nedit"><textarea id="nEditBox" maxlength="${NOTE_MAX}">${esc(nEditDraft)}</textarea><div class="nebar">${countHtml("nEditCount", nEditDraft)}<button class="btn small-btn" data-necancel>Cancel</button><button class="btn small-btn primary-soft" data-nesave="${esc(key)}">Save</button></div></div>`
+        : `<p>${esc(x.text)}</p>`;
+      const col = low || replyBtn ? `<span class="nactcol ${low && replyBtn ? "two" : ""}">${low}${replyBtn}</span>` : "";
+      return `<div class="nmsg ${isNote ? "" : "nrep"} ${col ? "haspill" : ""}"><div class="nhead"><span class="nwho">${who}</span>${top}</div>${body}<div class="nfoot">${foot}${col}</div></div>`;
+    };
     return `<div class="notesbox"><div class="eyebrow">Your private notes</div><ul class="notelist">${ns.map(n => {
-      const sent = n.fromUid === me.uid, reported = (S.reported || []).includes(n.id);
-      const when = n.day === today() ? "today" : ago(n.day).replace(/^(last )?fed /, "");
-      if (sent) return `<li><div><b>You</b> <span class="to">to ${esc(nm(n.toUid))}</span><p>${esc(n.text)}</p><small>${when}${n.hearted ? ` · <span class="loved">♥ ${esc(nm(n.toUid))} loved this</span>` : ""}</small></div>${n.ghost ? "" : `<button class="mini x" data-delnote="${esc(n.id)}" aria-label="Unsend this note">✕</button>`}</li>`;
-      return `<li class="recv"><div><b>${esc(first(n.fromName))}</b> <span class="to">to you</span><p>${esc(n.text)}</p><div class="nfoot"><small>${when}${reported ? " · reported" : ""}</small><span class="cheerbtns nacts">${B.heartNote ? `<button class="mini heartbtn ${n.hearted ? "on" : ""}" data-nheart="${esc(n.id)}" aria-pressed="${!!n.hearted}" aria-label="${n.hearted ? "Take back your heart" : "Send a heart back for this note"}">${HEART}</button>` : ""}${reported ? "" : `<button class="mini foundbtn noteflag" data-report="${esc(n.id)}" aria-label="Report this note">${FLAG}</button>`}</span></div></div></li>`; }).join("")}</ul></div>`;
+      const reps = repsOf(n.id), last = reps.length ? reps[reps.length - 1] : n;
+      return `<li class="nthread ${n.fromUid === me.uid ? "" : "recv"}" data-thread="${esc(n.id)}">${msg(n, n, true, last === n)}${reps.length ? `<div class="nreps">${reps.map(x => msg(x, n, false, x === last)).join("")}</div>` : ""}
+        ${nReplyTo === n.id ? `<div class="ncompose"><textarea id="nReplyBox" maxlength="${NOTE_MAX}" placeholder="Reply to ${esc(nm(n.fromUid === me.uid ? n.toUid : n.fromUid))}…">${esc(nReplyDraft)}</textarea><div class="nebar">${countHtml("nReplyCount", nReplyDraft)}<button class="btn small-btn" data-nrcancel>Cancel</button><button class="btn small-btn primary-soft" data-nrsend="${esc(n.id)}">Send</button></div></div>` : ""}</li>`; }).join("")}</ul></div>`;
+  }
+  function findMsg(key) {
+    const [k, id] = [key.slice(0, 1), key.slice(2)];
+    if (k === "n") { const n = myNotes().find(x => x.id === id); return n && { x: n, n, isNote: true }; }
+    const x = allReps().find(y => y.id === id); if (!x) return null;
+    return { x, n: myNotes().find(y => y.id === x.noteId), isNote: false };
+  }
+  // replies whose note has been deleted: clear them away (the rules only allow it once the note is gone)
+  function cleanOrphans() {
+    if (!me || !notesAll) return;
+    if (!notesLoaded || !B.clearOrphanReply) return;
+    noteReps.filter(x => !notesAll.some(n => n.id === x.noteId) && !orphanTried.has(x.id)).forEach(x => { orphanTried.add(x.id); B.clearOrphanReply(x).catch(() => {}); });
+  }
+  function wireNotes(c) {
+    const box = (id, cid, set) => { const t = $(id); if (!t) return; const paint = () => { const k = $(cid); if (k) { k.textContent = leftOf(t.value) + " left"; k.classList.toggle("quiet", leftOf(t.value) > 40); } };
+      t.oninput = () => { set(t.value); paint(); }; };
+    box("nReplyBox", "nReplyCount", v => { nReplyDraft = v; }); box("nEditBox", "nEditCount", v => { nEditDraft = v; });
+    c.querySelectorAll("[data-nreply]").forEach(b => b.onclick = () => { nReplyTo = b.dataset.nreply; nReplyDraft = ""; nEditKey = null; renderGroup(); const t = $("nReplyBox"); if (t) { t.focus(); t.scrollIntoView({ block: "nearest" }); } });
+    c.querySelectorAll("[data-nrcancel]").forEach(b => b.onclick = () => { nReplyTo = null; nReplyDraft = ""; renderGroup(); });
+    c.querySelectorAll("[data-nrsend]").forEach(b => b.onclick = async () => {
+      const text = nReplyDraft.trim().slice(0, NOTE_MAX), n = myNotes().find(x => x.id === b.dataset.nrsend); if (!text || !n) { const t = $("nReplyBox"); if (t) t.focus(); return; }
+      const other = n.fromUid === me.uid ? n.toUid : n.fromUid;
+      const r = { noteId: n.id, noteFrom: n.fromUid, toUid: other, kind: "reply", text, day: today(), fromName: (myProfile && myProfile.displayName) || "Someone" };
+      b.disabled = true;
+      const done = () => { nReplyTo = null; nReplyDraft = ""; popText("Sent with love"); renderGroup(); };
+      try { if (n.ghost) throw Object.assign(new Error("ghost"), { code: "permission-denied" }); await B.sendNoteReply(r); done(); }
+      catch (e) { if (e && e.code === "permission-denied") { S.ghostReplies = (S.ghostReplies || []).filter(x => between(x.day, today()) <= 14).concat([Object.assign({ id: "gr" + Date.now(), fromUid: me.uid, flockId: S.flockId, ghost: true, created: Date.now() }, r)]); save(); done(); }
+        else { b.disabled = false; groupMsg = "That reply didn't send. Please try again."; renderGroup(); } } });
+    c.querySelectorAll("[data-nedit]").forEach(b => b.onclick = () => { const m = findMsg(b.dataset.nedit); if (!m) return; nEditKey = b.dataset.nedit; nEditDraft = m.x.text; nReplyTo = null; renderGroup(); const t = $("nEditBox"); if (t) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); } });
+    c.querySelectorAll("[data-necancel]").forEach(b => b.onclick = () => { nEditKey = null; nEditDraft = ""; renderGroup(); });
+    c.querySelectorAll("[data-nesave]").forEach(b => b.onclick = async () => {
+      const m = findMsg(b.dataset.nesave), text = nEditDraft.trim().slice(0, NOTE_MAX); if (!m || !text) return;
+      if (text === m.x.text) { nEditKey = null; renderGroup(); return; }
+      if (!canChange(m.x)) { nEditKey = null; groupMsg = "Messages can be edited for 7 days."; renderGroup(); return; }
+      const prev = (m.x.prev || []).concat([{ text: m.x.text, at: msOf(m.x.editedAt) || tsOf(m.x) }]).slice(-10);
+      b.disabled = true;
+      try {
+        if (m.x.ghost) { const list = m.isNote ? S.ghostNotes : S.ghostReplies; const g = (list || []).find(y => y.id === m.x.id); if (g) Object.assign(g, { text, prev, editedAt: Date.now() }); save(); }
+        else if (m.isNote) await B.editNote(m.x, text, prev); else await B.editNoteReply(m.x, text, prev);
+        nEditKey = null; nEditDraft = ""; renderGroup();
+      } catch (e) { b.disabled = false; groupMsg = "Couldn't save that just now."; renderGroup(); } });
+    c.querySelectorAll("[data-ndel]").forEach(b => b.onclick = () => { const m = findMsg(b.dataset.ndel); if (!m) return;
+      if (!canChange(m.x)) { groupMsg = "Messages can be deleted for 7 days."; renderGroup(); return; }
+      if (m.isNote) confirmSheet("Delete this note?", "The note and its replies will be deleted for both of you.", "Delete", true, async () => {
+        try { const reps = repsOf(m.x.id);
+          if (m.x.ghost) S.ghostNotes = (S.ghostNotes || []).filter(y => y.id !== m.x.id);
+          else await B.deleteCheer(m.x.id);
+          S.ghostReplies = (S.ghostReplies || []).filter(y => y.noteId !== m.x.id); save();
+          reps.filter(y => !y.ghost).forEach(y => B.deleteNoteReply(y.id).catch(() => {}));
+          renderGroup(); toast("Note deleted.", () => {}); } catch (e) { groupMsg = "Couldn't delete that note."; renderGroup(); } });
+      else confirmSheet("Delete this response?", "It will be deleted for both of you.", "Delete", true, async () => {
+        try { const x = m.x;
+          if (x.ghost) { S.ghostReplies = (S.ghostReplies || []).filter(y => y.id !== x.id); save(); }
+          else if (Date.now() - tsOf(x) < 3 * 864e5) await B.deleteNoteReply(x.id);   // recent: as though it was never sent
+          else await B.unsayNoteReply(x);   // older: the conversation shows that a response was deleted
+          renderGroup(); } catch (e) { groupMsg = "Couldn't delete that response."; renderGroup(); } }); });
+    c.querySelectorAll("[data-nrheart]").forEach(b => b.onclick = async () => { const x = noteReps.find(y => y.id === b.dataset.nrheart); if (!x) return; const on = !x.hearted;
+      x.hearted = on; renderGroup(); try { await B.heartNoteReply(x, on); if (on) popText("♥"); } catch (e) { x.hearted = !on; renderGroup(); } });
+    c.querySelectorAll("[data-nrreport]").forEach(b => b.onclick = () => { const x = noteReps.find(y => y.id === b.dataset.nrreport); if (!x) return;
+      confirmSheet("Report this response?", `Your founder will see it and decide what to do. ${first(x.fromName)} won't be told.`, "Report", true, async () => {
+        try { const fg = (profOf(x.fromUid) || {}).groupId || "", tg = myProfile.groupId || "";
+          await B.reportNoteReply(Object.assign({}, x, { toName: myProfile.displayName || "", fromGroup: fg, fromFold: (groupOf(fg) || {}).name || "", toGroup: tg, toFold: (groupOf(tg) || {}).name || "" })); S.reported = (S.reported || []).concat(x.id).slice(-100); save(); renderGroup(); toast("Reported. Thank you for letting us know.", () => {}); }
+        catch (e) { toast("Couldn't report that just now. Please try again.", () => {}); } }); });
   }
 
   const codeBox = () => flockInfo && flockInfo.code ? `<div class="codestrip"><div><span class="small">Flock code</span><b class="lambkey" id="fcShow">${esc(flockInfo.code)}</b></div><button class="btn small-btn" id="fcCopy">Copy</button>${navigator.share ? `<button class="btn small-btn" id="fcShare">Share</button>` : ""}</div>
@@ -8293,7 +8533,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     c.querySelectorAll("[data-unheart]").forEach(b => b.onclick = async () => { b.disabled = true;
       try { await B.deleteCheer(b.dataset.unheart); S.cheersSent = Math.max(0, (S.cheersSent || 0) - 1); unlogAct("heart"); save(); popText("Heart taken back"); }
       catch (e) { groupMsg = "Couldn't take that heart back just now."; renderGroup(); } });
-    c.querySelectorAll("[data-delnote]").forEach(b => b.onclick = () => B.deleteCheer(b.dataset.delnote).catch(() => { groupMsg = "Couldn't remove that note."; renderGroup(); }));
+    if (B.sendNoteReply) wireNotes(c);
     c.querySelectorAll("[data-nheart]").forEach(b => b.onclick = async () => { const n = notesAll.find(x => x.id === b.dataset.nheart); if (!n) return; const on = !n.hearted;
       n.hearted = on; renderGroup(); try { await B.heartNote(n, on); if (on) popText("♥"); } catch (e) { n.hearted = !on; renderGroup(); } });
     c.querySelectorAll("[data-report]").forEach(b => b.onclick = () => { const n = notesAll.find(x => x.id === b.dataset.report); if (!n) return;
@@ -8347,18 +8587,20 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     Promise.all([B.listReports().catch(() => []), B.listMuted().catch(() => [])]).then(([reports, muted]) => { mod = { reports, muted }; renderFounder(); }); }
   // which fold(s) a report came from: "Psalms Squad", or "Psalms Squad → Acts Crew" when the two are in different folds
   const reportFolds = (r, lookup) => { const f = r.fromFold || lookup(r.fromGroup), t = r.toFold || lookup(r.toGroup); return f && t && f !== t ? `${f} → ${t}` : f || t || ""; };
+  // a reported message that was edited: its earlier wording, for the founder and super admin only
+  const prevHtml = r => (r.prev || []).length ? `<details class="rpprev"><summary>Edited · earlier wording</summary>${r.prev.map(p => `<p>${esc(p.text)} <small>${esc(fmtWhen(p.at))}</small></p>`).join("")}</details>` : "";
   function modHtml() {
     if (!mod || mod.busy) return `<p class="planline">Loading…</p>`;
     const mutedIds = new Set(mod.muted.map(m => m.id));
     const reps = mod.reports.slice().sort((a, b) => (b.at || 0) - (a.at || 0));
-    return `${reps.length ? `<ul class="replist">${reps.map(r => `<li><div class="rphead"><b>${esc(r.fromName || "Someone")} → ${esc(r.toName || "someone")}</b><small>${r.day ? fmtShort(r.day) : ""}</small></div>${reportFolds(r, g => (groupOf(g) || {}).name || "") ? `<small class="rpflock">${esc(reportFolds(r, g => (groupOf(g) || {}).name || ""))}</small>` : ""}<p>${esc(r.text)}</p>
-        <div class="rpbtns"><button class="btn small-btn danger" data-rpdel="${esc(r.id)}">Remove note</button><button class="btn small-btn" data-rpmute="${esc(r.fromUid)}" data-name="${esc(r.fromName || "")}">${mutedIds.has(r.fromUid) ? "Unmute" : "Mute " + esc(first(r.fromName))}</button><span class="cheerbtns trashwrap"><button class="mini foundbtn trashbtn" data-rpok="${esc(r.id)}" aria-label="Dismiss this report">${TRASH}</button></span></div></li>`).join("")}</ul>`
+    return `${reps.length ? `<ul class="replist">${reps.map(r => `<li><div class="rphead"><b>${esc(r.fromName || "Someone")} → ${esc(r.toName || "someone")}</b><small>${r.day ? fmtShort(r.day) : ""}</small></div>${reportFolds(r, g => (groupOf(g) || {}).name || "") || r.kind === "reply" ? `<small class="rpflock">${esc([reportFolds(r, g => (groupOf(g) || {}).name || ""), r.kind === "reply" ? "A reply to a note" : ""].filter(Boolean).join(" · "))}</small>` : ""}<p>${esc(r.text)}</p>${prevHtml(r)}
+        <div class="rpbtns"><button class="btn small-btn danger" data-rpdel="${esc(r.id)}">${r.kind === "reply" ? "Remove reply" : "Remove note"}</button><button class="btn small-btn" data-rpmute="${esc(r.fromUid)}" data-name="${esc(r.fromName || "")}">${mutedIds.has(r.fromUid) ? "Unmute" : "Mute " + esc(first(r.fromName))}</button><span class="cheerbtns trashwrap"><button class="mini foundbtn trashbtn" data-rpok="${esc(r.id)}" aria-label="Dismiss this report">${TRASH}</button></span></div></li>`).join("")}</ul>`
       : `<p class="planline">No reported notes. When someone reports a private note they received, it shows up here.</p>`}
       ${mod.muted.length ? `<div class="small">Muted: their notes aren't sent, and they aren't told.</div><ul class="mutelist">${mod.muted.map(m => `<li><span>${esc(m.name || (profOf(m.id) || {}).displayName || "Someone")}</span><button class="btn small-btn" data-unmute="${esc(m.id)}">Unmute</button></li>`).join("")}</ul>` : ""}`;
   }
   function wireMod(c) {
     c.querySelectorAll("[data-rpdel]").forEach(b => b.onclick = () => { const r = mod.reports.find(x => x.id === b.dataset.rpdel);
-      confirmSheet("Remove this note?", `It will be removed for ${first(r.toName) || "them"} and ${first(r.fromName) || "the sender"}.`, "Remove", true, async () => { try { await B.deleteNote(r.noteId || r.id).catch(() => {}); await B.resolveReport(r.id); toast("Note removed.", () => {}); } catch (e) { toast("Couldn't do that just now.", () => {}); } loadMod(); }); });
+      confirmSheet(r.kind === "reply" ? "Remove this reply?" : "Remove this note?", `It will be removed for ${first(r.toName) || "them"} and ${first(r.fromName) || "the sender"}.`, "Remove", true, async () => { try { await (r.kind === "reply" ? B.deleteNoteReply(r.replyId || r.id) : B.deleteNote(r.noteId || r.id)).catch(() => {}); await B.resolveReport(r.id); toast("Note removed.", () => {}); } catch (e) { toast("Couldn't do that just now.", () => {}); } loadMod(); }); });
     c.querySelectorAll("[data-rpok]").forEach(b => b.onclick = async () => { try { await B.resolveReport(b.dataset.rpok); } catch (e) {} loadMod(); });
     c.querySelectorAll("[data-rpmute], [data-unmute]").forEach(b => b.onclick = () => { const who = b.dataset.rpmute || b.dataset.unmute, on = !mod.muted.some(m => m.id === who), nm = b.dataset.name || (profOf(who) || {}).displayName || "them";
       confirmSheet(on ? `Mute ${nm}?` : `Unmute ${nm}?`, on ? `Their private notes won't be sent from now on. They won't be told. Hearts still work.` : `Their notes will be sent again.`, on ? "Mute" : "Unmute", on, async () => {
@@ -8529,6 +8771,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     newsAll.filter(n => n.by !== mine && newsForMe(n) && Date.now() - (n.at || 0) <= 14 * 864e5).forEach(n => items.push({ id: "m:" + n.id, kind: "msg", at: n.at || 0, n, who: n.byName || (profOf(n.by) || {}).displayName, outfit: (profOf(n.by) || {}).outfit }));
     myThumbs.filter(t => t.fromUid !== mine).forEach(t => items.push({ id: "t:" + t.id, kind: "thumb", at: t.at || 0, t, who: t.fromName, outfit: (profOf(t.fromUid) || {}).outfit }));
     myReplies.filter(x => x.fromUid !== mine).forEach(x => items.push({ id: "q:" + x.id, kind: "reply", at: x.at || 0, x, who: x.fromName, outfit: (profOf(x.fromUid) || {}).outfit }));
+    noteReps.filter(x => x.toUid === mine && !x.deleted && between(x.day || today(), today()) <= 14).forEach(x => items.push({ id: "nr:" + x.id, kind: "nreply", at: tsOf(x) || 0, x, who: x.fromName, outfit: (profOf(x.fromUid) || {}).outfit }));
     myCheers.filter(x => between(x.day || today(), today()) <= 14).forEach(c => items.push({ id: "c:" + c.id, kind: c.kind === "heart" ? "heart" : "note", at: tsOf(c) || 0, c, who: c.fromName, outfit: (profOf(c.fromUid) || {}).outfit }));
     // questions asked in other folds' reflections: there to read, but nobody is alerted
     questionsAll.filter(q => q.uid !== mine && !reflsAll.some(r => r.id === q.id)).forEach(q => items.push({ id: "w:" + q.id, kind: "question", quiet: true, at: q.at || 0, q, who: q.name, outfit: q.outfit }));
@@ -8552,7 +8795,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     paintBadge();
     if (!inboxPrimed) return;
     const show = fresh.filter(isNew)[0]; if (!show) return;
-    toast(show.kind === "refl" && show.r.kind === "memory" ? `🎉 ${first(show.who)} learned ${show.r.ref} by heart` : show.kind === "refl" ? `${first(show.who)} shared a reflection on ${show.r.heldRef || show.r.ref}` : show.kind === "reply" ? `${first(show.who)} answered your question. Say thanks with a thumbs up` : show.kind === "msg" ? `${first(show.who)} posted: ${show.n.title}` : show.kind === "thumb" ? `👍 ${first(show.who)} liked your answer` : show.kind === "rheart" ? `♥ ${first(show.who)} gave your reflection a heart` : show.kind === "heart" ? `♥ ${first(show.who)} sent ${S.name} a heart` : `A note from ${first(show.who)}`, () => openItem(show));
+    toast(show.kind === "refl" && show.r.kind === "memory" ? `🎉 ${first(show.who)} learned ${show.r.ref} by heart` : show.kind === "refl" ? `${first(show.who)} shared a reflection on ${show.r.heldRef || show.r.ref}` : show.kind === "reply" ? `${first(show.who)} answered your question. Say thanks with a thumbs up` : show.kind === "msg" ? `${first(show.who)} posted: ${show.n.title}` : show.kind === "thumb" ? `👍 ${first(show.who)} liked your answer` : show.kind === "rheart" ? `♥ ${first(show.who)} gave your reflection a heart` : show.kind === "heart" ? `♥ ${first(show.who)} sent ${S.name} a heart` : show.kind === "nreply" ? `${first(show.who)} replied to your note` : `A note from ${first(show.who)}`, () => openItem(show));
     if (window.Lamb3D) window.Lamb3D.pet();
     cue("arrive");
   }
@@ -8579,6 +8822,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if (it.kind === "reply") return `<b>${esc(it.who || "Someone")}</b> replied to your question on <b>${esc(it.x.ref || "your reading")}</b>`;
     if (it.kind === "msg") return `<b>${esc(it.who || "Someone")}</b> ${it.n.to && it.n.to.length ? "sent you a message" : it.n.groups && it.n.groups.length ? "posted to " + esc((groupOf(it.n.groups[0]) || {}).name || "your fold") : "posted to " + esc(flockName(S.flockId))}: <b>${esc(it.n.title)}</b>`;
     if (it.kind === "question") return `<b>${esc(it.who || "Someone")}</b> wondered about <b>${esc(it.q.ref)}</b>`;
+    if (it.kind === "nreply") return `<b>${esc(it.who || "Someone")}</b> replied to your note`;
     return `<b>${esc(it.who || "Someone")}</b> wrote to you`;
   }
   function renderInbox() {
@@ -8591,7 +8835,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         ${lambImg(it.outfit)}
         <div class="ibtext">${itemText(it)}
           <small>${it.kind === "refl" ? esc(SCOPE_NAME[it.r.scope] || "") + " · " : it.kind === "question" ? esc((groupOf(it.q.groupId) || {}).name || "Another fold") + " · " : ""}${agoMs(it.at)}</small>
-          ${it.kind === "refl" ? `<p class="ibsnip">${esc(it.r.kind === "memory" ? it.r.heldText : it.r.see)}</p>` : it.kind === "note" ? `<p class="ibsnip note">${esc(it.c.text)}</p>` : it.kind === "reply" ? `<p class="ibsnip">${esc(it.x.text)}</p>` : it.kind === "question" ? `<p class="ibsnip">${esc(it.q.wonder)}</p>` : it.kind === "msg" ? `<p class="ibsnip note">${esc(it.n.text)}</p>` : ""}</div>
+          ${it.kind === "refl" ? `<p class="ibsnip">${esc(it.r.kind === "memory" ? it.r.heldText : it.r.see)}</p>` : it.kind === "note" ? `<p class="ibsnip note">${esc(it.c.text)}</p>` : it.kind === "nreply" ? `<p class="ibsnip note">${esc(it.x.text)}</p>` : it.kind === "reply" ? `<p class="ibsnip">${esc(it.x.text)}</p>` : it.kind === "question" ? `<p class="ibsnip">${esc(it.q.wonder)}</p>` : it.kind === "msg" ? `<p class="ibsnip note">${esc(it.n.text)}</p>` : ""}</div>
         ${isNew(it) ? `<i class="ibdot" aria-label="new"></i>` : ""}</li>`;
     sh.innerHTML = `<div class="calback" data-close="1"></div>
       <section class="calcard inboxcard" role="dialog" aria-modal="true" aria-label="Inbox">
@@ -8616,6 +8860,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if (it.kind === "rheart") { const r = reflsAll.find(x => x.id === it.h.reflId); if (r) return openRefl(r); }
     if (it.kind === "reply") { const r = reflsAll.find(x => x.id === it.x.reflId); if (r) return openRefl(r); }
     if (it.kind === "question") return openQuestion(it.q);
+    // a note or a reply to one: go to its conversation in the fold
+    if (it.kind === "note" || it.kind === "nreply") { const id = it.kind === "note" ? it.c.id : it.x.noteId; inboxOpen = false; renderInbox();
+      setTimeout(() => { const el = document.querySelector(`[data-thread="${CSS.escape(id)}"]`); if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1600); } }, 60); return; }
     if (it.kind === "thumb") { const r = reflsAll.find(x => x.id === it.t.reflId); if (r) return openRefl(r, true); const q = questionsAll.find(x => x.id === it.t.reflId); if (q) return openQuestion(q, true); }
     renderInbox();
   }
@@ -8871,7 +9118,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     unsubs.push(B.watchProfiles(list => { profilesAll = list.map(p => Object.assign({ uid: p.id }, p)); const mine = profOf(me.uid);
       if (mine) myProfile = mine; else if (myProfile && list.length && !leavingNow) { const fid = S.flockId; enterFlock(fid); return; }   // I've been removed from this flock
       if (myProfile) watchReflections(); renderSocial(); push3D(); }, () => {}));
-    unsubs.push(B.watchNotes(reflSince(), list => { notesAll = list; renderGroup(); }));
+    unsubs.push(B.watchNotes(reflSince(), list => { notesAll = list; notesLoaded = true; cleanOrphans(); renderGroup(); }));
+    if (B.watchNoteReplies) unsubs.push(B.watchNoteReplies(list => { noteReps = list; cleanOrphans(); renderGroup(); noticeNew(); renderInbox(); }));
     unsubs.push(B.watchQuestions(reflSince(), list => { qFlock = list; setQuestions(); renderInbox(); paintBadge(); }));
     if (B.watchFoldQuestions) { let fu = () => {}, fg = null; const watchFold = () => { const g = myProfile && myProfile.groupId; if (g === fg) return; fg = g; fu(); qFold = []; fu = B.watchFoldQuestions(g, reflSince(), list => { qFold = list; setQuestions(); renderInbox(); renderGroup(); }); };
       watchFold(); const iv = setInterval(watchFold, 4000); unsubs.push(() => { clearInterval(iv); fu(); }); }
@@ -8940,7 +9188,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.45";
+  const APP_VERSION = "2.15.55";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -9157,8 +9405,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     } else if (adm.tab === "reports") {
       const fname = f => (Fl.find(x => x.id === f) || {}).name || "A flock", mutedKey = new Set(adm.muted.map(m => m.flockId + "|" + m.id));
       body = `<p class="planline">Private notes reported by the person who received them, from every flock. You and each flock's founder can see these.</p>
-        <ul class="replist">${adm.reports.slice().sort((a, b) => (b.at || 0) - (a.at || 0)).map(r => `<li><div class="rphead"><b>${esc(r.fromName || nameOf(r.fromUid))} → ${esc(r.toName || nameOf(r.toUid))}</b><small>${r.day ? fmtShort(r.day) : fmtDay(r.at)}</small></div><small class="rpflock">${esc([fname(r.flockId), reportFolds(r, g => (((adm.details[r.flockId] || {}).groups || []).find(x => x.id === g) || {}).name || "")].filter(Boolean).join(" · "))}</small><p>${esc(r.text)}</p>
-          <div class="rpbtns"><button class="btn small-btn danger" data-arpdel="${esc(r.flockId)}|${esc(r.id)}">Remove note</button><button class="btn small-btn" data-amute="${esc(r.flockId)}|${esc(r.fromUid)}|${esc(r.fromName || "")}">${mutedKey.has(r.flockId + "|" + r.fromUid) ? "Unmute" : "Mute " + esc(first(r.fromName))}</button><span class="cheerbtns trashwrap"><button class="mini foundbtn trashbtn" data-arpok="${esc(r.flockId)}|${esc(r.id)}" aria-label="Dismiss this report">${TRASH}</button></span></div></li>`).join("") || `<li class="planline">No reported notes.</li>`}</ul>
+        <ul class="replist">${adm.reports.slice().sort((a, b) => (b.at || 0) - (a.at || 0)).map(r => `<li><div class="rphead"><b>${esc(r.fromName || nameOf(r.fromUid))} → ${esc(r.toName || nameOf(r.toUid))}</b><small>${r.day ? fmtShort(r.day) : fmtDay(r.at)}</small></div><small class="rpflock">${esc([fname(r.flockId), reportFolds(r, g => (((adm.details[r.flockId] || {}).groups || []).find(x => x.id === g) || {}).name || ""), r.kind === "reply" ? "A reply to a note" : ""].filter(Boolean).join(" · "))}</small><p>${esc(r.text)}</p>${prevHtml(r)}
+          <div class="rpbtns"><button class="btn small-btn danger" data-arpdel="${esc(r.flockId)}|${esc(r.id)}">${r.kind === "reply" ? "Remove reply" : "Remove note"}</button><button class="btn small-btn" data-amute="${esc(r.flockId)}|${esc(r.fromUid)}|${esc(r.fromName || "")}">${mutedKey.has(r.flockId + "|" + r.fromUid) ? "Unmute" : "Mute " + esc(first(r.fromName))}</button><span class="cheerbtns trashwrap"><button class="mini foundbtn trashbtn" data-arpok="${esc(r.flockId)}|${esc(r.id)}" aria-label="Dismiss this report">${TRASH}</button></span></div></li>`).join("") || `<li class="planline">No reported notes.</li>`}</ul>
         ${adm.muted.length ? `<div class="eyebrow">Muted</div><ul class="alist">${adm.muted.map(m => `<li><div class="arow"><div class="amain"><b>${esc(m.name || nameOf(m.id))}</b><small>${esc(fname(m.flockId))} · since ${fmtDay(m.at)}${m.by && m.by !== me.uid ? " · by " + esc(nameOf(m.by)) : ""}</small></div><button class="btn small-btn" data-amute="${esc(m.flockId)}|${esc(m.id)}|${esc(m.name || "")}">Unmute</button></div></li>`).join("")}</ul>` : ""}`;
     } else if (adm.tab === "news") {
       const dto = adm.draft.to || ["all"], dall = dto.includes("all");
@@ -9208,7 +9456,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     sh.querySelectorAll("[data-ato]").forEach(b => b.onclick = () => { const k = b.dataset.ato, cur = (adm.draft.to || ["all"]).filter(x => x !== "all");
       adm.draft.to = k === "all" ? ["all"] : cur.includes(k) ? cur.filter(x => x !== k) : cur.concat(k); if (!adm.draft.to.length || adm.draft.to.length === Fl.length) adm.draft.to = ["all"]; paintAdmin(); });
     sh.querySelectorAll("[data-arpdel]").forEach(b => b.onclick = () => { const [f, id] = b.dataset.arpdel.split("|"), r = adm.reports.find(x => x.id === id && x.flockId === f) || {};
-      confirmSheet("Remove this note?", "It will be removed for both of them.", "Remove", true, async () => { try { await B.admin.deleteNote(f, r.noteId || id).catch(() => {}); await B.admin.resolveReport(f, id); B.admin.log({ action: "removenote", target: r.fromUid, targetName: r.fromName || "", flock: f }); } catch (e) { adm.msg = "Couldn't remove it just now."; } loadAdmin(); }); });
+      confirmSheet(r.kind === "reply" ? "Remove this reply?" : "Remove this note?", "It will be removed for both of them.", "Remove", true, async () => { try { await (r.kind === "reply" ? B.admin.deleteNoteReply(f, r.replyId || id) : B.admin.deleteNote(f, r.noteId || id)).catch(() => {}); await B.admin.resolveReport(f, id); B.admin.log({ action: "removenote", target: r.fromUid, targetName: r.fromName || "", flock: f }); } catch (e) { adm.msg = "Couldn't remove it just now."; } loadAdmin(); }); });
     sh.querySelectorAll("[data-arpok]").forEach(b => b.onclick = async () => { const [f, id] = b.dataset.arpok.split("|"); try { await B.admin.resolveReport(f, id); } catch (e) {} loadAdmin(); });
     sh.querySelectorAll("[data-amute]").forEach(b => b.onclick = () => { const [f, who, nm] = b.dataset.amute.split("|"), on = !adm.muted.some(m => m.flockId === f && m.id === who);
       confirmSheet(on ? `Mute ${nm || "them"}?` : `Unmute ${nm || "them"}?`, on ? "Their private notes in this flock won't be sent. They won't be told." : "Their notes will be sent again.", on ? "Mute" : "Unmute", on, async () => {
@@ -9373,7 +9621,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#myWeek", "Your week", "A look back at what you read, wrote and gave this week."],
       ["#fcTools", "Founder's tools", "Run your flock: folds, shepherds, the flock code and reported notes."],
       ["#groupCard .qshelf", "Questions from the flock", "What others are wondering about. Tap Help answer to share what you think."],
-      ["#groupCard .notesbox", "Your private notes", "Notes written just to you. Send a heart back, or flag one if something isn't right."])
+      ["#groupCard .notesbox", "Your private notes", "Private notes between you and one other person. Reply to keep talking, send a heart back, or flag anything that isn't right."])
   ];
   const REFL_EN = [
     tchunk(null,

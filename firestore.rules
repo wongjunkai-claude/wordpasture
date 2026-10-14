@@ -308,24 +308,78 @@ service cloud.firestore {
           && request.resource.data.kind == 'note'
           && shortText(request.resource.data.text, 280)
           && shortText(request.resource.data.day, 10)
-          && shortText(request.resource.data.fromName, 40);
+          && shortText(request.resource.data.fromName, 40)
+          && request.resource.data.created == request.time;
+        // (the 7-day limit on deleting is kept by the app; leaving an account must still be able to clear old notes)
         allow delete: if isMember(fid) && (resource.data.toUid == request.auth.uid
           || resource.data.fromUid == request.auth.uid
           || isFounder(fid));
-        // the person a note is for can send a heart back for it
-        allow update: if signedIn() && resource.data.toUid == request.auth.uid
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hearted'])
-          && request.resource.data.hearted is bool;
+        allow update: if signedIn() && (
+          // the person a note is for can send a heart back for it
+          (resource.data.toUid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hearted'])
+            && request.resource.data.hearted is bool)
+          // the writer can edit it for 7 days; earlier wording is kept (shown only if it's reported)
+          || (resource.data.fromUid == request.auth.uid
+            && request.time < resource.data.created + duration.value(7, 'd')
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text', 'editedAt', 'prev'])
+            && shortText(request.resource.data.text, 280) && request.resource.data.text.size() > 0
+            && request.resource.data.editedAt == request.time
+            && request.resource.data.prev is list && request.resource.data.prev.size() <= 10)
+          // either of the two can mark when the conversation last moved, so it stays 14 days from the latest message
+          || ((resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastDay'])
+            && shortText(request.resource.data.lastDay, 10)));
+      }
+      // Replies under a private note: only between the same two people.
+      match /noteReplies/{id} {
+        allow read: if signedIn() && (resource.data.fromUid == request.auth.uid || resource.data.toUid == request.auth.uid);
+        allow create: if isMember(fid)
+          && !exists(/databases/$(database)/documents/flocks/$(fid)/muted/$(request.auth.uid))
+          && request.resource.data.fromUid == request.auth.uid
+          && request.resource.data.kind == 'reply'
+          && request.resource.data.noteId is string
+          && exists(/databases/$(database)/documents/flocks/$(fid)/notes/$(request.resource.data.noteId))
+          && ((get(/databases/$(database)/documents/flocks/$(fid)/notes/$(request.resource.data.noteId)).data.fromUid == request.auth.uid
+                && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(request.resource.data.noteId)).data.toUid == request.resource.data.toUid)
+            || (get(/databases/$(database)/documents/flocks/$(fid)/notes/$(request.resource.data.noteId)).data.toUid == request.auth.uid
+                && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(request.resource.data.noteId)).data.fromUid == request.resource.data.toUid))
+          && shortText(request.resource.data.text, 280) && request.resource.data.text.size() > 0
+          && shortText(request.resource.data.day, 10)
+          && shortText(request.resource.data.fromName, 40)
+          && request.resource.data.created == request.time;
+        // the writer can delete their own reply; either of the two can clear replies left behind once the note is gone
+        allow delete: if (signedIn() && resource.data.fromUid == request.auth.uid)
+          || isFounder(fid)
+          || (signedIn() && resource.data.toUid == request.auth.uid
+            && !exists(/databases/$(database)/documents/flocks/$(fid)/notes/$(resource.data.noteId)));
+        allow update: if signedIn() && (
+          (resource.data.toUid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hearted'])
+            && request.resource.data.hearted is bool)
+          // edit, or mark as deleted, within 7 days
+          || (resource.data.fromUid == request.auth.uid
+            && request.time < resource.data.created + duration.value(7, 'd')
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text', 'editedAt', 'prev', 'deleted'])
+            && shortText(request.resource.data.text, 280)
+            && request.resource.data.editedAt == request.time
+            && request.resource.data.prev is list && request.resource.data.prev.size() <= 10
+            && (!('deleted' in request.resource.data) || request.resource.data.deleted is bool)));
       }
       // A note reported by the person it was sent to: a copy for the founder (and the super admin) to look at.
       match /reports/{id} {
         allow read, delete: if isFounder(fid);
         allow create: if isMember(fid)
           && request.resource.data.reporterUid == request.auth.uid
-          && exists(/databases/$(database)/documents/flocks/$(fid)/notes/$(id))
-          && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.toUid == request.auth.uid
-          && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.fromUid == request.resource.data.fromUid
-          && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.text == request.resource.data.text;
+          && ((exists(/databases/$(database)/documents/flocks/$(fid)/notes/$(id))
+              && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.toUid == request.auth.uid
+              && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.fromUid == request.resource.data.fromUid
+              && get(/databases/$(database)/documents/flocks/$(fid)/notes/$(id)).data.text == request.resource.data.text)
+            // or a reply under a note
+            || (exists(/databases/$(database)/documents/flocks/$(fid)/noteReplies/$(id))
+              && get(/databases/$(database)/documents/flocks/$(fid)/noteReplies/$(id)).data.toUid == request.auth.uid
+              && get(/databases/$(database)/documents/flocks/$(fid)/noteReplies/$(id)).data.fromUid == request.resource.data.fromUid
+              && get(/databases/$(database)/documents/flocks/$(fid)/noteReplies/$(id)).data.text == request.resource.data.text));
       }
       // People muted by the founder or the super admin: their notes aren't sent. Only the founder and the super admin can see this list.
       match /muted/{uid} {
