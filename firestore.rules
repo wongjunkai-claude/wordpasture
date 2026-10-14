@@ -186,6 +186,13 @@ service cloud.firestore {
       match /groups/{gid} {
         allow read: if true;
         allow create, update: if isFounder(fid) && shortText(request.resource.data.name, 40);
+        // Fold Growth: any lamb in the fold may add the days that have passed, once; it only ever goes up
+        allow update: if isMember(fid) && myGroup(fid) == gid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['growth', 'gday'])
+          && request.resource.data.growth is number && request.resource.data.growth >= resource.data.get('growth', 0)
+          && request.resource.data.growth <= resource.data.get('growth', 0) + 300
+          && request.resource.data.gday is string && request.resource.data.gday.size() == 10
+          && (!('gday' in resource.data) || request.resource.data.gday > resource.data.gday);
         allow delete: if isFounder(fid);
 
         // A question shared with the fold only: the fold reads and answers it.

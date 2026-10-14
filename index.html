@@ -771,6 +771,41 @@ body.no-vn .reader .vn { display: none; }
 .vprev .hint { font-family: var(--ui, inherit); font-size: 14px; color: var(--muted); }
 
 /* ---------- remember: the ladder ---------- */
+/* ---------- Fold Growth: the level above the first member, and the fold view ---------- */
+.foldlvl { position: relative; display: flex; align-items: center; width: 100%; margin: 2px 0 10px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; text-align: left; }
+.foldlvl:disabled { cursor: default; }
+.foldlvl.static { margin: 0; cursor: default; }
+.flbadge { position: relative; width: 44px; height: 44px; flex: none; z-index: 1; }
+.flbadge svg { position: absolute; inset: 0; }
+.flbadge .flface { fill: var(--card); }
+.flbadge .flring0, .flbadge .flring { fill: none; stroke-width: 3; }
+.flbadge .flring0 { stroke: color-mix(in srgb, var(--accent) 16%, var(--card)); }
+.flbadge .flring { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 125.66; transition: stroke-dashoffset .7s ease; }
+.flbadge b { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.flbadge.pulse { animation: flpulse .6s ease; }
+@keyframes flpulse { 40% { transform: scale(1.18); } }
+.flbar { position: relative; flex: 1; min-width: 0; height: 22px; margin-left: -10px; border-radius: 0 11px 11px 0; background: color-mix(in srgb, var(--accent) 12%, var(--card)); border: 1.5px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-left: 0; overflow: hidden; }
+.flbar i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, #B9DDA0), var(--accent)); transition: width .7s ease; }
+.flbar span { position: absolute; inset: 0; display: grid; place-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); text-shadow: 0 0 6px var(--card); }
+.foldlvl .newdot { position: absolute; top: 0; left: 32px; width: 12px; height: 12px; border-radius: 50%; background: var(--heart); border: 2px solid var(--card); z-index: 2; }
+body.fvopen { overflow: hidden; }
+.foldview { position: fixed; inset: 0; z-index: 90; background: var(--sky2); }
+.fvstage { position: absolute; inset: 0; }
+.fvstage canvas.three { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.fvtop { position: absolute; left: 0; right: 0; top: 0; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); pointer-events: none; }
+.fvcard { max-width: 440px; margin: 0 auto; display: grid; gap: 10px; padding: 12px 14px; border-radius: 20px; border: 1.5px solid var(--line); background: color-mix(in srgb, var(--card) 88%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); pointer-events: auto; }
+.fvhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.fvhead .cardtitle { margin: 0; }
+.fvclose { width: 38px; height: 38px; flex: none; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font-size: 16px; cursor: pointer; }
+.fvhint { position: absolute; left: 0; right: 0; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); margin: 0; text-align: center; font-size: 12px; color: #3B4A42; text-shadow: 0 0 6px #fff; pointer-events: none; transition: opacity .4s; }
+.fvup { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); width: min(360px, calc(100% - 32px)); transform: translate(-50%, 12px); display: grid; gap: 6px; padding: 16px 18px 14px; text-align: center; border-radius: 22px; border: 1.5px solid var(--line); background: var(--card); box-shadow: 0 18px 40px -18px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .35s, transform .35s; }
+.fvup.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.fvup small { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+.fvup h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; color: var(--accent); }
+.fvup .what { margin: 0; font-weight: 700; }
+.fvup .cheer { margin: 0; color: var(--muted); }
+.fvup .btn { justify-self: center; flex: none; width: auto; padding: 10px 22px; margin-top: 4px; }
+@media (prefers-reduced-motion: reduce) { .flbar i, .flbadge .flring, .fvup { transition: none; } .flbadge.pulse { animation: none; } }
 .memrow { position: relative; }
 .memrow button[data-mem] { padding-right: 30px; }
 .memrow .mini.more { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 28px; min-width: 0; height: 44px; padding: 0; border: 0; background: transparent; color: var(--muted); display: grid; place-items: center; touch-action: manipulation; }
@@ -1766,7 +1801,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.58 · 14 October 2026, 11:51 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.59 · 14 October 2026, 5:17 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -1816,6 +1851,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const C = h => new T.Color(h).convertSRGBToLinear();
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  let FLAT0 = 8.5, foldOn = false; const farTrees = [];   // the fold view widens the flat middle of the meadow
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
   const scene = new T.Scene();
@@ -1853,7 +1889,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
 
   // ---- rolling ground ----
   function heightAt(x, z) {
-    const d = Math.hypot(x * 0.9, z + 2.5), f = smooth(8.5, 20, d);
+    const d = Math.hypot(x * 0.9, z + 2.5), f = smooth(FLAT0, FLAT0 + 11.5, d);
     return 0.03 * Math.sin(x * 2.1) * Math.cos(z * 1.7) +
       f * (1.3 + Math.sin(x * 0.33) * 1.3 + Math.cos(z * 0.27 + 1.0) * 1.2 + Math.sin((x + z) * 0.14) * 1.6);
   }
@@ -1916,7 +1952,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const tr = new T.Mesh(new T.CylinderGeometry(0.08, 0.12, 0.8, 6), trunkMat); tr.position.y = 0.4; g.add(tr);
     const l1 = new T.Mesh(new T.IcosahedronGeometry(0.6, 0), leafMat); l1.position.y = 1.05; g.add(l1);
     const l2 = new T.Mesh(new T.IcosahedronGeometry(0.42, 0), leafMat); l2.position.set(0.25, 1.4, 0.1); g.add(l2);
-    g.position.set(x, heightAt(x, z) - 0.05, z); g.scale.setScalar(s); scene.add(g);
+    g.position.set(x, heightAt(x, z) - 0.05, z); g.scale.setScalar(s); scene.add(g); farTrees.push(g);
   });
 
   // ---- clouds ----
@@ -4122,10 +4158,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   let dragX = null, az = 0, azVel = 0, downAt = null;
   // while arranging the pasture, taps and drags go to the planting grid instead of turning the camera
   const toGrid = (type, e) => { if (!gridOn || !api.onGridPointer) return false; api.onGridPointer(type, cellFromEvent(e), e); return true; };
-  canvas.addEventListener("pointerdown", e => { if (toGrid("down", e)) { canvas.setPointerCapture(e.pointerId); return; } dragX = e.clientX; downAt = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = "grabbing"; });
-  canvas.addEventListener("pointermove", e => { if (toGrid("move", e)) return; if (dragX === null) return; const dx = e.clientX - dragX; dragX = e.clientX; az = clamp(az - dx * 0.012, -1.3, 1.3); });
+  canvas.addEventListener("pointerdown", e => { if (foldOn) return; if (toGrid("down", e)) { canvas.setPointerCapture(e.pointerId); return; } dragX = e.clientX; downAt = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = "grabbing"; });
+  canvas.addEventListener("pointermove", e => { if (foldOn) return; if (toGrid("move", e)) return; if (dragX === null) return; const dx = e.clientX - dragX; dragX = e.clientX; az = clamp(az - dx * 0.012, -1.3, 1.3); });
   const ray = new T.Raycaster(), ndc = new T.Vector2();
-  canvas.addEventListener("pointerup", e => { if (toGrid("up", e)) return;
+  canvas.addEventListener("pointerup", e => { if (foldOn) return; if (toGrid("up", e)) return;
     canvas.style.cursor = "grab"; dragX = null;
     if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 6) {
       const r = canvas.getBoundingClientRect();
@@ -4439,6 +4475,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const fov = 30 + ovs * 10; if (Math.abs(camera.fov - fov) > 0.01) { camera.fov = fov; camera.updateProjectionMatrix(); }
     scene.fog.near = 14 + ovs * 14; scene.fog.far = 46 + ovs * 18;
     camera.lookAt(lookTmp);
+    FOLD.tick(t, dt);
 
     renderer.render(scene, camera);
     if (onScreen && !document.hidden) requestAnimationFrame(frame); else running = false;
@@ -4450,7 +4487,515 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   document.addEventListener("visibilitychange", wake3D);
   requestAnimationFrame(frame);
 
+  // ================= FOLD GROWTH (preview) =================
+  // The fold's shared farm, built from the pasture's own kit and placed on the same meadow.
+  const FOLD = (() => {
+    if (!K.thatch) K.thatch = toon({ color: C("#DDBB62") });
+    if (!K.blossom) K.blossom = toon({ color: C("#F9D2DF") });
+    [["redB", "#D0584C"], ["redD", "#A13F37"], ["paint", "#FBF6EC"], ["roofB", "#6C8DB5"], ["tile", "#BE6247"], ["hay", "#EBCB66"], ["soil2", "#86603F"], ["dirt", "#D9C29A"], ["gravel", "#D8D0C0"], ["plank", "#C4925E"], ["plankD", "#9C6B40"], ["ironD", "#4A4E55"]]
+      .forEach(([k, h]) => K[k] = toon({ color: C(h) }));
+    K.goldM = toon({ color: C("#F0C24F"), emissive: C("#3A2800") });
+    K.win = new T.MeshBasicMaterial({ color: new T.Color("#FFE2A0") });
+    K.inside = toon({ color: C("#7A5638") });
+
+    const Z0 = -2.5;                         // the fold sits on the flat middle of the meadow
+    const W = (u, v) => [u, v + Z0];         // fold coords (u across, v towards the camera) to world x, z
+    const gy = (x, z) => heightAt(x, z);
+    const root = new T.Group(); scene.add(root);
+    const halfOf = L => L >= 50 ? 11 : L >= 25 ? 9.5 : L >= 15 ? 8 : L >= 5 ? 6.5 : 5;
+    const at = (g, u, v, ry = 0) => { const [x, z] = W(u, v); g.position.set(x, gy(x, z), z); g.rotation.y = ry; return g; };
+
+    // ---------- kit pieces ----------
+    const triS = new T.Shape(); triS.moveTo(-1, 0); triS.lineTo(1, 0); triS.lineTo(0, 1); triS.lineTo(-1, 0);
+    const kPrism = new T.ExtrudeGeometry(triS, { depth: 1, bevelEnabled: false }); kPrism.translate(0, 0, -0.5);
+    // gable: wall-coloured prism plus two roof slabs; ridge runs along x
+    function gable(g, wallM, roofM, w, d, rise, y, ridgeM) {
+      const pr = P(g, kPrism, wallM, d / 2, rise, w, 0, y, 0, 0.014); pr.rotation.y = Math.PI / 2;
+      const a = Math.atan2(rise, d / 2), L = Math.hypot(d / 2, rise) + 0.22;
+      [-1, 1].forEach(sd => rot(box(g, roofM, w + 0.3, 0.09, L, 0, y + rise / 2 + 0.04, sd * d / 4 + sd * 0.05, 0.016), sd * a, 0, 0));
+      if (ridgeM) seg(g, ridgeM, [-(w + 0.3) / 2, y + rise + 0.08, 0], [(w + 0.3) / 2, y + rise + 0.08, 0], 0.06, 0.012);
+    }
+    // a hollow building with a doorway in the front (+z) wall, so a lamb can stand inside and be seen
+    function shed(g, o) {
+      const { w, d, h, m, t = 0.12, dw = 1.0, dh = 1.25 } = o;
+      box(g, m, w, h, t, 0, h / 2, -d / 2 + t / 2);
+      [-1, 1].forEach(sd => box(g, m, t, h, d, sd * (w / 2 - t / 2), h / 2, 0));
+      if (o.open) return;
+      const side = (w - dw) / 2;
+      [-1, 1].forEach(sd => box(g, m, side, h, t, sd * (dw / 2 + side / 2), h / 2, d / 2 - t / 2));
+      box(g, m, dw + 0.02, h - dh, t, 0, dh + (h - dh) / 2, d / 2 - t / 2);
+      box(g, o.trim || K.woodD, dw + 0.16, 0.1, t + 0.06, 0, dh + 0.05, d / 2 - t / 2, 0.012);
+      [-1, 1].forEach(sd => box(g, o.trim || K.woodD, 0.08, dh, t + 0.06, sd * (dw / 2 + 0.04), dh / 2, d / 2 - t / 2, 0.01));
+      box(g, K.inside, w - 0.3, h - 0.1, 0.02, 0, h / 2, -d / 2 + 0.13, 0); egg(g, K.straw, w * 0.3, 0.03, d * 0.28, 0, 0.015, -0.1, 0);   // straw bed, darker inside
+      // doors swung open
+      [-1, 1].forEach(sd => { const hg = new T.Group(); hg.position.set(sd * dw / 2, 0, d / 2); hg.rotation.y = sd * 1.25; g.add(hg);
+        box(hg, o.door || K.woodD, dw / 2, dh - 0.04, 0.06, -sd * dw / 4, dh / 2, 0.03, 0.012);
+        if (o.xdoor) { const lw = dw / 2 - 0.1, lh = dh - 0.14, len = Math.hypot(lw, lh), ang = Math.atan2(lw, lh); [ang, -ang].forEach(r => rot(box(hg, o.xdoor, 0.05, len, 0.03, -sd * dw / 4, dh / 2, 0.07, 0), 0, 0, r));
+          box(hg, o.xdoor, dw / 2 - 0.02, 0.05, 0.03, -sd * dw / 4, 0.06, 0.07, 0); box(hg, o.xdoor, dw / 2 - 0.02, 0.05, 0.03, -sd * dw / 4, dh - 0.07, 0.07, 0); } });
+    }
+    function lanternHead(g, x, y, z, m = K.iron) {
+      const lt = new T.Group(); lt.position.set(x, y, z); g.add(lt);
+      box(lt, m, 0.16, 0.025, 0.16, 0, 0, 0, 0.006); box(lt, m, 0.16, 0.025, 0.16, 0, 0.22, 0, 0.006); P(lt, kCone, m, 0.12, 0.1, 0.12, 0, 0.29, 0, 0.008).rotation.y = 0.78;
+      const core = new T.Mesh(kSph, K.glow); core.scale.setScalar(0.055); core.position.y = 0.11; lt.add(core);
+      const s = glowSprite("rgba(255,214,120,0.9)", 0.75, 0.75); s.position.y = 0.12; lt.add(s); return lt;
+    }
+    function nameSign(g, y, gold, top) {
+      const c = document.createElement("canvas"); c.width = 512; c.height = 128; const x = c.getContext("2d");
+      x.fillStyle = gold ? "#F3D27A" : "#E2B98A"; x.fillRect(0, 0, 512, 128); x.fillStyle = "#3B2B25"; x.font = "600 62px Fredoka, Nunito Sans, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("Psalms Squad", 256, 68);
+      const tx = new T.CanvasTexture(c); tx.encoding = T.sRGBEncoding; const mat = new T.MeshBasicMaterial({ map: tx });
+      box(g, gold ? K.goldM : K.wood, 1.5, 0.38, 0.06, 0, y, 0, 0.012);
+      [1, -1].forEach(sd => { const f = new T.Mesh(new T.PlaneGeometry(1.42, 0.32), mat); f.position.set(0, y, sd * 0.034); if (sd < 0) f.rotation.y = Math.PI; g.add(f); });
+      [-0.55, 0.55].forEach(x2 => seg(g, gold ? K.goldM : K.iron, [x2, y + 0.18, 0], [x2, top, 0], 0.014, 0));
+    }
+
+    // ---------- fences and gates (pasture fence styles, run around the fold) ----------
+    function setFence(h) { Object.assign(FENCE, { x0: -h, x1: h, z0: Z0 - h, z1: Z0 + h, r: 2.0 }); }
+    function brokenFence(g) { const r = seeded(3); fencePath(1.1).forEach(([x, z]) => { if (r() < 0.45) return; const hh = 0.35 + r() * 0.3;
+      rot(box(g, K.woodD, 0.11, hh, 0.11, x, gy(x, z) + hh / 2 - 0.02, z, 0.014), (r() - 0.5) * 0.3, r(), (r() - 0.5) * 0.35); }); }
+    function picket(g) { const { pts, pairs } = fencePairs(0.22);
+      pts.forEach(([x, z], i) => { const y = gy(x, z); box(g, K.paint, 0.08, 0.62, 0.05, x, y + 0.31, z, 0.01); P(g, kCone, K.paint, 0.06, 0.1, 0.03, x, y + 0.67, z, 0.008).rotation.y = 0.78; });
+      pairs.forEach(([a, b]) => [0.2, 0.46].forEach(hh => seg(g, K.paint, [a[0], gy(a[0], a[1]) + hh, a[1]], [b[0], gy(b[0], b[1]) + hh, b[1]], 0.025, 0.008))); }
+    function goldStone(g) { dryStone(g); const { pairs } = fencePairs(0.6); pairs.forEach(([a, b]) => seg(g, K.goldM, [a[0], gy(a[0], a[1]) + 0.6, a[1]], [b[0], gy(b[0], b[1]) + 0.6, b[1]], 0.045, 0.01)); }
+    const fenceTier = L => L >= 50 ? "gold" : L >= 28 ? "stone" : L >= 17 ? "picket" : L >= 2 ? "rail" : "broken";
+    function buildFence(L) { const g = new T.Group(); setFence(halfOf(L)); ({ broken: brokenFence, rail: railFence, picket, stone: dryStone, gold: goldStone })[fenceTier(L)](g); return g; }
+    function buildGate(L) { const g = new T.Group(), h = halfOf(L); const [x, z] = W(0, -h); g.position.set(x, gy(x, z), z);
+      const kind = L >= 50 ? "beautiful" : L >= 28 ? "fold" : "field"; GATES[kind](g);
+      if (kind === "field") { [-1, 1].forEach(sd => box(g, K.woodD, 0.14, 1.95, 0.14, sd * 1.2, 0.975, 0, 0.014)); box(g, K.woodD, 2.6, 0.14, 0.16, 0, 1.9, 0, 0.014); [-1, 1].forEach(sd => P(g, kCone, K.woodD, 0.1, 0.08, 0.1, sd * 1.2, 2.0, 0, 0.008).rotation.y = 0.78); nameSign(g, 1.45, false, 1.83); }
+      else if (kind === "fold") nameSign(g, 1.45, false, 1.98); else nameSign(g, 1.95, true, 2.2);
+      return g; }
+
+    // ---------- path: from the gate to the middle ----------
+    function buildPath(L) {
+      const g = new T.Group(), h = halfOf(L), stream = L >= 23, r = seeded(9), tier = L >= 50 ? "gold" : L >= 28 ? "cobble" : L >= 17 ? "steps" : L >= 10 ? "gravel" : "dirt";
+      for (let v = -h + 0.3; v < 0.4; v += 0.42) { if (stream && Math.abs(v + 1.5) < 0.95) continue; const [x, z] = W(0, v), y = gy(x, z);
+        if (tier === "steps") { if (Math.round(v / 0.42) % 2) continue; P(g, kCyl, [K.stoneL, K.stone][Math.round(v) & 1], 0.3, 0.05, 0.24, (r() - 0.5) * 0.12, y + 0.03, z, 0.012).rotation.y = r() * 3; continue; }
+        if (tier === "cobble" || tier === "gold") { for (let i = 0; i < 4; i++) box(g, tier === "gold" ? [K.goldM, K.gold, K.goldL][(i + Math.round(v * 3)) % 3] : [K.stone, K.stoneL, K.stoneD][(i + Math.round(v * 3)) % 3], 0.24, 0.05, 0.36, -0.39 + i * 0.26, y + 0.02, z, 0.008); continue; }
+        egg(g, tier === "dirt" ? K.dirt : K.gravel, 0.55, 0.025, 0.3, (r() - 0.5) * 0.08, y + 0.012, z, 0);
+        if (tier === "gravel") for (let k = 0; k < 3; k++) ball(g, K.stoneD, 0.035, (r() - 0.5) * 0.8, y + 0.03, z + (r() - 0.5) * 0.3, 0); }
+      return g;
+    }
+
+    // ---------- buildings ----------
+    const barnTier = L => L >= 50 ? "eden" : L >= 22 ? "loft" : L >= 10 ? "red" : L >= 8 ? "plank" : "lean";
+    const BARN = [-3.2, -3.8];
+    const barnSize = t => ({ lean: [2.2, 1.6], plank: [2.6, 2.0], red: [3.0, 2.2], loft: [3.2, 2.4], eden: [3.4, 2.5] })[t];
+    function buildBarn(t) {
+      const g = new T.Group(), [w, d] = barnSize(t);
+      if (t === "lean") {
+        box(g, K.wood, w, 1.35, 0.12, 0, 0.675, -d / 2 + 0.06); [-1, 1].forEach(sd => { box(g, K.woodD, 0.12, 1.0, d, sd * (w / 2 - 0.06), 0.5, 0); seg(g, K.woodD, [sd * (w / 2 - 0.06), 0, d / 2 - 0.06], [sd * (w / 2 - 0.06), 1.15, d / 2 - 0.06], 0.06, 0.012); });
+        rot(box(g, K.plank, w + 0.3, 0.08, d + 0.4, 0, 1.3, 0.1, 0.016), 0.22, 0, 0); rot(box(g, K.plankD, 0.5, 0.06, 0.16, -0.4, 1.38, 0.3, 0.008), 0.22, 0.3, 0);
+        egg(g, K.straw, w * 0.4, 0.04, d * 0.38, 0, 0.02, 0, 0.01); rot(box(g, K.plankD, 0.14, 0.05, 1.0, w / 2 + 0.25, 0.4, 0.3, 0.01), 0.9, 0.3, 0);
+        return g;
+      }
+      const H = t === "plank" ? 1.5 : t === "red" ? 1.7 : 1.95;
+      const m = t === "plank" ? K.plank : t === "eden" ? K.stoneL : K.redB;
+      shed(g, { w, d, h: H, m, trim: t === "plank" ? K.woodD : K.paint, door: t === "plank" ? K.woodD : t === "eden" ? K.wood : K.redB, xdoor: t === "red" || t === "loft" ? K.paint : null });
+      if (t === "plank") [0.4, 0.8, 1.2].forEach(y => [-1, 1].forEach(sd => seg(g, K.plankD, [sd * w / 2 + sd * 0.005, y, -d / 2], [sd * w / 2 + sd * 0.005, y, d / 2], 0.012, 0)));
+      if (t === "loft" || t === "eden") { const r = seeded(4); [-1, 1].forEach(sd => { for (let i = 0; i < 6; i++) box(g, [K.stone, K.stoneD, K.stoneL][i % 3], 0.34, 0.2, 0.06, sd * (w / 2 - 0.25 - i * 0.18 * 0) + (t === "loft" ? 0 : 0), 0.12 + (i % 3) * 0.2, d / 2 + 0.01, 0); });
+        if (t === "loft") { box(g, K.stone, w + 0.04, 0.6, d + 0.04, 0, 0.3, 0, 0.014); [0, 1].forEach(row => { for (let i = 0; i < 7; i++) box(g, i % 2 ? K.stoneL : K.stoneD, 0.32, 0.18, 0.04, -w / 2 + 0.25 + i * 0.45 + row * 0.2, 0.15 + row * 0.25, d / 2 + 0.03, 0); }); }
+        else for (let row = 0; row < 7; row++) for (let i = 0; i < 6; i++) { const x = -w / 2 + 0.3 + i * 0.56 + (row % 2) * 0.24; if (Math.abs(x) < 0.65 && row < 5) continue; box(g, row % 2 ? K.stone : K.stoneD, 0.4, 0.04, 0.03, x, 0.14 + row * 0.27, d / 2 + 0.02, 0); } }
+      if (t === "red" || t === "loft") [-1, 1].forEach(sx => [-1, 1].forEach(sz => box(g, K.paint, 0.1, H, 0.1, sx * w / 2, H / 2, sz * d / 2, 0.01)));
+      gable(g, m === K.redB ? K.redB : m, t === "plank" ? K.thatch : t === "eden" ? K.tile : K.redD, w, d, t === "plank" ? 0.95 : 1.1, H, t === "eden" ? K.goldM : null);
+      if (t === "loft" || t === "eden") { box(g, K.paint, 0.5, 0.45, 0.04, 0, H + 0.38, d / 2 + 0.01, 0.01); box(g, K.inside, 0.4, 0.36, 0.05, 0, H + 0.38, d / 2 + 0.02, 0);
+        box(g, K.paint, 0.42, 0.42, 0.42, 0, H + 1.28, 0, 0.012); P(g, kCone, t === "eden" ? K.goldM : K.redD, 0.4, 0.38, 0.4, 0, H + 1.68, 0, 0.012).rotation.y = 0.78; ball(g, K.goldM, 0.05, 0, H + 1.9, 0, 0.008); }
+      // hay inside, and the lamb-sized doorway
+      P(g, kCyl, K.hay, 0.3, 0.55, 0.3, -w / 2 + 0.45, 0.3, -d / 2 + 0.45, 0.012).rotation.x = Math.PI / 2;
+      return g;
+    }
+    function buildHouse(eden) {
+      const g = new T.Group(), w = 3.0, d = 2.2, H = 1.6;
+      box(g, K.cream2, w, H, d, 0, H / 2, 0, 0.016); gable(g, K.cream2, K.roofB, w, d, 1.0, H, eden ? K.goldM : null);
+      box(g, K.clay, 0.35, 0.9, 0.35, 0.8, H + 0.75, -0.35, 0.012);
+      box(g, K.wood, 0.55, 1.0, 0.05, 0, 0.5, d / 2 + 0.02, 0.012); ball(g, K.gold, 0.035, 0.18, 0.5, d / 2 + 0.06, 0);
+      [-0.95, 0.95].forEach(x => { box(g, K.paint, 0.55, 0.5, 0.05, x, 0.95, d / 2 + 0.02, 0.01); box(g, K.win, 0.42, 0.37, 0.05, x, 0.95, d / 2 + 0.035, 0); box(g, K.paint, 0.04, 0.38, 0.06, x, 0.95, d / 2 + 0.05, 0);
+        box(g, K.wood, 0.6, 0.12, 0.16, x, 0.66, d / 2 + 0.09, 0.008); [-0.18, 0, 0.18].forEach(dx => ball(g, [K.rose, K.yellow, K.pink][Math.abs(Math.round(dx * 10)) % 3], 0.05, x + dx, 0.75, d / 2 + 0.11, 0.006)); });
+      box(g, K.wood, 1.2, 0.07, 0.6, 0, 1.25, d / 2 + 0.3, 0.012); [-0.55, 0.55].forEach(x => seg(g, K.woodD, [x, 0, d / 2 + 0.55], [x, 1.22, d / 2 + 0.55], 0.04, 0.01));
+      return g;
+    }
+    function buildStable() { const g = new T.Group(), w = 2.6, d = 1.8, H = 1.4;
+      shed(g, { w, d, h: H, m: K.plank, open: true }); egg(g, K.straw, w * 0.42, 0.04, d * 0.42, 0, 0.02, 0, 0.01);
+      seg(g, K.woodD, [-w / 2 + 0.06, 0, d / 2 - 0.06], [-w / 2 + 0.06, H, d / 2 - 0.06], 0.06, 0.012); seg(g, K.woodD, [w / 2 - 0.06, 0, d / 2 - 0.06], [w / 2 - 0.06, H, d / 2 - 0.06], 0.06, 0.012);
+      box(g, K.woodD, w + 0.1, 0.12, 0.12, 0, H, d / 2 - 0.06, 0.012); gable(g, K.plank, K.thatch, w, d, 0.85, H);
+      P(g, kCyl, K.hay, 0.25, 0.5, 0.25, w / 2 - 0.45, 0.26, -d / 2 + 0.4, 0.012).rotation.x = Math.PI / 2;
+      box(g, K.woodD, 0.8, 0.4, 0.3, -w / 2 + 0.6, 0.2, -d / 2 + 0.3, 0.012); return g; }
+    function buildHall(eden) { const g = new T.Group(), w = 3.2, d = 2.4, H = 1.9;
+      shed(g, { w, d, h: H, m: K.stoneL, dw: 1.3, dh: 1.45, trim: K.stoneD, door: K.wood });
+      for (let row = 0; row < 7; row++) for (let i = 0; i < 6; i++) { const x = -w / 2 + 0.3 + i * 0.54 + (row % 2) * 0.24; if (Math.abs(x) < 0.8 && row < 6) continue; box(g, row % 2 ? K.stone : K.stoneD, 0.38, 0.04, 0.03, x, 0.14 + row * 0.26, d / 2 + 0.02, 0); }
+      [-1.15, 1.15].forEach(x => { box(g, K.stoneD, 0.5, 0.62, 0.06, x, 1.15, d / 2 + 0.02, 0.01); box(g, K.win, 0.36, 0.5, 0.06, x, 1.15, d / 2 + 0.035, 0); });
+      gable(g, K.stoneL, K.tile, w, d, 1.15, H, eden ? K.goldM : null);
+      box(g, K.stoneL, 0.5, 0.6, 0.5, 0.9, H + 0.9, 0, 0.012); P(g, kCone, K.tile, 0.45, 0.5, 0.45, 0.9, H + 1.45, 0, 0.012).rotation.y = 0.78;
+      box(g, K.wood, 2.0, 0.08, 0.6, 0, 0.45, -0.2, 0.012); [-0.8, 0.8].forEach(x => box(g, K.woodD, 0.08, 0.42, 0.5, x, 0.21, -0.2, 0.008));
+      const s = glowSprite("rgba(255,214,140,0.6)", 2.2, 0.45); s.position.set(0, 1.0, 0); g.add(s); return g; }
+    function buildMill(eden) { const g = new T.Group();
+      P(g, kTaper, K.cream2, 0.78, 3.0, 0.78, 0, 1.5, 0, 0.02); [0.6, 1.4, 2.2].forEach(y => ring(g, K.stoneL, 0.78 - y * 0.075, 0.025, Math.PI * 2, 0, y, 0, Math.PI / 2, 0, 0, 0.006));
+      box(g, K.wood, 0.42, 0.75, 0.05, 0, 0.38, 0.77, 0.012); box(g, K.win, 0.22, 0.26, 0.04, 0, 1.75, 0.64, 0);
+      P(g, kCone, K.redD, 0.7, 0.7, 0.7, 0, 3.35, 0, 0.02);
+      live(g, l => { const hub = new T.Group(); hub.position.set(0, 2.95, 0.72); l.add(hub); ball(hub, eden ? K.goldM : K.woodD, 0.1, 0, 0, 0, 0.01);
+        for (let k = 0; k < 4; k++) { const arm = new T.Group(); arm.rotation.z = k * Math.PI / 2; hub.add(arm); box(arm, K.woodD, 0.07, 1.5, 0.05, 0, 0.75, 0, 0.01); box(arm, K.paint, 0.36, 1.05, 0.03, 0.2, 0.92, 0, 0.01); for (let j = 0; j < 4; j++) box(arm, K.woodD, 0.36, 0.025, 0.04, 0.2, 0.5 + j * 0.28, 0.01, 0); }
+        seg(l, K.woodD, [0, 3.6, 0], [0, 4.4, 0], 0.025, 0.008); const fl = new T.Group(); fl.position.set(0, 4.25, 0); l.add(fl); const segs = []; for (let i = 0; i < 6; i++) segs.push(box(fl, i % 2 ? (eden ? K.goldM : K.red) : K.white, 0.11, 0.3, 0.012, 0.06 + i * 0.1, 0, 0, 0.006));
+        g.userData.tick = (t) => { hub.rotation.z = -t * 0.8; segs.forEach((b, i) => { b.position.z = Math.sin(t * 3 - i * 0.8) * 0.03 * i * 0.4; b.rotation.y = Math.cos(t * 3 - i * 0.8) * 0.25; }); }; });
+      return g; }
+    function buildHay() { const g = new T.Group();
+      [[-0.6, 0, 0.2], [0.05, 0.05, -0.15]].forEach(([x, z, r]) => { const b = P(g, kCyl, K.hay, 0.32, 0.7, 0.32, x, 0.32, z, 0.014); b.rotation.set(0, r, Math.PI / 2); ring(g, K.straw, 0.33, 0.015, Math.PI * 2, x - 0.2 * Math.cos(r), 0.32, z + 0.2 * Math.sin(r), 0, Math.PI / 2 + r, 0, 0); });
+      const b3 = P(g, kCyl, K.hay, 0.3, 0.66, 0.3, -0.28, 0.85, 0.02, 0.014); b3.rotation.set(0, 0.05, Math.PI / 2);
+      return g; }
+    function buildTrough() { const g = new T.Group(); box(g, K.woodD, 1.3, 0.06, 0.5, 0, 0.03, 0, 0.012); [-1, 1].forEach(sd => { box(g, K.woodD, 1.3, 0.38, 0.07, 0, 0.19, sd * 0.215, 0.012); box(g, K.woodD, 0.07, 0.38, 0.5, sd * 0.615, 0.19, 0, 0.012); }); box(g, K.water, 1.16, 0.02, 0.36, 0, 0.29, 0, 0); [-0.55, 0.55].forEach(x => box(g, K.wood, 0.1, 0.12, 0.62, x, 0.05, 0, 0.008)); return g; }
+    const wellTier = L => L >= 50 ? "eden" : L >= 19 ? "stone" : L >= 9 ? "wood" : "hole";
+    function buildWell(t) { const g = new T.Group();
+      if (t === "hole") { ring(g, K.soil, 0.36, 0.07, Math.PI * 2, 0, 0.03, 0, Math.PI / 2, 0, 0, 0.01); P(g, kCyl, K.deep, 0.32, 0.01, 0.32, 0, 0.03, 0, 0); P(g, kTaper, K.wood, 0.09, 0.14, 0.09, 0.55, 0.07, 0.15, 0.008); egg(g, K.dirt, 0.3, 0.06, 0.2, -0.5, 0.02, -0.2, 0.008); return g; }
+      P(g, kCyl, t === "wood" ? K.wood : K.stone, 0.4, 0.45, 0.4, 0, 0.225, 0, 0.016); ring(g, t === "wood" ? K.woodD : K.stoneL, 0.4, 0.05, Math.PI * 2, 0, 0.45, 0, Math.PI / 2, 0, 0, 0.01); P(g, kCyl, K.deep, 0.34, 0.01, 0.34, 0, 0.43, 0, 0);
+      if (t === "wood") [0.12, 0.32].forEach(y => ring(g, K.iron, 0.405, 0.015, Math.PI * 2, 0, y, 0, Math.PI / 2, 0, 0, 0));
+      else for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2; box(g, K.stoneD, 0.16, 0.08, 0.02, Math.cos(a) * 0.405, 0.15 + (i % 2) * 0.15, Math.sin(a) * 0.405, 0).rotation.y = -a + Math.PI / 2; }
+      [-1, 1].forEach(sd => seg(g, K.woodD, [sd * 0.36, 0.42, 0], [sd * 0.36, 1.15, 0], 0.03, 0.008)); seg(g, K.wood, [-0.4, 0.95, 0], [0.4, 0.95, 0], 0.025, 0.006); seg(g, K.woodD, [0.4, 0.95, 0], [0.48, 0.82, 0], 0.015, 0.006);
+      seg(g, K.tan, [0, 0.95, 0], [0, 0.7, 0], 0.006, 0); P(g, kTaper, K.wood, 0.07, 0.1, 0.07, 0, 0.64, 0, 0.008);
+      if (t === "eden") { rot(box(g, K.goldM, 1.0, 0.05, 0.55, 0, 1.25, 0.12, 0.012), 0.5, 0, 0); rot(box(g, K.goldM, 1.0, 0.05, 0.55, 0, 1.25, -0.12, 0.012), -0.5, 0, 0); }
+      return g; }
+    function buildVeg() { const g = new T.Group(), r = seeded(12); egg(g, K.soil2, 1.15, 0.06, 0.72, 0, 0.02, 0, 0.012);
+      for (let row = 0; row < 3; row++) for (let i = 0; i < 6; i++) { const x = -0.85 + i * 0.34, z = -0.4 + row * 0.4;
+        if (row === 1) { P(g, kCone, K.green, 0.06, 0.18, 0.06, x, 0.14, z, 0.006); ball(g, K.orange, 0.04, x, 0.06, z + 0.03, 0.006); }
+        else { ball(g, row ? K.lime : K.green, 0.13, x, 0.13, z, 0.012); ball(g, K.leaf2, 0.08, x + 0.05, 0.2, z + 0.04, 0.008); } }
+      seg(g, K.woodD, [1.15, 0, 0.6], [1.15, 0.7, 0.6], 0.025, 0.008); egg(g, K.straw, 0.12, 0.12, 0.12, 1.15, 0.74, 0.6, 0.01); return g; }
+    function buildLanterns(L) { const g = new T.Group(), h = halfOf(L), kind = L >= 50 ? "gold" : L >= 27 ? "iron" : "wood";
+      [-3.0, -4.6, -6.2, -7.8].filter(v => v > -h + 0.6).forEach(v => [-0.75, 0.75].forEach(u => { const [x, z] = W(u, v), y = gy(x, z);
+        if (kind === "wood") { seg(g, K.woodD, [x, y, z], [x, y + 0.95, z], 0.035, 0.01); seg(g, K.woodD, [x, y + 0.92, z], [x - Math.sign(u) * 0.25, y + 0.92, z], 0.02, 0.006); const l = egg(g, K.glow, 0.09, 0.12, 0.09, x - Math.sign(u) * 0.25, y + 0.75, z, 0.008); const s = glowSprite("rgba(255,200,110,0.9)", 0.7, 0.7); s.position.copy(l.position); g.add(s); }
+        else { seg(g, kind === "gold" ? K.goldM : K.ironD, [x, y, z], [x, y + 1.05, z], 0.03, 0.008); lanternHead(g, x, y + 1.05, z, kind === "gold" ? K.goldM : K.iron); } }));
+      return g; }
+    function buildBridge(eden) { const g = new T.Group();
+      for (let i = 0; i < 11; i++) { const v = -1.0 + i * 0.2, y = 0.06 + Math.sin(i / 10 * Math.PI) * 0.32; box(g, i % 2 ? K.wood : K.plank, 1.1, 0.06, 0.18, 0, y, v, 0.01); }
+      [-0.55, 0.55].forEach(x => { [-1.0, 0, 1.0].forEach(v => seg(g, K.woodD, [x, 0, v], [x, 0.62 + (v ? 0 : 0.3), v], 0.04, 0.01)); seg(g, eden ? K.goldM : K.wood, [x, 0.6, -1.0], [x, 0.9, 0], 0.03, 0.008); seg(g, eden ? K.goldM : K.wood, [x, 0.9, 0], [x, 0.6, 1.0], 0.03, 0.008); });
+      return g; }
+    const bridgeY = (u, v) => Math.abs(u) < 0.62 && Math.abs(v + 1.5) < 1.05 ? 0.09 + Math.sin(((v + 1.5) + 1.0) / 2 * Math.PI) * 0.32 : 0;
+    function buildHill() { const g = new T.Group(); egg(g, K.leaf2, 1.8, 0.6, 1.8, 0, 0, 0, 0.02); egg(g, K.green, 1.2, 0.5, 1.2, 0.2, 0.05, 0.2, 0);
+      for (let i = 0; i < 8; i++) { const a = i * 0.8; kFlower(g, Math.cos(a) * 1.1, Math.sin(a) * 1.1, 0.42 - 0.1 * (i % 3), [K.white, K.yellow, K.pink][i % 3], 5, 0.035); }
+      seg(g, K.ironD, [0, 0.55, 0], [0, 2.0, 0], 0.045, 0.01); seg(g, K.ironD, [0, 1.95, 0], [0.35, 1.95, 0], 0.03, 0.008);
+      const lt = lanternHead(g, 0.35, 1.6, 0, K.iron); lt.scale.setScalar(1.5); const s = glowSprite("rgba(255,214,120,0.85)", 2.4, 0.6); s.position.set(0.35, 1.8, 0); g.add(s); return g; }
+    const hillY = (u, v) => { const d = Math.hypot(u - 7.6, v + 3.6); return d < 1.8 ? 0.6 * Math.sqrt(1 - (d / 1.8) ** 2) : 0; };
+    function buildPond() { const g = new T.Group(); WATERS.pond.build(g, seeded(5)); g.scale.setScalar(1.55);
+      live(g, l => { const ducks = [0, 1].map(i => { const d = new T.Group(); egg(d, K.white, 0.13, 0.08, 0.09, 0, 0.06, 0, 0.012); ball(d, K.white, 0.065, 0.1, 0.16, 0, 0.01); P(d, kCone, K.orange, 0.025, 0.07, 0.025, 0.17, 0.15, 0, 0.006).rotation.z = -Math.PI / 2;
+          [-1, 1].forEach(sd => ball(d, K.dark, 0.012, 0.13, 0.18, sd * 0.04, 0)); rot(egg(d, K.white, 0.06, 0.03, 0.04, -0.13, 0.12, 0, 0.008), 0, 0, 0.5); d.scale.setScalar(0.65); l.add(d); return d; });
+        const prev = g.userData.tick; g.userData.tick = (t, dt) => { if (prev) prev(t, dt); ducks.forEach((d, i) => { const a = t * 0.18 * (i ? -1 : 1) + i * 2; d.position.set(Math.cos(a) * 0.42, 0.03 + Math.sin(t * 2 + i) * 0.006, Math.sin(a) * 0.32); d.rotation.y = -a + (i ? Math.PI / 2 : -Math.PI / 2); }); }; });
+      return g; }
+    function buildStream(L) { const g = new T.Group(), h = halfOf(L); const [x, z] = W(0, -1.5); g.position.set(x, gy(x, z) + 0.03, z);
+      const c = brookStrip(g, 2 * h - 0.4, 1.1, 0.18, seeded(15)); flowSparkles(g, c, Math.round(h * 2.4), 0.04);
+      if (L >= 50) for (let i = 0; i < 14; i++) { const p = c.getPointAt((i + 0.5) / 14), sd = i % 2 ? 1 : -1; if (Math.abs(p.x) < 1.2) continue; egg(g, i % 3 ? K.black : K.cream2, 0.07, 0.05, 0.06, p.x, 0.05, p.z + sd * 0.62, 0.008); }
+      reeds(g, -h + 1.2, 0.55, 3); reeds(g, h - 1.6, -0.55, 3); return g; }
+    function buildVines() { const g = new T.Group(); const k = new T.Group(); TREES.vine(k); sizeTree(k, "vine"); g.add(k); return g; }
+    function tree(key, s = 1) { return () => { const g = new T.Group(), k = new T.Group(); TREES[key](k); sizeTree(k, key); k.scale.multiplyScalar(s); g.add(k); return g; }; }
+    function buildHives() { const g = new T.Group(); [[0, -0.7], [0.15, 0], [0, 0.7]].forEach(([x, z]) => { const k = new T.Group(); KEEPSAKE3D.beehive(k); k.scale.setScalar(1.15); k.position.set(x, 0, z); k.rotation.y = 0.6; g.add(k); }); return g; }
+    function buildFlowers(L) { const g = new T.Group(), r = seeded(21); setFence(halfOf(L)); fencePath(0.5).forEach(([x, z], i) => { if (Math.abs(x) < 1.6 && z < Z0 - halfOf(L) + 1) return;
+      const cx = x * 0.93, cz = Z0 + (z - Z0) * 0.93; kFlower(g, cx, cz, 0.12 + r() * 0.1, [K.white, K.yellow, K.pink, K.lilac][i % 4], 5, 0.04); if (i % 2) kFlower(g, cx + 0.15, cz + 0.1, 0.1, [K.pink, K.white][i % 2], 5, 0.03); });
+      g.children.forEach(o => o.position.y += 0); return g; }
+    function buildOrchard() { const g = new T.Group(), r = seeded(77), keys = ["apple", "pomegranate", "fig", "olive", "almond", "myrtle"]; let n = 0;
+      for (let i = 0; i < 300 && n < 18; i++) { const u = (r() - 0.5) * 21, v = (r() - 0.5) * 21, e = Math.max(Math.abs(u), Math.abs(v)); if (e < 9.9 || e > 10.4) continue; if (v < -9 && Math.abs(u) < 2) continue; if (v > 8.5) continue;
+        const k = new T.Group(); TREES[keys[n % keys.length]](k); sizeTree(k, keys[n % keys.length]); k.scale.multiplyScalar(0.8); at(k, u, v, r() * 6); g.add(k); n++; }
+      return g; }
+
+    // ---------- what the fold holds at each level ----------
+    // pos: fold coords of the piece (for the camera); foot: [u0, v0, u1, v1] solid area lambs walk around
+    function spec(L) {
+      const E = L >= 50, out = [], add = (id, key, pos, build, o = {}) => out.push(Object.assign({ id, key: String(key), pos, build }, o));
+      const place = (u, v, ry = 0) => f => () => at(f(), u, v, ry);
+      add("fence", fenceTier(L) + halfOf(L), [0, -halfOf(L)], () => buildFence(L), { wide: 1 });
+      add("path", L + "", [0, -3], () => buildPath(L), { wide: 1, quiet: 1 });
+      if (L >= 3) { const t = barnTier(L), [w, d] = barnSize(t); add("barn", t, BARN, place(...BARN)(() => buildBarn(t)), { foot: [BARN[0] - w / 2, BARN[1] - d / 2, BARN[0] + w / 2, BARN[1] + d / 2], door: [BARN[0], BARN[1] + d / 2], depth: d, lean: t === "lean" }); }
+      if (L >= 4) add("well", wellTier(L), [3.0, 1.4], place(3.0, 1.4)(() => buildWell(wellTier(L))), { foot: [2.5, 0.9, 3.5, 1.9] });
+      if (L >= 5) add("gate", (L >= 50 ? "b" : L >= 28 ? "f" : "w") + halfOf(L), [0, -halfOf(L)], () => buildGate(L), { wide: 1 });
+      if (L >= 6) { add("hay", 1, [-4.4, 1.9], place(-4.4, 1.9, 0.3)(buildHay), { foot: [-5.1, 1.4, -3.7, 2.4] }); add("trough", 1, [-2.8, 0.7], place(-2.8, 0.7)(buildTrough), { foot: [-3.5, 0.4, -2.1, 1.0] }); }
+      if (L >= 7) add("flowers", halfOf(L), [0, halfOf(L) - 0.5], () => buildFlowers(L), { wide: 1 });
+      if (L >= 11) add("olive", 1, [2.6, -4.6], place(2.6, -4.6)(tree("olive")), { foot: [2.3, -4.9, 2.9, -4.3], shade: [2.6, -3.6] });
+      if (L >= 12) add("lanterns", (E ? "g" : L >= 27 ? "i" : "w") + halfOf(L), [0, -4], () => buildLanterns(L), { wide: 1 });
+      if (L >= 13) add("veg", 1, [5.0, -3.4], place(5.0, -3.4)(buildVeg), { foot: [3.8, -4.1, 6.2, -2.7] });
+      if (L >= 14) add("fig", 1, [-4.4, 4.2], place(-4.4, 4.2)(tree("fig")), { foot: [-4.8, 3.8, -4.0, 4.6], shade: [-3.3, 4.6] });
+      if (L >= 15) add("mill", E, [5.6, -6.2], place(5.6, -6.2, -0.5)(() => buildMill(E)), { foot: [4.8, -7.0, 6.4, -5.4] });
+      if (L >= 16) add("hives", 1, [6.6, 0.8], place(6.6, 0.8, -1.2)(buildHives), { foot: [6.1, -0.1, 7.1, 1.7] });
+      if (L >= 18) add("pond", 1, [4.8, 4.6], place(4.8, 4.6)(buildPond), { foot: [3.6, 3.6, 6.0, 5.6], pond: [4.8, 4.6, 1.2, 1.05] });
+      if (L >= 20) add("house", E, [-3.4, -6.6], place(-3.4, -6.6)(() => buildHouse(E)), { foot: [-5.0, -7.8, -1.8, -5.4] });
+      if (L >= 21) add("vines", 1, [-6.2, 1.8], place(-6.2, 1.8, Math.PI / 2)(buildVines), { foot: [-6.7, 0.9, -5.7, 2.7] });
+      if (L >= 23) add("stream", (E ? "e" : "") + halfOf(L), [0, -1.5], () => buildStream(L), { wide: 1 });
+      if (L >= 24) add("bridge", E, [0, -1.5], place(0, -1.5)(() => buildBridge(E)));
+      if (L >= 25) add("hill", 1, [7.6, -3.6], place(7.6, -3.6)(buildHill), { hill: 1 });
+      if (L >= 26) add("apples", 1, [-7.4, 2.6], () => { const g = new T.Group(); [[-7.6, 0.6], [-7.2, 4.8], [7.9, 3.0]].forEach(([u, v]) => g.add(at(tree("apple")(), u, v, u))); return g; }, { wide: 1, foots: [[-7.9, 0.3, -7.3, 0.9], [-7.5, 4.5, -6.9, 5.1], [7.6, 2.7, 8.2, 3.3]], shade: [-6.6, 0.8] });
+      if (L >= 29) add("stable", 1, [3.2, -7.8], place(3.2, -7.8)(buildStable), { foot: [1.9, -8.7, 4.5, -6.9], door: [3.2, -6.9], depth: 1.8 });
+      if (L >= 30) add("hall", E, [-7.4, -4.0], place(-7.4, -4.0, Math.PI / 2)(() => buildHall(E)), { foot: [-8.6, -5.6, -6.2, -2.4], door: [-6.2, -4.0], depth: 2.4, doorAxis: "u" });
+      if (E) { add("life", 1, [1.6, -0.2], place(1.6, -0.2)(tree("life")), { foot: [1.1, -0.7, 2.1, 0.3], shade: [1.6, 0.9] }); add("orchard", 1, [0, 10], buildOrchard, { wide: 1 }); }
+      return out;
+    }
+
+    // ---------- grass and flowers make way for paths, water and buildings ----------
+    const g0m = [], f0m = [], tmpM = new T.Matrix4(), tmpP = new T.Vector3(), tmpQ = new T.Quaternion(), tmpS = new T.Vector3();
+    const gOff = [], fOff = [];
+    for (let i = 0; i < GRASS_MAX; i++) { grass.getMatrixAt(i, tmpM); g0m.push(tmpM.clone()); tmpP.setFromMatrixPosition(tmpM); gOff.push(tmpP.y - heightAt(tmpP.x, tmpP.z)); }
+    for (let i = 0; i < FL_MAX; i++) { flowers.getMatrixAt(i, tmpM); f0m.push(tmpM.clone()); tmpP.setFromMatrixPosition(tmpM); fOff.push(tmpP.y - heightAt(tmpP.x, tmpP.z)); }
+    function clearGround(blocked) {
+      [[grass, g0m, gOff], [flowers, f0m, fOff]].forEach(([im, base, off]) => { base.forEach((m, i) => { m.decompose(tmpP, tmpQ, tmpS); const u = tmpP.x, v = tmpP.z - Z0;
+        tmpP.y = heightAt(tmpP.x, tmpP.z) + off[i]; if (blocked(u, v)) tmpS.set(0, 0, 0); tmpM.compose(tmpP, tmpQ, tmpS); im.setMatrixAt(i, tmpM); }); im.instanceMatrix.needsUpdate = true; });
+    }
+    // the fold needs a wider flat middle than your own patch; the meadow is reshaped while the fold is open
+    function reshape(flat) {
+      FLAT0 = flat; const gp2 = gGeo.attributes.position;
+      for (let i = 0; i < gp2.count; i++) gp2.setY(i, heightAt(gp2.getX(i), gp2.getZ(i)));
+      gp2.needsUpdate = true; gGeo.computeVertexNormals(); farTrees.forEach(t => t.position.y = heightAt(t.position.x, t.position.z) - 0.05);
+    }
+
+    // ---------- state ----------
+    const items = {}; let level = 1, info = {};
+    function rebuildInfo(L) {
+      const sp = spec(L); info = { L, h: halfOf(L), foots: [], doors: {}, shade: [], pond: null, stream: L >= 23, bridge: L >= 24, hill: L >= 25, trough: L >= 6, eden: L >= 50, well: L >= 4, veg: L >= 13 };
+      sp.forEach(it => { if (it.foot) info.foots.push(it.foot); if (it.foots) info.foots.push(...it.foots); if (it.door) info.doors[it.id] = it; if (it.shade) info.shade.push(it.shade); if (it.pond) info.pond = it.pond; });
+      info.barn = sp.find(s => s.id === "barn");
+      clearGround((u, v) => (Math.abs(u) < 0.55 && v < 0.4 && v > -info.h) || (info.stream && Math.abs(v + 1.5) < 0.7) || info.foots.some(f => u > f[0] - 0.1 && u < f[2] + 0.1 && v > f[1] - 0.1 && v < f[3] + 0.1) || (info.pond && Math.hypot((u - info.pond[0]) / info.pond[2], (v - info.pond[1]) / info.pond[3]) < 1.15));
+    }
+    function setLevelNow(L) {
+      Object.values(items).forEach(o => root.remove(o.obj)); for (const k in items) delete items[k];
+      level = L; spec(L).forEach(it => { const g = it.build(); root.add(g); items[it.id] = { key: it.key, obj: g, it }; });
+      rebuildInfo(L); for (const k in taken) delete taken[k]; resetLambs();
+    }
+
+    // ---------- lambs of the fold ----------
+    const flock = [];
+    const zMat = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d"); x.fillStyle = "#6A7A70"; x.font = "700 50px Fredoka, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("z", 32, 34); return new T.SpriteMaterial({ map: new T.CanvasTexture(c), transparent: true, depthWrite: false }); })();
+    function dropFlock() { flock.splice(0).forEach(f => { scene.remove(f.obj); scene.remove(f.tag); f.tag.material.map.dispose(); f.tag.material.dispose(); f.zs.forEach(z => scene.remove(z)); }); }
+    function buildFlock(members) {
+      dropFlock();
+      members.slice(0, 16).forEach((m, i) => {
+        const obj = lamb.clone(true); obj.visible = true; try { dress(obj, m.outfit || null); } catch (e) { dress(obj, null); }
+        obj.scale.setScalar(LAMB_SIZE); scene.add(obj);
+        const legs = obj.getObjectByName("rig").children.filter(c => c.name === "hip").map(h => ({ hip: h, knee: h.getObjectByName("knee"), front: h.position.x > 0 }));
+        const eyesG = []; obj.traverse(o => { if (o.isMesh && o.material === eyeBMat && o.scale.y > 0.05 && o.scale.y < 0.09) eyesG.push(o.parent); });
+        const tag = label(m.name, { text: m.read ? "read today" : "not yet today", ok: !!m.read }); tag.scale.multiplyScalar(1.1); scene.add(tag);
+        const zs = m.read ? [] : [0, 1].map(() => { const s2 = new T.Sprite(zMat.clone()); s2.scale.setScalar(0.3); scene.add(s2); return s2; });
+        flock.push({ name: m.name, read: !!m.read, obj, legs, eyesG, tag, zs, neck: obj.getObjectByName("neck"), tail: obj.getObjectByName("tail"), u: 0, v: 0, face: 0, route: [], plan: [], step: null, timer: 1 + i * 0.4, phase: rnd() * 6, pitch: 0, yaw: 0, hopT: -1, lastFoot: 0, wade: false, i });
+      });
+      resetLambs();
+    }
+    const HOMES = [[0, 1.6], [-1.2, 1.2], [1.2, 1.0], [0.6, 2.6], [-0.7, 2.7], [1.9, 2.4], [-1.9, 2.3], [0.1, 3.5], [1.5, 3.4], [-1.4, 3.6], [2.5, 2.7], [-2.6, 3.2], [0.9, 4.3], [-0.6, 4.4], [2.2, 4.2], [-2.0, 4.5]];
+    function sleepSpots() {
+      const s = [];
+      if (info.trough) s.push([-3.3, 3.0, 0.5]);
+      if (info.shade.length) s.push([...info.shade[0], 0.8]);
+      s.push([-1.9, 3.6, 1.2], [2.1, 3.7, 0.4], [-0.9, 4.6, 0.2], [1.1, 4.8, 1.0], [-2.9, 4.6, 0.6], [3.0, 4.4, 0.9]); while (s.length < 16) s.push([-3 + s.length * 0.4, 5.2, s.length]); return s;
+    }
+    function resetLambs() {
+      const sl = sleepSpots(); let k = 0;
+      flock.forEach((f, i) => { f.plan = []; f.route = []; f.step = null; f.timer = 0.5 + i * 0.5; f.hopT = -1;
+        if (!f.read) { const [u, v, a] = sl[k++] || [-2, 3, 0]; f.u = u; f.v = v; f.face = a; f.sleeping = true; }
+        else { f.sleeping = false; [f.u, f.v] = HOMES[i % HOMES.length]; f.face = -0.4 - i * 0.7; } });
+    }
+
+    // ---------- walking around things ----------
+    const R = 0.42;   // how much room a lamb needs
+    const BRECT = [-0.62, -2.55, 0.62, -0.45];
+    const rects = () => info.foots.map(f => [f[0] - R, f[1] - R, f[2] + R, f[3] + R]).concat(info.bridge ? [[BRECT[0] - 0.2, BRECT[1], BRECT[2] + 0.2, BRECT[3]]] : []);
+    const onDeck = o => info.bridge && Math.abs(o.u) < 0.62 && o.v > -2.6 && o.v < -0.4;
+    const isBridgeSeg = (p, q) => info.bridge && Math.abs(p[0]) < 0.01 && Math.abs(q[0]) < 0.01 && Math.abs(p[1] - q[1]) > 2;
+    const inside = (u, v, rs) => rs.some(r => u > r[0] && u < r[2] && v > r[1] && v < r[3]);
+    function segHits(a, b, r) { let t0 = 0, t1 = 1; const dx = b[0] - a[0], dz = b[1] - a[1];
+      for (const [p, q] of [[-dx, a[0] - r[0]], [dx, r[2] - a[0]], [-dz, a[1] - r[1]], [dz, r[3] - a[1]]]) { if (p === 0) { if (q < 0) return false; } else { const t = q / p; if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; } } }
+      return t1 - t0 > 1e-3; }
+    const inStream = (u, v) => info.stream && Math.abs(v + 1.5 - 0.18 * Math.sin((u / (2 * info.h - 0.4) + 0.5) * Math.PI * 2)) < 0.5;
+    const onBridge = (u, v) => info.bridge && Math.abs(u) < 0.55 && Math.abs(v + 1.5) < 1.0;
+    const inPond = (u, v) => info.pond && Math.hypot((u - info.pond[0]) / info.pond[2], (v - info.pond[1]) / info.pond[3]) < 1;
+    function wetLen(a, b) { let n = 0; for (let k = 0; k <= 10; k++) { const u = a[0] + (b[0] - a[0]) * k / 10, v = a[1] + (b[1] - a[1]) * k / 10; if (inStream(u, v) && !onBridge(u, v)) n++; } return n / 11 * Math.hypot(b[0] - a[0], b[1] - a[1]); }
+    function route(a, b, wade) {
+      const rs = rects().filter(r => !(a[0] > r[0] && a[0] < r[2] && a[1] > r[1] && a[1] < r[3]) && !(b[0] > r[0] && b[0] < r[2] && b[1] > r[1] && b[1] < r[3]));
+      const cost = (p, q) => Math.hypot(q[0] - p[0], q[1] - p[1]) + (wade ? 0 : wetLen(p, q) * (info.bridge ? 6 : 0.5));
+      const free = (p, q) => isBridgeSeg(p, q) || !rs.some(r => segHits(p, q, r));
+      const nodes = [a, b]; rs.forEach(r => [[r[0] - 0.05, r[1] - 0.05], [r[2] + 0.05, r[1] - 0.05], [r[0] - 0.05, r[3] + 0.05], [r[2] + 0.05, r[3] + 0.05]].forEach(p => { if (Math.max(Math.abs(p[0]), Math.abs(p[1])) < info.h - 0.5 && !inside(p[0], p[1], rs)) nodes.push(p); }));
+      if (info.bridge && !wade) nodes.push([0, -2.75], [0, -0.25]);
+      const n = nodes.length, d = Array(n).fill(1e9), prev = Array(n).fill(-1), done = Array(n).fill(false); d[0] = 0;
+      for (let it = 0; it < n; it++) { let k = -1; for (let j = 0; j < n; j++) if (!done[j] && (k < 0 || d[j] < d[k])) k = j; if (k < 0 || d[k] >= 1e9) break; done[k] = true; if (k === 1) break;
+        for (let j = 0; j < n; j++) if (!done[j] && free(nodes[k], nodes[j])) { const c = d[k] + cost(nodes[k], nodes[j]); if (c < d[j]) { d[j] = c; prev[j] = k; } } }
+      if (prev[1] < 0) return [b];
+      const path = []; for (let k = 1; k > 0; k = prev[k]) path.unshift(nodes[k]); return path;
+    }
+    const clampIn = (u, v) => { const m = info.h - 0.9; return [Math.max(-m, Math.min(m, u)), Math.max(-m, Math.min(m, v))]; };
+    function freeSpot(near, rad) { for (let k = 0; k < 30; k++) { const a = rnd() * 6.28, d = rnd() * rad; const [u, v] = clampIn(near[0] + Math.cos(a) * d, near[1] + Math.sin(a) * d);
+        if (inside(u, v, rects()) || inStream(u, v) || inPond(u, v) || hillY(u, v) > 0 && !info.hill) continue; if (info.hill && hillY(u, v) > 0) continue; return [u, v]; } return [0, 1.6]; }
+    const taken = {};
+    const faceTo = (f, u, v) => Math.atan2(-(v - f.v), u - f.u);
+
+    // ---------- what a lamb decides to do next ----------
+    function choose(f) {
+      const A = [["graze", 3], ["friend", 1.2], ["hop", 0.5]];
+      if (info.trough) A.push(["drink", 1.4]); if (info.barn) A.push(["barn", 2.2]); if (info.shade.length) A.push(["shade", 1]);
+      if (info.pond) A.push(["pond", 1.2]); if (info.stream) A.push(["wade", 1.4], ["bank", 0.8]); if (info.bridge) A.push(["bridge", 1.6]);
+      if (info.hill) A.push(["hill", 0.8]); if (info.eden) A.push(["life", 2]); if (info.doors.stable) A.push(["stable", 1]); if (info.doors.hall) A.push(["hall", 1.2]);
+      if (info.well) A.push(["well", 0.5]); if (info.veg) A.push(["veg", 0.6]);
+      let tot = A.reduce((s, a) => s + a[1], 0), r = rnd() * tot; let k = A[0][0]; for (const [n, w] of A) { r -= w; if (r <= 0) { k = n; break; } }
+      const P2 = []; const go = (u, v, o = {}) => P2.push(Object.assign({ go: [u, v] }, o)); const act = (a, dur, o = {}) => P2.push(Object.assign({ act: a, dur }, o));
+      const busyIn = {}; const enter = (it) => { if (taken[it.id] && taken[it.id] !== f) { const [u, v] = freeSpot([f.u, f.v], 2); go(u, v); act("graze", 3); return; } taken[it.id] = f; P2.owns = it.id; const ax = it.doorAxis === "u"; const [du, dv] = it.door, n = ax ? [1, 0] : [0, 1];
+        go(du + n[0] * 0.7, dv + n[1] * 0.7); go(du - n[0] * 0.65, dv - n[1] * 0.65, { direct: 1, door: 1 }); act("look", 2.5 + rnd() * 2.5, { faceDir: ax ? 0 : -Math.PI / 2 }); go(du + n[0] * 0.8, dv + n[1] * 0.8, { direct: 1, door: 1 }); P2.push({ release: it.id }); };
+      switch (k) {
+        case "graze": { const [u, v] = freeSpot([f.u, f.v], 2.5); go(u, v); act("graze", 3 + rnd() * 3); break; }
+        case "drink": { const u = -2.8 + (rnd() - 0.5) * 0.9; go(u, 1.45); act("drink", 3 + rnd() * 2, { faceDir: Math.PI / 2 }); break; }
+        case "barn": { const b = info.barn; if (b.lean) { if (taken.barn && taken.barn !== f) { act("hop", 1.2); break; } taken.barn = f; P2.owns = "barn"; go(b.door[0] + 0.4, b.door[1] + 0.7); go(b.door[0] + 0.3, b.door[1] - 0.45, { direct: 1, door: 1 }); act("look", 3, { faceDir: -Math.PI / 2 }); go(b.door[0] + 0.4, b.door[1] + 0.8, { direct: 1, door: 1 }); P2.push({ release: "barn" }); } else enter(b); break; }
+        case "stable": enter(info.doors.stable); break;
+        case "hall": enter(info.doors.hall); break;
+        case "shade": { const s = info.shade[Math.floor(rnd() * info.shade.length)]; go(s[0] + (rnd() - 0.5) * 0.6, s[1] + (rnd() - 0.5) * 0.4); act("lie", 5 + rnd() * 4); break; }
+        case "pond": { const [pu, pv, ru, rv] = info.pond, a = Math.PI * (0.6 + rnd() * 0.9); go(pu + Math.cos(a) * (ru + 0.45), pv + Math.sin(a) * (rv + 0.45)); act("look", 3, { faceTo: [pu, pv] });
+          if (rnd() < 0.6) { go(pu + Math.cos(a) * (ru - 0.1), pv + Math.sin(a) * (rv - 0.1), { direct: 1, wade: 1 }); act("drink", 2.5, { faceTo: [pu, pv] }); go(pu + Math.cos(a) * (ru + 0.6), pv + Math.sin(a) * (rv + 0.6), { direct: 1, wade: 1 }); } break; }
+        case "wade": { const u = (rnd() < 0.5 ? -1 : 1) * (1.4 + rnd() * (info.h * 0.7 - 1.4)); const far = f.v > -1.5 ? -2.6 - rnd() * 0.6 : -0.3 + rnd() * 0.6; go(u, f.v > -1.5 ? -0.4 : -2.65); go(u + (rnd() - 0.5), far, { wade: 1, direct: 1 }); act("graze", 2); break; }
+        case "bank": { const u = (rnd() < 0.5 ? -1 : 1) * (1.5 + rnd() * (info.h - 3)); const side = f.v > -1.5 ? -0.75 : -2.25; go(u, side); act("drink", 3, { faceDir: f.v > -1.5 ? Math.PI / 2 : -Math.PI / 2 }); break; }
+        case "bridge": { const north = f.v > -1.5; go(0, north ? -0.15 : -2.85); go(0, north ? -2.85 : -0.15, { direct: 1, bridge: 1 }); const [u, v] = freeSpot([0, north ? -4.2 : 1.4], 1.5); go(u, v); act("graze", 2.5); break; }
+        case "hill": go(7.6 - 2.3, -3.6); go(7.45, -3.55, { direct: 1 }); act("look", 4, { faceDir: -0.3 }); go(7.6 - 2.4, -3.0, { direct: 1 }); break;
+        case "life": { const a = rnd() * 6.28; const pu = 1.6 + Math.cos(a) * 1.3, pv = -0.2 + Math.abs(Math.sin(a)) * 1.2; go(pu, pv); act(rnd() < 0.5 ? "lie" : "look", 4, { faceTo: [1.6, -0.2] }); break; }
+        case "well": go(3.0, 2.25); act("look", 2.5, { faceDir: Math.PI / 2 }); break;
+        case "veg": go(4.4 + rnd() * 1.4, -2.2); act("graze", 3, { faceDir: Math.PI / 2 }); break;
+        case "friend": { const o = flock.filter(x => x !== f && x.read && !x.sleeping); if (o.length) { const p = o[Math.floor(rnd() * o.length)]; P2.push({ friend: p }); act("nuzzle", 2.2, { friend: p }); } break; }
+        case "hop": act("hop", 1.2); break;
+      }
+      return P2;
+    }
+
+    // ---------- ripples on water ----------
+    const rip = []; const ripGeo = new T.RingGeometry(0.08, 0.12, 28);
+    for (let i = 0; i < 24; i++) { const m = new T.Mesh(ripGeo, new T.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.visible = false; scene.add(m); rip.push({ m, t: 9 }); }
+    let ripI = 0; function ripple(x, y, z) { const r = rip[ripI++ % rip.length]; r.t = 0; r.m.position.set(x, y, z); r.m.visible = true; }
+
+    // ---------- sparkles for a level up ----------
+    const spk = []; for (let i = 0; i < 40; i++) { const s = glowSprite("rgba(255,226,120,1)", 0.22, 1); s.visible = false; scene.add(s); spk.push({ s, v: new T.Vector3(), t: 9 }); }
+    function sparkle(u, v, y = 1) { const [x, z] = W(u, v); spk.forEach(p => { p.t = 0; p.s.visible = true; p.s.position.set(x, gy(x, z) + y, z); const a = rnd() * 6.28, sp = 1 + rnd() * 2; p.v.set(Math.cos(a) * sp, 2 + rnd() * 2.5, Math.sin(a) * sp); }); }
+
+    // ---------- per-frame ----------
+    const easeTo = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
+    function tickLamb(f, t, dt) {
+      let walk = false, sp = 0.8, tp = 0.1 * Math.sin(t * 0.8 + f.i), ty = 0.25 * Math.sin(t * 0.4 + f.i * 2), lieK = 0, y = 0;
+      if (f.sleeping) { lieK = 1; tp = 0.25; ty = 0.3; }
+      else {
+        if (!f.step) { if (!f.plan.length) { f.timer -= dt; if (f.timer <= 0) { f.plan = choose(f); f.timer = 0.6 + rnd() * 1.4; } } while (f.plan.length && f.plan[0].release) { const id = f.plan.shift().release; if (taken[id] === f) delete taken[id]; } if (f.plan.length) { f.step = f.plan.shift(); f.route = null; f.stepT = 0; } }
+        const s = f.step;
+        if (s) { f.stepT += dt;
+          if (s.go || s.friend) {
+            let tgt = s.go; if (s.friend) { const o = s.friend, dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv) || 1; tgt = [o.u + dx / dd * 0.75, o.v + dv / dd * 0.75]; if (f.stepT > 8) f.step = null; }
+            if (!f.route || s.friend) f.route = s.direct ? [tgt] : route([f.u, f.v], tgt, !!s.wade);
+            const wp = f.route[0];
+            if (wp) { const dx = wp[0] - f.u, dv = wp[1] - f.v, dd = Math.hypot(dx, dv);
+              if (dd < 0.12 || f.stepT > 25) { f.route.shift(); if (!f.route.length || f.stepT > 25) { f.step = null; if (f.stepT > 25) { f.route = []; } } }
+              else if (info.bridge && !onDeck(f) && (s.bridge || isBridgeSeg([f.u, f.v], wp)) && ((taken.bridge && taken.bridge !== f) || flock.some(o => o !== f && o.crossing))) { tp = 0.15; }
+              else { if (info.bridge && Math.abs(wp[0]) < 0.01 && Math.abs(f.u) < 0.12 && (s.bridge || Math.abs(wp[1] - f.v) > 1.8) && !flock.some(o => o !== f && o.crossing)) { f.crossing = true; taken.bridge = f; }
+                let dy0 = Math.atan2(-dv, dx) - f.face; dy0 = Math.atan2(Math.sin(dy0), Math.cos(dy0));
+                if (Math.abs(dy0) > 0.9) { f.face += dy0 * (1 - Math.exp(-6 * dt)); walk = true; f.phase += dt * 6; } else {
+                walk = true; sp = inStream(f.u, f.v) && !onBridge(f.u, f.v) || inPond(f.u, f.v) ? 0.5 : 0.8; const st = Math.min(dd, dt * sp); f.u += dx / dd * st; f.v += dv / dd * st;
+                let dy = Math.atan2(-dv, dx) - f.face; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.face += dy * (1 - Math.exp(-7 * dt)); f.phase += dt * (6 + sp * 6); } } }
+            else f.step = null;
+          } else if (s.act) {
+            if (s.faceDir !== undefined || s.faceTo || s.friend) { const want = s.faceTo ? faceTo(f, ...s.faceTo) : s.friend ? faceTo(f, s.friend.u, s.friend.v) : s.faceDir; let dy = want - f.face; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.face += dy * (1 - Math.exp(-5 * dt)); }
+            if (s.act === "graze") { tp = -0.85; ty = 0.05 * Math.sin(t * 2); }
+            if (s.act === "drink") { tp = -0.95; ty = 0; }
+            if (s.act === "look") { tp = 0.15; ty = 0.4 * Math.sin(t * 0.9 + f.i); }
+            if (s.act === "lie") { lieK = Math.min(1, f.stepT * 2, (s.dur - f.stepT) * 2); tp = 0.1; }
+            if (s.act === "hop" && f.hopT < 0 && f.stepT < 0.1) { f.hopT = 0; f.hopN = 2; }
+            if (s.act === "nuzzle") { tp = -0.15 + 0.12 * Math.sin(t * 7); ty = 0; if (!s.burst && f.stepT > 0.6) { s.burst = true; const [x, z] = W((f.u + s.friend.u) / 2, (f.v + s.friend.v) / 2); headWorld.set(x, gy(x, z) + 1.0, z); burstHearts(2, headWorld); } }
+            if (f.stepT >= s.dur) f.step = null;
+          }
+        }
+        // a little personal space
+        if (!(f.step && f.step.door)) flock.forEach(o => { if (o === f || (o.step && o.step.door) || o.sleeping) return; const dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv); if (dd > 0 && dd < 0.72 && !onDeck(f)) { f.u += dx / dd * (0.72 - dd) * 0.5; f.v += dv / dd * (0.72 - dd) * 0.5; } });
+      }
+      if (!f.sleeping && !(f.step && f.step.door)) info.foots.forEach(r0 => { const r = [r0[0] - 0.3, r0[1] - 0.3, r0[2] + 0.3, r0[3] + 0.3]; if (f.u > r[0] && f.u < r[2] && f.v > r[1] && f.v < r[3]) { const d = [f.u - r[0], r[2] - f.u, f.v - r[1], r[3] - f.v], m = Math.min(...d), k = d.indexOf(m); if (k === 0) f.u = r[0]; else if (k === 1) f.u = r[2]; else if (k === 2) f.v = r[1]; else f.v = r[3]; } });
+      if (!onDeck(f)) { if (f.crossing && taken.bridge === f) delete taken.bridge; f.crossing = false; } else if (!f.crossing && !f.sleeping) f.u = f.u < 0 ? -0.66 : 0.66;
+      // legs
+      if (f.hopT >= 0) { f.hopT += dt; const k = f.hopT / 0.48, n = Math.floor(k), p2 = k - n; if (n >= f.hopN) f.hopT = -1; else { y = Math.sin(p2 * Math.PI) * 0.3 * (n ? 0.7 : 1); const air = Math.sin(p2 * Math.PI); f.legs.forEach((l, j) => { l.hip.rotation.z = (j < 2 ? -1 : 1) * air * 0.35; l.knee.rotation.z = (l.front ? -1 : 1) * air * 0.9; }); } }
+      if (f.hopT < 0) {
+        if (walk) f.legs.forEach((l, j) => { const p2 = f.phase + (j === 0 || j === 3 ? 0 : Math.PI); l.hip.rotation.z = Math.sin(p2) * 0.4; l.knee.rotation.z = (l.front ? -1 : 1) * Math.max(0, Math.sin(p2 + Math.PI / 2)) * 0.65; });
+        else f.legs.forEach(l => { l.hip.rotation.z = easeTo(l.hip.rotation.z, lieK * (l.front ? -1.2 : 1.2), 6, dt); l.knee.rotation.z = easeTo(l.knee.rotation.z, lieK * (l.front ? 2.2 : -2.2), 6, dt); });
+        if (walk) y = Math.abs(Math.sin(f.phase)) * 0.035;
+      }
+      f.lie = easeTo(f.lie || 0, lieK, 5, dt);
+      f.pitch = easeTo(f.pitch, walk ? 0.08 : tp, 4, dt); f.yaw = easeTo(f.yaw, walk ? 0 : ty, 3, dt);
+      if (f.neck) f.neck.rotation.set(0, f.yaw, f.pitch);
+      if (f.tail) f.tail.rotation.y = Math.sin(t * (walk ? 8 : 1.5) + f.i) * (walk ? 0.3 : 0.08);
+      const closed = f.sleeping ? 0.12 : 1; f.eyesG.forEach(e => e.scale.y = easeTo(e.scale.y, closed, 8, dt));
+      // where it stands: ground, bridge, hill, or ankle-deep in water
+      const wet = (inStream(f.u, f.v) && !f.crossing) || inPond(f.u, f.v);
+      const [x, z] = W(f.u, f.v), base = gy(x, z) + (f.crossing ? bridgeY(f.u, f.v) : 0) + (info.hill ? hillY(f.u, f.v) : 0) - (wet ? 0.1 : 0);
+      if (wet && walk) { const fs = Math.floor(f.phase / Math.PI); if (fs !== f.lastFoot) { f.lastFoot = fs; ripple(x + Math.cos(f.face) * 0.15, gy(x, z) + 0.05, z - Math.sin(f.face) * 0.15); } }
+      f.obj.position.set(x, base + y * LAMB_SIZE - f.lie * 0.2, z); f.obj.rotation.y = f.face;
+      f.tag.position.set(x, base + 1.3 * LAMB_SIZE + 0.12 - f.lie * 0.2 + y, z);
+      f.zs.forEach((s, k) => { const p = (t * 0.35 + k * 0.5 + f.i * 0.3) % 1; s.position.set(x + 0.2 + p * 0.2, base + 0.6 + p * 0.6, z); s.material.opacity = Math.sin(p * Math.PI); });
+    }
+
+    // camera: above and in front, like the pasture's own overview
+    const cam = { az: 0.3, el: 0.46, zoom: 1, focus: 1, focusWant: 1, tgt: new T.Vector3(0, 0.4, Z0 - 0.6), want: new T.Vector3(0, 0.4, Z0 - 0.6) };
+    function placeCamera(dt) {
+      const k = 1 - Math.exp(-2.2 * dt); cam.tgt.lerp(cam.want, k); cam.focus += (cam.focusWant - cam.focus) * k;
+      const asp = canvas.clientWidth / Math.max(1, canvas.clientHeight), fov = 32, hf = 2 * Math.atan(Math.tan(fov * Math.PI / 360) * asp);
+      const halfW = asp < 0.8 ? Math.min(info.h * 0.8, 5.2) : info.h + 1.2, dW = halfW / Math.tan(hf / 2), dH = (info.h * 1.05) / Math.tan(fov * Math.PI / 360) * 0.75;
+      const d = Math.max(dW * 0.92, Math.min(dH, dW * 1.2)) / cam.zoom / cam.focus;
+      camera.fov = fov; camera.updateProjectionMatrix();
+      camera.position.set(cam.tgt.x + Math.sin(cam.az) * Math.cos(cam.el) * d, cam.tgt.y + Math.sin(cam.el) * d, cam.tgt.z + Math.cos(cam.az) * Math.cos(cam.el) * d);
+      camera.lookAt(cam.tgt); scene.fog.near = d + 6; scene.fog.far = d + 48;
+    }
+    const tweens = [];
+    function tween(dur, fn) { return new Promise(res => tweens.push({ t: 0, dur, fn, res })); }
+    function tick(t, dt) {
+      if (!foldOn) return;
+      lamb.visible = false; friends.forEach(f => { f.obj.visible = false; f.tag.visible = false; });
+      for (let i = tweens.length - 1; i >= 0; i--) { const w = tweens[i]; w.t += dt; const k = Math.min(1, w.t / w.dur); w.fn(k); if (k >= 1) { tweens.splice(i, 1); w.res(); } }
+      root.traverse(o => { if (o.userData.tick) o.userData.tick(t, dt); });
+      flock.forEach(f => tickLamb(f, t, dt));
+      rip.forEach(r => { if (r.t > 1.2) { r.m.visible = false; return; } r.t += dt; r.m.scale.setScalar(1 + r.t * 4); r.m.material.opacity = 0.7 * (1 - r.t / 1.2); });
+      spk.forEach(p => { if (p.t > 1.4) { p.s.visible = false; return; } p.t += dt; p.v.y -= dt * 4; p.s.position.addScaledVector(p.v, dt); p.s.material.opacity = 1 - p.t / 1.4; });
+      placeCamera(dt);
+    }
+
+    // ---------- level up: show exactly what changed ----------
+    const easeBack = x => { const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+    async function levelUp(to, onFocus) {
+      const from = level, next = spec(to), grew = halfOf(to) !== halfOf(from);
+      const changed = next.filter(it => !it.quiet && (!items[it.id] || items[it.id].key !== it.key));
+      const pts = changed.filter(c => !c.wide || changed.length === 1 || c.id === "lanterns").map(c => c.pos);
+      if (grew || !pts.length) { cam.want.set(0, 0.4, Z0 - 0.6); cam.focusWant = 0.9; }
+      else { const u = pts.reduce((s, p) => s + p[0], 0) / pts.length, v = pts.reduce((s, p) => s + p[1], 0) / pts.length, [x, z] = W(u, v); cam.want.set(x, 0.6, z); cam.focusWant = changed.some(c => c.wide) ? 1.3 : 1.9; }
+      onFocus && onFocus();
+      await new Promise(r => setTimeout(r, 1000));
+      const olds = changed.filter(it => items[it.id]).map(it => items[it.id]);
+      await Promise.all(olds.map(o => tween(0.35, k => { const s = Math.max(0.001, 1 - k); if (o.it.wide) o.obj.scale.y = s; else o.obj.scale.setScalar(s); })));
+      olds.forEach(o => { root.remove(o.obj); delete items[o.it.id]; });
+      level = to; next.forEach(it => { if (items[it.id] && items[it.id].key === it.key) { if (it.quiet) { root.remove(items[it.id].obj); const g = it.build(); root.add(g); items[it.id].obj = g; } return; }
+        if (items[it.id]) root.remove(items[it.id].obj);
+        const g = it.build(); root.add(g); items[it.id] = { key: it.key, obj: g, it };
+        if (it.quiet) return; if (it.wide) g.scale.y = 0.001; else g.scale.setScalar(0.001);
+        tween(0.75, k => { const s = Math.max(0.001, easeBack(k)); if (it.wide) g.scale.y = s; else g.scale.setScalar(s); }); });
+      Object.keys(items).forEach(id => { if (!next.find(it => it.id === id)) { root.remove(items[id].obj); delete items[id]; } });
+      rebuildInfo(to); for (const k in taken) delete taken[k]; flock.forEach(f => { f.plan = []; f.step = null; });
+      const sl = sleepSpots(); let k = 0; flock.forEach(f => { if (f.sleeping) { const [u, v, a] = sl[k++] || [-2, 3, 0]; f.u = u; f.v = v; f.face = a; } });
+      const focusPt = pts.length && !grew ? pts : [[0, 0]]; focusPt.forEach(p => sparkle(p[0], p[1], 1.2));
+      await new Promise(r => setTimeout(r, 900));
+    }
+    function recenter() { cam.want.set(0, 0.4, Z0 - 0.6); cam.focusWant = 1; }
+    // drag to turn, pinch or scroll to zoom (replaces the pasture's own drag while the fold is shown)
+    const ptrs = new Map(); let pinch0 = 0, zoom0 = 1;
+    canvas.addEventListener("pointerdown", e => { if (!foldOn) return; ptrs.set(e.pointerId, [e.clientX, e.clientY]); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; } }, true);
+    addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId);
+      if (ptrs.size === 1) { cam.az -= (e.clientX - p[0]) * 0.007; cam.el = Math.max(0.3, Math.min(1.1, cam.el + (e.clientY - p[1]) * 0.004)); }
+      ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; if (pinch0) cam.zoom = Math.max(0.6, Math.min(4, zoom0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch0)); } });
+    const up2 = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = 0; }; addEventListener("pointerup", up2); addEventListener("pointercancel", up2);
+    canvas.addEventListener("wheel", e => { if (!foldOn) return; e.preventDefault(); cam.zoom = Math.max(0.6, Math.min(4, cam.zoom * Math.exp(-e.deltaY * 0.0015))); }, { passive: false });
+
+    root.visible = false; let was = null;
+    function open(o) {
+      if (foldOn) close();
+      was = { home: home.visible, keep: keepsakes.visible, fog: [scene.fog.near, scene.fog.far], fov: camera.fov };
+      foldOn = true; home.visible = false; keepsakes.visible = false; root.visible = true; reshape(14);
+      cam.az = 0.3; cam.el = 0.46; cam.zoom = 1; cam.focus = cam.focusWant = 1;
+      setLevelNow(o.level || 1); buildFlock(o.members || []); recenter(); cam.tgt.copy(cam.want);
+    }
+    function close() {
+      if (!foldOn) return; foldOn = false; tweens.length = 0;
+      Object.values(items).forEach(x => root.remove(x.obj)); for (const k in items) delete items[k]; dropFlock(); root.visible = false;
+      rip.forEach(r => r.m.visible = false); spk.forEach(p => p.s.visible = false);
+      reshape(8.5); info = { foots: [], h: 0 }; clearGround(() => false);
+      lamb.visible = true; friends.forEach(f => { f.obj.visible = true; f.tag.visible = true; });
+      if (was) { home.visible = was.home; keepsakes.visible = was.keep; scene.fog.near = was.fog[0]; scene.fog.far = was.fog[1]; camera.fov = was.fov; camera.updateProjectionMatrix(); }
+    }
+    return { tick, open, close, isOpen: () => foldOn, setLevel: setLevelNow, levelUp, recenter, get level() { return level; }, cam, flock: () => flock, info: () => info, spec, halfOf };
+  })();
+
+
   const api = {
+    fold: FOLD,
     onTap: null,
     setState(s) {
       Object.assign(state, s);
@@ -7361,6 +7906,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       },
       watchProfiles(cb, err) { return F.onSnapshot(C("members"), s => cb(list(s)), err); },
       watchGroups(cb, err) { return F.onSnapshot(C("groups"), s => cb(list(s)), err); },
+      // Fold Growth: added once a day, inside a transaction so two phones never count the same day twice
+      async growFold(gid, fn) { const ref = D("groups", gid); await F0.runTransaction(db, async tx => { const s2 = await tx.get(ref); if (!s2.exists()) return; const up = fn(s2.data()); if (up) tx.update(ref, up); }); meter.w++; },
       async createGroup(name) { const r = await F.addDoc(C("groups"), { name, created: ts() }); return r.id; },
       renameGroup(id, name) { return F.updateDoc(D("groups", id), { name }); },
       moveMember(who, groupId) { return F.updateDoc(D("members", who), { groupId, updated: ts() }); },
@@ -7453,7 +8000,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const O = (head, neck, color, wool, face, back) => ({ head, neck, back: back || null, headColor: color, neckColor: color, wool: wool || "white", face: face || "peach" });
     const youth = {
       info: { id: "f_youth", name: "Riverside Youth", code: "LAMB24", createdBy: "u_grace" },
-      groups: [{ id: "g1", name: "Psalms Squad" }, { id: "g2", name: "Acts Crew" }, { id: "g3", name: "Mustard Seeds" }, { id: "g4", name: "Living Water" }],
+      groups: [{ id: "g1", name: "Psalms Squad", growth: 1488, gday: day(1) }, { id: "g2", name: "Acts Crew", growth: 640, gday: day(1) }, { id: "g3", name: "Mustard Seeds", growth: 2210, gday: day(1) }, { id: "g4", name: "Living Water", growth: 120, gday: day(1) }],
       profiles: [
         P("u_grace", "Grace Lim", "Snowy", "g1", day(0), 64, 12, { head: "crown", neck: "bow", color: "pink" }, { role: "shepherd" }),
         P("u_daniel", "Daniel Ong", "Biscuit", "g1", day(2), 18, 0, { head: "cap", neck: null, color: "gold" }),
@@ -7519,7 +8066,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     };
     const family = {
       info: { id: "f_family", name: "Tan Family", code: "HOME77", createdBy: "u_me" },
-      groups: [{ id: "h1", name: "Home" }],
+      groups: [{ id: "h1", name: "Home", growth: 3420, gday: day(1) }],
       profiles: [
         P("u_mum", "Mum", "Honey", "h1", day(0), 120, 30, { head: "hat", neck: "lei", color: "pink" }),
         P("u_dad", "Dad", "Cedar", "h1", day(1), 95, 0, { head: "cap", neck: "necktie", color: "blue" }),
@@ -7637,6 +8184,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       async loadState() { return null; }, async saveState() {},
       watchProfiles(cb) { return sub("profiles", () => cb(st().profiles.map(p => Object.assign({}, p)))); },
       watchGroups(cb) { return sub("groups", () => cb(st().groups.map(g => Object.assign({}, g)))); },
+      async growFold(gid, fn) { const g = st().groups.find(x => x.id === gid); if (!g) return; const up = fn(Object.assign({}, g)); if (up) { Object.assign(g, up); fire("groups"); } },
       async createGroup(name) { const id = "g" + Date.now(); st().groups.push({ id, name }); fire("groups"); return id; },
       async renameGroup(id, name) { st().groups.find(g => g.id === id).name = name; fire("groups"); },
       async moveMember(who, groupId) { const pr = st().profiles.find(x => x.uid === who); if (pr) pr.groupId = groupId; fire("profiles"); },
@@ -7715,7 +8263,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const readToday = p => p.lastFed === today();
 
   function profilePayload() {
-    return { lambName: S.name, total: S.total, streak: streakNow(), lastFed: S.lastFed || "", scale: stage().scale, lost: hearts() === 0, outfit: S.outfit };
+    return { lambName: S.name, total: S.total, streak: streakNow(), lastFed: S.lastFed || "", scale: stage().scale, lost: hearts() === 0, outfit: S.outfit, act: actLog() };
   }
   function publishMe() {
     if (!B || !myProfile) return;
@@ -8460,6 +9008,121 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     };
   }
 
+  // ================= Fold Growth: the fold's shared farm =================
+  // Each day, per member: read +1, reflect +1, a verse learned +1 (at most one a week), and +5 each when everyone active in the last 14 days read.
+  // Fold Growth is the average per active member, added up once a day by whoever opens the app first. It never goes down.
+  const GROWTH_XP = [0, 0, 30, 90, 190, 340, 560, 775, 990, 1215, 1440, 1665, 1895, 2130, 2365, 2607, 2850, 3095, 3345, 3600, 3855, 4115, 4380, 4645, 4915, 5185, 5460, 5740, 6020, 6305, 6595,
+    6890, 7190, 7490, 7795, 8100, 8410, 8720, 9035, 9355, 9675, 10000, 10325, 10655, 10985, 11320, 11660, 12000, 12345, 12690, 13035];
+  const FOLD_LEVELS = {
+    2: ["Wooden rails now join the fence posts.", "Off to a good start. Keep going together."],
+    3: ["A rough lean-to shelter went up.", "Every day you show up builds something."],
+    4: ["A well was dug, with a bucket.", "Keep drawing from the Word each day."],
+    5: ["The land grew, and a gate now bears your fold's name.", "Your faithfulness is making room for more."],
+    6: ["Hay bales and a trough arrived.", "Small days add up."],
+    7: ["Wildflowers bloomed along the fence.", "Keep cheering each other on."],
+    8: ["The lean-to became a plank barn with a thatch roof.", "Look how far you've come together."],
+    9: ["The well got a wooden rim and a crank.", "Quiet consistency always shows."],
+    10: ["The barn was painted red with a shingle roof, and the path is now gravel.", "Ten levels. Your roots are going deep."],
+    11: ["An olive tree was planted.", "Rooted, and still growing."],
+    12: ["Lanterns now light the path.", "Thank you for showing up for each other."],
+    13: ["A vegetable patch was planted.", "What you sow each day, you'll reap."],
+    14: ["A fig tree was planted.", "Fruit takes time. Keep at it."],
+    15: ["The land grew, and a windmill now flies your fold's banner.", "A full year's worth of faithfulness. Well done."],
+    16: ["Beehives were set up.", "Keep the rhythm going."],
+    17: ["The fence is now a white picket, with a stepping-stone path.", "Every step in the Word counts."],
+    18: ["A duck pond was dug.", "Steady, not rushed. That's the way."],
+    19: ["The well got a stone rim.", "Built to last, like a daily habit."],
+    20: ["A farmhouse was built.", "Twenty levels. This fold is here to stay."],
+    21: ["A row of grapevines was planted.", "Abide, and keep bearing fruit."],
+    22: ["The barn got a stone base, a hay loft and a cupola.", "Stone by stone, day by day."],
+    23: ["A stream now runs through.", "Keep the Word flowing among you."],
+    24: ["A wooden bridge now crosses the stream.", "Carry each other across the hard days."],
+    25: ["The land grew, and a lamp now shines on the hill.", "Your light is shining. Keep it lit."],
+    26: ["Apple trees were planted.", "Faithful in little, growing in much."],
+    27: ["The lanterns are now iron and glass.", "Stronger together than alone."],
+    28: ["The fence is now a low stone wall, with a cobbled path.", "A firm foundation, laid day by day."],
+    29: ["A timber stable was built.", "Your care for each other shows."],
+    30: ["A stone gathering hall was built.", "Thirty levels. Look what faithfulness built."]
+  };
+  const foldLevel = pts => { let L = 1; while (L < 50 && pts >= GROWTH_XP[L + 1]) L++; return L; };
+  // your last 45 days, as one small number per day: 1 read, 2 reflected, 4 learned a verse (the first one that week)
+  function actLog() {
+    const out = {}, from = addDays(today(), -44), put = (d, b) => { if (d >= from) out[d] = (out[d] || 0) | b; };
+    (S.fedDays || []).forEach(d => put(d, 1)); (S.covered || []).forEach(d => put(d, 1));
+    (S.journal || []).forEach(j => j.d && put(j.d, 2));
+    const weeks = new Set(); (S.mem || []).map(m => typeof m.learned === "string" ? m.learned : null).filter(Boolean).sort().forEach(d => { const [yy, mm, dd] = d.split("-").map(Number), w = addDays(d, -((new Date(yy, mm - 1, dd).getDay() + 6) % 7)); if (!weeks.has(w)) { weeks.add(w); put(d, 4); } });
+    return out;
+  }
+  // one day's growth for a fold: the average over members who read in the 14 days up to that day
+  function growthOn(gid, D) {
+    const ms = membersOf(gid), bits = (p, d) => ((p.act || {})[d] || 0);
+    const active = ms.filter(p => { for (let k = 0; k < 14; k++) if (bits(p, addDays(D, -k)) & 1) return true; return false; });
+    if (!active.length) return 0;
+    const all = active.every(p => bits(p, D) & 1);
+    return active.reduce((sum, p) => { const b = bits(p, D); return sum + (b & 1) + ((b >> 1) & 1) + ((b >> 2) & 1) + (all ? 5 : 0); }, 0) / active.length;
+  }
+  let tending = false;
+  async function tendGrowth() {
+    if (tending || !B || !B.growFold || !myProfile || !myProfile.groupId) return;
+    const g = groupOf(myProfile.groupId), y = addDays(today(), -1); if (!g || (g.gday && g.gday >= y)) return;
+    tending = true;
+    try {
+      await B.growFold(g.id, cur => {
+        if (cur.gday && cur.gday >= y) return null;
+        if (!cur.gday) return { gday: y, growth: cur.growth || 0 };   // a fold starts growing from the day this arrives
+        let add = 0; for (let d = [addDays(cur.gday, 1), addDays(y, -29)].sort()[1]; d <= y; d = addDays(d, 1)) add += growthOn(g.id, d);
+        return { gday: y, growth: Math.round(((cur.growth || 0) + add) * 100) / 100 };
+      });
+    } catch (e) {}
+    tending = false;
+  }
+  const fmtN = n => Math.floor(n).toLocaleString("en");
+  function growthBar(g, id) {
+    const pts = (g && g.growth) || 0, L = foldLevel(pts), top = L >= 50;
+    const lo = GROWTH_XP[L], hi = top ? lo : GROWTH_XP[L + 1], got = top ? pts : pts - lo, need = top ? lo : hi - lo, f = top ? 1 : Math.max(0, Math.min(1, got / need));
+    return `<span class="flbadge"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="flface" cx="22" cy="22" r="20"/><circle class="flring0" cx="22" cy="22" r="20"/><circle class="flring" cx="22" cy="22" r="20" style="stroke-dashoffset:${(125.66 * (1 - f)).toFixed(1)}" transform="rotate(-90 22 22)"/></svg><b${id ? ` id="${id}Num"` : ""}>${L}</b></span>
+      <span class="flbar"><i style="width:${(f * 100).toFixed(1)}%"${id ? ` id="${id}Fill"` : ""}></i><span${id ? ` id="${id}Txt"` : ""}>${top ? "Eden" : `${fmtN(got)} / ${fmtN(need)} · ${Math.floor(f * 100)}%`}</span></span>`;
+  }
+  function growthRow(g, visiting) {
+    const L = foldLevel(g.growth || 0), seen = (S.foldSeen || {})[g.id], fresh = !visiting && seen != null && seen < L;
+    return `<button class="foldlvl ${fresh ? "fresh" : ""}" id="foldLvl" aria-label="Fold level ${L}. Open ${esc(g.name)}">${growthBar(g)}${fresh ? `<i class="newdot" aria-hidden="true"></i>` : ""}</button>`;
+  }
+  // the fold, full screen: the same meadow, further out, with everything the fold has grown
+  let foldViewOn = false;
+  async function openFoldView(gid) {
+    const g = groupOf(gid); if (!g || foldViewOn || !window.Lamb3D || !window.Lamb3D.fold) return;
+    const cv = $("screen").querySelector("canvas"); if (!cv) return;
+    const visiting = gid !== (myProfile && myProfile.groupId), L = foldLevel(g.growth || 0);
+    S.foldSeen = S.foldSeen || {}; if (S.foldSeen[gid] == null) S.foldSeen[gid] = B && B.mode === "demo" && L > 1 ? L - 1 : L;
+    const from = visiting ? L : Math.max(1, Math.min(L, S.foldSeen[gid], L));
+    const ov = document.createElement("div"); ov.className = "foldview"; ov.id = "foldView"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", g.name + " fold");
+    ov.innerHTML = `<div class="fvstage" id="fvStage"></div>
+      <div class="fvtop"><div class="fvcard"><div class="fvhead"><p class="cardtitle">${esc(g.name)}</p><button class="fvclose" id="fvClose" aria-label="Close">✕</button></div><div class="foldlvl static" id="fvLvl">${growthBar({ growth: GROWTH_XP[from] + (from === L ? (g.growth || 0) - GROWTH_XP[L] : 0) }, "fv")}</div></div></div>
+      <p class="fvhint" id="fvHint">Drag to turn · pinch to zoom</p>
+      <div class="fvup" id="fvUp" role="status" aria-live="polite"><small>Level up</small><h2 id="fvUpLv"></h2><p class="what" id="fvUpWhat"></p><p class="cheer" id="fvUpCheer"></p><button class="btn primary" id="fvUpOk">Continue</button></div>`;
+    document.body.appendChild(ov); document.body.classList.add("fvopen"); foldViewOn = true;
+    $("fvStage").appendChild(cv);
+    const members = membersOf(gid).slice().sort((a, b) => (a.uid === (me && me.uid) ? -1 : b.uid === (me && me.uid) ? 1 : 0)).map(p => ({ name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), outfit: p.outfit || null }));
+    window.Lamb3D.fold.open({ level: from, members, name: g.name });
+    const shut = () => { if (!foldViewOn) return; foldViewOn = false; window.Lamb3D.fold.close(); $("screen").prepend(cv); ov.remove(); document.body.classList.remove("fvopen"); document.removeEventListener("keydown", esc2); renderGroup(); };
+    const esc2 = e => { if (e.key === "Escape") shut(); }; document.addEventListener("keydown", esc2);
+    $("fvClose").onclick = shut; $("fvStage").addEventListener("pointerdown", () => { const h = $("fvHint"); if (h) h.style.opacity = 0; }, { once: true });
+    // level-ups this fold reached since you last looked, one at a time
+    for (let to = from + 1; to <= L && foldViewOn; to++) {
+      const lv = Math.min(to, 30); if (to > 30 && to < 50) { S.foldSeen[gid] = to; continue; }
+      await new Promise(r => setTimeout(r, to === from + 1 ? 900 : 300)); if (!foldViewOn) return;
+      $("fvFill").style.width = "100%"; $("fvLvl").querySelector(".flring").style.strokeDashoffset = 0; await new Promise(r => setTimeout(r, 750)); if (!foldViewOn) return;
+      await window.Lamb3D.fold.levelUp(lv === 30 && to === 50 ? 50 : lv, () => { const nb = $("fvNum"); if (nb) { nb.textContent = to; nb.parentElement.classList.remove("pulse"); void nb.offsetWidth; nb.parentElement.classList.add("pulse"); } });
+      if (!foldViewOn) return;
+      const [what, cheer] = FOLD_LEVELS[to] || (to >= 50 ? ["Your fold has become a garden, gold and green.", "Five years of faithfulness, together."] : ["Your fold grew.", "Keep going together."]);
+      $("fvUpLv").textContent = "Level " + to; $("fvUpWhat").textContent = what; $("fvUpCheer").textContent = cheer; $("fvUp").classList.add("on");
+      S.foldSeen[gid] = to; save();
+      await new Promise(r => { $("fvUpOk").onclick = r; }); $("fvUp").classList.remove("on"); window.Lamb3D.fold.recenter();
+      const part = to === L ? (g.growth || 0) : GROWTH_XP[to]; $("fvLvl").innerHTML = growthBar({ growth: part }, "fv");
+    }
+    if (!visiting) { S.foldSeen[gid] = L; save(); }
+  }
+
   function renderGroup() {
     const c = $("groupCard");
     if (B && me && !S.flockId && !joining) {
@@ -8479,6 +9142,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         <div class="gricons"><button class="hudbtn" id="grOthers" aria-label="Visit other folds">${SIGNPOST}</button></div></div>
       <button class="flockpill" id="flockPill" aria-label="Your flocks: ${esc(flockName(S.flockId))}. Tap to switch"><span class="flockhouse" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2L12 4l8.5 7.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9.6V19a1 1 0 0 0 1 1h3.6v-5.2h2.8V20H17a1 1 0 0 0 1-1V9.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span><b>${esc(flockName(S.flockId))}</b>${(S.flocks || []).length > 1 && !canCode ? `<small>${S.flocks.length} flocks</small>` : ""}<span class="chevd" aria-hidden="true">▾</span></button></div>
       ${!visiting && me ? nudgeHtml(gid, list.filter(p => p.uid !== me.uid)) : ""}
+      ${list.length ? growthRow(g, visiting) : ""}
       <ul class="members">${list.map(p => memberRow(p, g)).join("") || `<li class="empty">No lambs graze here yet.</li>`}</ul>
       ${!visiting ? questionsShelf() : ""}
       ${notesHtml(gid)}
@@ -8489,6 +9153,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if ($("myWeek")) $("myWeek").onclick = () => openWeek(weekStart(today()), today());
     if ($("fcTools")) $("fcTools").onclick = () => { managing = true; mod = null; loadMod(); renderFellowship(); };
     $("grOthers").onclick = () => setVisit(true);
+    if ($("foldLvl")) { const can = !!(window.Lamb3D && window.Lamb3D.fold); $("foldLvl").disabled = !can; $("foldLvl").onclick = () => openFoldView(gid); }
+    if (!visiting) tendGrowth();
     { const hd = c.querySelector(".grhead > div:first-child"); if (hd) c.style.setProperty("--grh", Math.round(hd.getBoundingClientRect().height) + "px"); }   // the signpost is as tall as the fold's heading
   }
   // the founder: choose a lamb, choose a fold
@@ -9199,7 +9865,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.15.58";
+  const APP_VERSION = "2.15.59";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
