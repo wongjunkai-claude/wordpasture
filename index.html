@@ -1804,7 +1804,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.59 · 14 October 2026, 5:52 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.59 · 14 October 2026, 6:17 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -4744,7 +4744,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const items = {}; let level = 1, info = {};
     function rebuildInfo(L) {
       const sp = spec(L); info = { L, h: halfOf(L), foots: [], doors: {}, shade: [], pond: null, stream: L >= 23, bridge: L >= 24, hill: L >= 25, trough: L >= 6, eden: L >= 50, well: L >= 4, veg: L >= 13 };
-      sp.forEach(it => { if (it.foot) info.foots.push(it.foot); if (it.foots) info.foots.push(...it.foots); if (it.door) info.doors[it.id] = it; if (it.shade) info.shade.push(it.shade); if (it.pond) info.pond = it.pond; });
+      sp.forEach(it => { if (it.foot) info.foots.push(it.foot); if (it.foots) info.foots.push(...it.foots); if (it.door) info.doors[it.id] = it; if (it.shade) info.shade.push(it.shade); if (it.pond) { info.pond = it.pond; info.pondFoot = it.foot; } });
       info.barn = sp.find(s => s.id === "barn");
       clearGround((u, v) => (Math.abs(u) < 0.55 && v < 0.4 && v > -info.h) || (info.stream && Math.abs(v + 1.5) < 0.7) || info.foots.some(f => u > f[0] - 0.1 && u < f[2] + 0.1 && v > f[1] - 0.1 && v < f[3] + 0.1) || (info.pond && Math.hypot((u - info.pond[0]) / info.pond[2], (v - info.pond[1]) / info.pond[3]) < 1.15));
     }
@@ -4869,17 +4869,20 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         const s = f.step;
         if (s) { f.stepT += dt;
           if (s.go || s.friend) {
-            let tgt = s.go; if (s.friend) { const o = s.friend, dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv) || 1; tgt = [o.u + dx / dd * 0.75, o.v + dv / dd * 0.75]; if (f.stepT > 8) f.step = null; }
-            if (!f.route || s.friend) f.route = s.direct ? [tgt] : route([f.u, f.v], tgt, !!s.wade);
+            let tgt = s.go; if (s.friend) { const o = s.friend, dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv) || 1; tgt = [o.u + dx / dd * 0.75, o.v + dv / dd * 0.75]; if (f.stepT > 8 || dd < 0.85) { f.step = null; f.route = []; } }
+            if (!f.step) { /* reached the friend */ } else if (!f.route || s.friend) f.route = s.direct ? [tgt] : route([f.u, f.v], tgt, !!s.wade);
             const wp = f.route[0];
             if (wp) { const dx = wp[0] - f.u, dv = wp[1] - f.v, dd = Math.hypot(dx, dv);
               if (dd < 0.12 || f.stepT > 25) { f.route.shift(); if (!f.route.length || f.stepT > 25) { f.step = null; if (f.stepT > 25) { f.route = []; } } }
               else if (info.bridge && !onDeck(f) && (s.bridge || isBridgeSeg([f.u, f.v], wp)) && ((taken.bridge && taken.bridge !== f) || flock.some(o => o !== f && o.crossing))) { tp = 0.15; }
               else { if (info.bridge && Math.abs(wp[0]) < 0.01 && Math.abs(f.u) < 0.12 && (s.bridge || Math.abs(wp[1] - f.v) > 1.8) && !flock.some(o => o !== f && o.crossing)) { f.crossing = true; taken.bridge = f; }
                 let dy0 = Math.atan2(-dv, dx) - f.face; dy0 = Math.atan2(Math.sin(dy0), Math.cos(dy0));
-                if (Math.abs(dy0) > 0.9) { f.face += dy0 * (1 - Math.exp(-6 * dt)); walk = true; f.phase += dt * 6; } else {
+                const inWay = !s.door && !f.crossing && flock.find(o => o !== f && !o.sleeping && o !== s.friend && Math.hypot(o.u - f.u, o.v - f.v) < 0.75 && ((o.u - f.u) * dx + (o.v - f.v) * dv) / dd > 0.2 * Math.hypot(o.u - f.u, o.v - f.v));
+                if (inWay && (f.waitT = (f.waitT || 0) + dt) < 2.5) { if (Math.abs(dy0) > 0.05) f.face += dy0 * (1 - Math.exp(-4 * dt)); }
+                else if (inWay) { f.waitT = 0; f.step = null; f.plan = []; f.timer = 0.4; }   // still blocked: give up and do something else
+                else if (Math.abs(dy0) > 0.3) { if (!inWay) f.waitT = 0; f.face += Math.sign(dy0) * Math.min(Math.abs(dy0), dt * 4.5); walk = true; f.phase += dt * 5; } else { if (!inWay) f.waitT = 0;
                 walk = true; sp = inStream(f.u, f.v) && !onBridge(f.u, f.v) || inPond(f.u, f.v) ? 0.5 : 0.8; const st = Math.min(dd, dt * sp); f.u += dx / dd * st; f.v += dv / dd * st;
-                let dy = Math.atan2(-dv, dx) - f.face; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.face += dy * (1 - Math.exp(-7 * dt)); f.phase += dt * (6 + sp * 6); } } }
+                let dy = Math.atan2(-dv, dx) - f.face; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.face += dy * (1 - Math.exp(-10 * dt)); f.phase += dt * (6 + sp * 6); } } }
             else f.step = null;
           } else if (s.act) {
             if (s.faceDir !== undefined || s.faceTo || s.friend) { const want = s.faceTo ? faceTo(f, ...s.faceTo) : s.friend ? faceTo(f, s.friend.u, s.friend.v) : s.faceDir; let dy = want - f.face; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.face += dy * (1 - Math.exp(-5 * dt)); }
@@ -4893,9 +4896,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
           }
         }
         // a little personal space
-        if (!(f.step && f.step.door)) flock.forEach(o => { if (o === f || (o.step && o.step.door) || o.sleeping) return; const dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv); if (dd > 0 && dd < 0.72 && !onDeck(f)) { f.u += dx / dd * (0.72 - dd) * 0.5; f.v += dv / dd * (0.72 - dd) * 0.5; } });
+        if (!walk && !(f.step && f.step.door)) flock.forEach(o => { if (o === f || (o.step && o.step.door) || o.sleeping) return; const dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv); if (dd > 0 && dd < 0.4 && !onDeck(f)) { f.u += dx / dd * Math.min(0.003, 0.4 - dd); f.v += dv / dd * Math.min(0.003, 0.4 - dd); } });
       }
-      if (!f.sleeping && !(f.step && f.step.door)) info.foots.forEach(r0 => { const r = [r0[0] - 0.3, r0[1] - 0.3, r0[2] + 0.3, r0[3] + 0.3]; if (f.u > r[0] && f.u < r[2] && f.v > r[1] && f.v < r[3]) { const d = [f.u - r[0], r[2] - f.u, f.v - r[1], r[3] - f.v], m = Math.min(...d), k = d.indexOf(m); if (k === 0) f.u = r[0]; else if (k === 1) f.u = r[2]; else if (k === 2) f.v = r[1]; else f.v = r[3]; } });
+      if (!f.sleeping && !(f.step && (f.step.door || f.step.wade))) info.foots.forEach(r0 => { if (info.pond && r0 === info.pondFoot) return; const r = [r0[0] - 0.3, r0[1] - 0.3, r0[2] + 0.3, r0[3] + 0.3]; if (f.u > r[0] && f.u < r[2] && f.v > r[1] && f.v < r[3]) { const d = [f.u - r[0], r[2] - f.u, f.v - r[1], r[3] - f.v], m = Math.min(...d), k = d.indexOf(m); if (k === 0) f.u = r[0]; else if (k === 1) f.u = r[2]; else if (k === 2) f.v = r[1]; else f.v = r[3]; } });
       if (!onDeck(f)) { if (f.crossing && taken.bridge === f) delete taken.bridge; f.crossing = false; } else if (!f.crossing && !f.sleeping) f.u = f.u < 0 ? -0.66 : 0.66;
       // legs
       if (f.hopT >= 0) { f.hopT += dt; const k = f.hopT / 0.48, n = Math.floor(k), p2 = k - n; if (n >= f.hopN) f.hopT = -1; else { y = Math.sin(p2 * Math.PI) * 0.3 * (n ? 0.7 : 1); const air = Math.sin(p2 * Math.PI); f.legs.forEach((l, j) => { l.hip.rotation.z = (j < 2 ? -1 : 1) * air * 0.35; l.knee.rotation.z = (l.front ? -1 : 1) * air * 0.9; }); } }
