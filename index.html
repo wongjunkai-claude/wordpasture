@@ -480,6 +480,9 @@ select.field { appearance: auto; }
 .mlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .mlist li { display: flex; flex-direction: column; gap: 8px; }
 .mlist .btn { padding: 10px 12px; font-size: 14px; }
+.foldexp { position: absolute; right: 8px; bottom: 8px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.9); color: #23302A; cursor: pointer; z-index: 3; }
+.foldexp svg { width: 20px; height: 20px; }
+.screen.foldon .visit { right: 56px; }
 .visit { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(255,255,255,.9); color: #23302A; border-radius: 12px; padding: 6px 6px 6px 12px; font-size: 13px; z-index: 3; }
 .visit button { font: 700 13px var(--body); border: 0; border-radius: 9px; padding: 7px 10px; background: #3E7F5A; color: #fff; cursor: pointer; }
 .members li { grid-template-columns: 14px 1fr auto; }
@@ -772,8 +775,7 @@ body.no-vn .reader .vn { display: none; }
 
 /* ---------- remember: the ladder ---------- */
 /* ---------- Fold Growth: the level above the first member, and the fold view ---------- */
-.foldlvl { position: relative; display: flex; align-items: center; width: 100%; margin: 2px 0 10px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; text-align: left; }
-.foldlvl:disabled { cursor: default; }
+.foldlvl { position: relative; display: flex; align-items: center; width: 100%; margin: 2px 0 10px; }
 .foldlvl.static { margin: 0; cursor: default; }
 .flbadge { position: relative; width: 44px; height: 44px; flex: none; z-index: 1; }
 .flbadge svg { position: absolute; inset: 0; }
@@ -1740,6 +1742,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <div class="editbar" id="editBar" hidden><button id="edCancel" aria-label="Close without saving">✕</button><button id="edSave" class="tick" aria-label="Save">✓</button></div>
       <div class="visit" id="ovBanner" hidden><span>The whole meadow</span><button id="ovHome">Back to the lamb</button></div>
       <div class="visit" id="visitBanner" hidden><span>Visiting <b id="visitName"></b></span><button id="visitHome">Head home</button></div>
+      <button class="foldexp" id="foldExpand" hidden aria-label="See the fold full screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="lamb" id="lamb" hidden></div>
     </div>
   </div>
@@ -1801,7 +1804,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.59 · 14 October 2026, 5:17 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.15.59 · 14 October 2026, 5:52 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -2081,7 +2084,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const HC = [0.15, 0.04, 0], HR = [0.27, 0.25, 0.25];
   head.add(part(sph, faceMat, ...HR, ...HC, 0.018));
   // wool cap over the crown and back of the head
-  [[-0.2, 1, 0], [0.25, 1, 0.35], [0.25, 1, -0.35], [-0.5, 0.7, 0.55], [-0.5, 0.7, -0.55], [0.5, 0.85, 0], [-0.8, 0.3, 0], [-0.7, 0.2, 0.6], [-0.7, 0.2, -0.6], [0.05, 0.75, 0.75], [0.05, 0.75, -0.75]]
+  [[-0.2, 1, 0], [0.25, 1, 0.35], [0.25, 1, -0.35], [-0.5, 0.7, 0.55], [-0.5, 0.7, -0.55], [0.5, 0.85, 0], [-0.8, 0.3, 0], [-0.7, 0.2, 0.6], [-0.7, 0.2, -0.6], [0.05, 0.75, 0.75], [0.05, 0.75, -0.75], [-0.95, -0.05, 0], [-0.9, -0.3, 0.38], [-0.9, -0.3, -0.38], [-0.8, 0.5, 0.3], [-0.8, 0.5, -0.3], [-0.5, 0.95, 0.3], [-0.5, 0.95, -0.3], [-0.6, -0.1, 0.75], [-0.6, -0.1, -0.75]]
     .forEach((d, i) => { const r = 0.085 + (i % 3) * 0.012; const { p } = surf(HC, HR, d); const w = part(sph, woolMat, r, r, r, p.x, p.y, p.z, 0.014); w.name = "capwool"; w.userData.top = d[1] >= 0.7; head.add(w); });
 
   // face
@@ -4966,20 +4969,20 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     function recenter() { cam.want.set(0, 0.4, Z0 - 0.6); cam.focusWant = 1; }
     // drag to turn, pinch or scroll to zoom (replaces the pasture's own drag while the fold is shown)
     const ptrs = new Map(); let pinch0 = 0, zoom0 = 1;
-    canvas.addEventListener("pointerdown", e => { if (!foldOn) return; ptrs.set(e.pointerId, [e.clientX, e.clientY]); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; } }, true);
+    canvas.addEventListener("pointerdown", e => { if (!foldOn) return; if (!full && e.pointerType !== "mouse") { /* in the top box: sideways turns only, page still scrolls */ } ptrs.set(e.pointerId, [e.clientX, e.clientY]); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; } }, true);
     addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId);
-      if (ptrs.size === 1) { cam.az -= (e.clientX - p[0]) * 0.007; cam.el = Math.max(0.3, Math.min(1.1, cam.el + (e.clientY - p[1]) * 0.004)); }
+      if (ptrs.size === 1) { cam.az -= (e.clientX - p[0]) * 0.007; if (full) cam.el = Math.max(0.3, Math.min(1.1, cam.el + (e.clientY - p[1]) * 0.004)); }
       ptrs.set(e.pointerId, [e.clientX, e.clientY]);
-      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; if (pinch0) cam.zoom = Math.max(0.6, Math.min(4, zoom0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch0)); } });
+      if (ptrs.size === 2 && full) { const [a, b] = [...ptrs.values()]; if (pinch0) cam.zoom = Math.max(0.6, Math.min(4, zoom0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch0)); } });
     const up2 = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = 0; }; addEventListener("pointerup", up2); addEventListener("pointercancel", up2);
-    canvas.addEventListener("wheel", e => { if (!foldOn) return; e.preventDefault(); cam.zoom = Math.max(0.6, Math.min(4, cam.zoom * Math.exp(-e.deltaY * 0.0015))); }, { passive: false });
+    canvas.addEventListener("wheel", e => { if (!foldOn || !full) return; e.preventDefault(); cam.zoom = Math.max(0.6, Math.min(4, cam.zoom * Math.exp(-e.deltaY * 0.0015))); }, { passive: false });
 
-    root.visible = false; let was = null;
+    root.visible = false; let was = null, full = false;
     function open(o) {
       if (foldOn) close();
       was = { home: home.visible, keep: keepsakes.visible, fog: [scene.fog.near, scene.fog.far], fov: camera.fov };
       foldOn = true; home.visible = false; keepsakes.visible = false; root.visible = true; reshape(14);
-      cam.az = 0.3; cam.el = 0.46; cam.zoom = 1; cam.focus = cam.focusWant = 1;
+      cam.az = 0.3; cam.el = 0.46; cam.zoom = 1; cam.focus = cam.focusWant = 1; full = !!o.full;
       setLevelNow(o.level || 1); buildFlock(o.members || []); recenter(); cam.tgt.copy(cam.want);
     }
     function close() {
@@ -4990,7 +4993,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       lamb.visible = true; friends.forEach(f => { f.obj.visible = true; f.tag.visible = true; });
       if (was) { home.visible = was.home; keepsakes.visible = was.keep; scene.fog.near = was.fog[0]; scene.fog.far = was.fog[1]; camera.fov = was.fov; camera.updateProjectionMatrix(); }
     }
-    return { tick, open, close, isOpen: () => foldOn, setLevel: setLevelNow, levelUp, recenter, get level() { return level; }, cam, flock: () => flock, info: () => info, spec, halfOf };
+    function setFull(on) { full = !!on; cam.zoom = 1; cam.el = 0.46; }
+    return { tick, open, close, setFull, isOpen: () => foldOn, setLevel: setLevelNow, levelUp, recenter, get level() { return level; }, cam, flock: () => flock, info: () => info, spec, halfOf };
   })();
 
 
@@ -8282,8 +8286,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   function push3D() {
     if (!window.Lamb3D) return;
     const vb = $("visitBanner");
-    if (!viewGroup) { window.Lamb3D.setFriends([]); if (window.Lamb3D.showHome) window.Lamb3D.showHome(true); vb.hidden = true; return; }
+    if (!viewGroup) { foldInline(null); window.Lamb3D.setFriends([]); if (window.Lamb3D.showHome) window.Lamb3D.showHome(true); vb.hidden = true; return; }
     if (window.Lamb3D.showHome) window.Lamb3D.showHome(false);
+    if (window.Lamb3D.fold) { window.Lamb3D.setFriends([]); foldInline(viewGroup);
+      vb.hidden = false; $("visitName").textContent = viewGroup === (myProfile && myProfile.groupId) ? ((groupOf(viewGroup) || {}).name || "your fold") + ", your fold" : ((groupOf(viewGroup) || {}).name || "another fold"); return; }
     const others = membersOf(viewGroup).filter(p => p.uid !== (me && me.uid) && !p.lost)
       .sort((a, b) => (readToday(b) - readToday(a)) || ((b.total || 0) - (a.total || 0))).slice(0, 8);
     window.Lamb3D.setFriends(others.map(m => ({ label: first(m.displayName) + "'s " + (m.lambName || "lamb"), read: readToday(m), scale: m.scale || 0.85, outfit: m.outfit || null })));
@@ -9084,17 +9090,32 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <span class="flbar"><i style="width:${(f * 100).toFixed(1)}%"${id ? ` id="${id}Fill"` : ""}></i><span${id ? ` id="${id}Txt"` : ""}>${top ? "Eden" : `${fmtN(got)} / ${fmtN(need)} · ${Math.floor(f * 100)}%`}</span></span>`;
   }
   function growthRow(g, visiting) {
-    const L = foldLevel(g.growth || 0), seen = (S.foldSeen || {})[g.id], fresh = !visiting && seen != null && seen < L;
-    return `<button class="foldlvl ${fresh ? "fresh" : ""}" id="foldLvl" aria-label="Fold level ${L}. Open ${esc(g.name)}">${growthBar(g)}${fresh ? `<i class="newdot" aria-hidden="true"></i>` : ""}</button>`;
+    const L = foldLevel(g.growth || 0);
+    return `<div class="foldlvl" id="foldLvl" role="img" aria-label="Fold level ${L}">${growthBar(g)}</div>`;
   }
   // the fold, full screen: the same meadow, further out, with everything the fold has grown
-  let foldViewOn = false;
+  let foldViewOn = false, foldKey = null;
+  const foldMembers = gid => membersOf(gid).slice().sort((a, b) => (a.uid === (me && me.uid) ? -1 : b.uid === (me && me.uid) ? 1 : 0)).map(p => ({ name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), outfit: p.outfit || null }));
+  const pendingUp = gid => { const g = groupOf(gid), seen = (S.foldSeen || {})[gid]; return !!g && gid === (myProfile && myProfile.groupId) && seen != null && seen < foldLevel(g.growth || 0); };
+  // the fold's farm in the top box (instead of your own pasture) while you're at a fold
+  function foldInline(gid) {
+    const L3 = window.Lamb3D, scr = $("screen"), ex = $("foldExpand");
+    if (!L3 || !L3.fold) return;
+    if (!gid) { if (foldKey && !foldViewOn) L3.fold.close(); foldKey = null; ex.hidden = true; scr.classList.remove("foldon"); return; }
+    const g = groupOf(gid); if (!g) return;
+    S.foldSeen = S.foldSeen || {}; if (S.foldSeen[gid] == null && gid === (myProfile && myProfile.groupId)) { S.foldSeen[gid] = B && B.mode === "demo" && foldLevel(g.growth || 0) > 1 ? foldLevel(g.growth || 0) - 1 : foldLevel(g.growth || 0); save(); }
+    ex.hidden = false; scr.classList.add("foldon"); ex.onclick = () => openFoldView(gid);
+    if (pendingUp(gid) && !foldViewOn) { openFoldView(gid); return; }   // a new level: show it big, once
+    const members = foldMembers(gid), key = gid + "|" + foldLevel(g.growth || 0) + "|" + JSON.stringify(members);
+    if (key === foldKey || foldViewOn) return;
+    foldKey = key; L3.fold.open({ level: foldLevel(g.growth || 0), members, name: g.name });
+  }
   async function openFoldView(gid) {
     const g = groupOf(gid); if (!g || foldViewOn || !window.Lamb3D || !window.Lamb3D.fold) return;
     const cv = $("screen").querySelector("canvas"); if (!cv) return;
     const visiting = gid !== (myProfile && myProfile.groupId), L = foldLevel(g.growth || 0);
-    S.foldSeen = S.foldSeen || {}; if (S.foldSeen[gid] == null) S.foldSeen[gid] = B && B.mode === "demo" && L > 1 ? L - 1 : L;
-    const from = visiting ? L : Math.max(1, Math.min(L, S.foldSeen[gid], L));
+    S.foldSeen = S.foldSeen || {}; if (S.foldSeen[gid] == null) S.foldSeen[gid] = L;
+    const from = visiting ? L : Math.max(1, Math.min(L, S.foldSeen[gid]));
     const ov = document.createElement("div"); ov.className = "foldview"; ov.id = "foldView"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", g.name + " fold");
     ov.innerHTML = `<div class="fvstage" id="fvStage"></div>
       <div class="fvtop"><div class="fvcard"><div class="fvhead"><p class="cardtitle">${esc(g.name)}</p><button class="fvclose" id="fvClose" aria-label="Close">✕</button></div><div class="foldlvl static" id="fvLvl">${growthBar({ growth: GROWTH_XP[from] + (from === L ? (g.growth || 0) - GROWTH_XP[L] : 0) }, "fv")}</div></div></div>
@@ -9102,9 +9123,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <div class="fvup" id="fvUp" role="status" aria-live="polite"><small>Level up</small><h2 id="fvUpLv"></h2><p class="what" id="fvUpWhat"></p><p class="cheer" id="fvUpCheer"></p><button class="btn primary" id="fvUpOk">Continue</button></div>`;
     document.body.appendChild(ov); document.body.classList.add("fvopen"); foldViewOn = true;
     $("fvStage").appendChild(cv);
-    const members = membersOf(gid).slice().sort((a, b) => (a.uid === (me && me.uid) ? -1 : b.uid === (me && me.uid) ? 1 : 0)).map(p => ({ name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), outfit: p.outfit || null }));
-    window.Lamb3D.fold.open({ level: from, members, name: g.name });
-    const shut = () => { if (!foldViewOn) return; foldViewOn = false; window.Lamb3D.fold.close(); $("screen").prepend(cv); ov.remove(); document.body.classList.remove("fvopen"); document.removeEventListener("keydown", esc2); renderGroup(); };
+    const members = foldMembers(gid), key = gid + "|" + L + "|" + JSON.stringify(members);
+    if (from !== L || foldKey !== key) { window.Lamb3D.fold.open({ level: from, members, name: g.name, full: true }); foldKey = from === L ? key : null; }
+    window.Lamb3D.fold.setFull(true);
+    const shut = () => { if (!foldViewOn) return; foldViewOn = false; if (!visiting) { S.foldSeen[gid] = L; save(); } window.Lamb3D.fold.setFull(false); $("screen").prepend(cv); ov.remove(); document.body.classList.remove("fvopen"); document.removeEventListener("keydown", esc2);
+      if (viewGroup) { foldKey = null; push3D(); } else { window.Lamb3D.fold.close(); foldKey = null; } renderGroup(); };
     const esc2 = e => { if (e.key === "Escape") shut(); }; document.addEventListener("keydown", esc2);
     $("fvClose").onclick = shut; $("fvStage").addEventListener("pointerdown", () => { const h = $("fvHint"); if (h) h.style.opacity = 0; }, { once: true });
     // level-ups this fold reached since you last looked, one at a time
@@ -9120,7 +9143,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       await new Promise(r => { $("fvUpOk").onclick = r; }); $("fvUp").classList.remove("on"); window.Lamb3D.fold.recenter();
       const part = to === L ? (g.growth || 0) : GROWTH_XP[to]; $("fvLvl").innerHTML = growthBar({ growth: part }, "fv");
     }
-    if (!visiting) { S.foldSeen[gid] = L; save(); }
+    if (!visiting) { S.foldSeen[gid] = L; save(); } foldKey = null;
   }
 
   function renderGroup() {
@@ -9153,7 +9176,6 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if ($("myWeek")) $("myWeek").onclick = () => openWeek(weekStart(today()), today());
     if ($("fcTools")) $("fcTools").onclick = () => { managing = true; mod = null; loadMod(); renderFellowship(); };
     $("grOthers").onclick = () => setVisit(true);
-    if ($("foldLvl")) { const can = !!(window.Lamb3D && window.Lamb3D.fold); $("foldLvl").disabled = !can; $("foldLvl").onclick = () => openFoldView(gid); }
     if (!visiting) tendGrowth();
     { const hd = c.querySelector(".grhead > div:first-child"); if (hd) c.style.setProperty("--grh", Math.round(hd.getBoundingClientRect().height) + "px"); }   // the signpost is as tall as the fold's heading
   }
