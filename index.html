@@ -243,10 +243,16 @@ details.mini summary { padding: 4px 0; font-size: 14px; color: var(--muted); }
 .calsheet.dock .calcard { pointer-events: auto; max-height: 60vh; border-radius: 22px 22px 0 0; }
 @media (min-width: 520px) { .calsheet.dock { align-items: flex-end; } }
 .calnav .tick { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 800; }
-.wtabs.htabs { display: flex; justify-content: flex-start; gap: 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+.wtabs.htabs { display: flex; justify-content: space-between; gap: 2px; overflow: hidden; padding: 4px; }
+.edrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0 4px; }
+.edhint { font-size: 12.5px; line-height: 1.35; color: var(--muted); min-width: 0; }
+.tphead { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.skybtn { flex: none; width: 42px; height: 42px; padding: 0; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 6px -3px rgba(0,0,0,.2); }
+.skybtn svg { width: 28px; height: 28px; }
+.skybtn.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--card)); }
 .wtabs.htabs::-webkit-scrollbar { display: none; }
 .wtabs.htabs button { scroll-snap-align: start; }
-.wtabs.htabs button { font-size: 13px; padding: 9px 9px; flex: none; }
+.wtabs.htabs button { font-size: 13px; padding: 9px 2px; flex: 1 1 auto; min-width: 0; white-space: nowrap; }
 .edicons { display: flex; gap: 4px; align-items: center; }
 .edicons button { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid var(--line); background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; padding: 0; }
 .edicons button svg { width: 20px; height: 20px; }
@@ -484,11 +490,16 @@ select.field { appearance: auto; }
 .mlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .mlist li { display: flex; flex-direction: column; gap: 8px; }
 .mlist .btn { padding: 10px 12px; font-size: 14px; }
-.foldexp { position: absolute; right: 8px; bottom: 8px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.9); color: #23302A; cursor: pointer; z-index: 3; }
+.recenter { position: absolute; left: 6px; bottom: 6px; z-index: 3; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.9); color: #3E7F5A; box-shadow: 0 4px 12px rgba(0,0,0,.12); cursor: pointer; }
+.recenter svg { width: 20px; height: 20px; }
+.foldview .recenter.fvrc { position: fixed; left: 16px; bottom: calc(env(safe-area-inset-bottom) + 16px); z-index: 95; width: 46px; height: 46px; }
+.screen .visit { left: 48px !important; bottom: 6px; }
+.screen.foldon .visit { right: 48px; }
+.foldexp { position: absolute; right: 6px; bottom: 6px; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.9); color: #23302A; cursor: pointer; z-index: 3; }
 .foldexp svg { width: 20px; height: 20px; }
-.screen.foldon .visit { right: 56px; }
-.visit { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(255,255,255,.9); color: #23302A; border-radius: 12px; padding: 6px 6px 6px 12px; font-size: 13px; z-index: 3; }
-.visit button { font: 700 13px var(--body); border: 0; border-radius: 9px; padding: 7px 10px; background: #3E7F5A; color: #fff; cursor: pointer; }
+.visit { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 4px; background: rgba(255,255,255,.9); color: #23302A; border-radius: 12px; padding: 3px 3px 3px 9px; font-size: 11.5px; letter-spacing: -0.1px; min-height: 38px; box-sizing: border-box; z-index: 3; }
+.visit > span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.visit button { flex: none; white-space: nowrap; font: 700 11.5px var(--body); border: 0; border-radius: 9px; padding: 8px 6px; background: #3E7F5A; color: #fff; cursor: pointer; }
 .members li { grid-template-columns: 14px 1fr auto; }
 .members li.composer { grid-template-columns: 1fr; display: flex; flex-direction: column; gap: 8px; }
 .members li.mrow { grid-template-columns: 14px 1fr auto; row-gap: 2px; column-gap: 10px; }
@@ -866,6 +877,8 @@ body.fvopen { overflow: hidden; }
 .ulist li small { display: block; color: var(--muted); }
 .ulist li.done b::after { content: " ✓"; color: var(--accent); }
 .ulist li.next b { color: var(--accent); }
+.gi.garden { background: repeating-linear-gradient(45deg, rgba(122,170,96,.55) 0 6px, rgba(150,196,120,.55) 6px 12px); border: 1.5px dashed #5E8E4A; border-radius: 6px; display: grid; place-items: center; pointer-events: none; }
+.gi.garden span { font: 700 9px var(--body); color: #2F4F26; text-align: center; line-height: 1.1; padding: 2px; }
 .gsec { border-top: 1px solid var(--line); padding-top: 10px; }
 .gname { display: grid; margin-bottom: 6px; }
 .gname small { color: var(--muted); }
@@ -890,6 +903,10 @@ body.fvopen { overflow: hidden; }
 .mlamb small { font-size: 11px; color: var(--accent); font-weight: 700; margin-top: -2px; }
 .mapinfo2 .btn { width: 100%; }
 .mapinfo2 .here { justify-self: center; }
+.screen.foldon #homeBtn { display: none; }
+.weekhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.weekhead .weekbtn { margin: -6px 0; display: grid; place-items: center; width: 44px; height: 28px; min-height: 0; padding: 0; border-radius: 999px; color: var(--accent); }
+.weekhead .weekbtn svg { width: 16px; height: 16px; }
 .pvname { display: grid; justify-items: center; line-height: 1.1; }
 .pvname small { font: 600 13px var(--body); color: var(--muted); }
 .lambcard b { font: 600 16px var(--display, var(--body)); }
@@ -947,7 +964,7 @@ body.pvisit #hearts, body.pvisit #heartInfo { visibility: hidden; }
 .grhead { display: flex; align-items: stretch; justify-content: space-between; gap: 10px; }
 #groupCard .flockline + .grhead { margin-top: -8px; }
 .grhead { align-items: flex-start !important; }
-.grhead .gricons .hudbtn { width: var(--grh, 52px); height: var(--grh, 52px); min-height: 0; padding: 0; display: grid; place-items: center; }
+.grhead .gricons .hudbtn { width: var(--grh, 46px); height: var(--grh, 46px); min-width: 40px; min-height: 40px !important; min-height: 0; padding: 0; display: grid; place-items: center; }
 .grhead .gricons .hudbtn svg { width: 74%; height: 74%; }
 #handTo { text-transform: none; letter-spacing: 0; font: 600 15px var(--body); }
 .gricons { display: flex; gap: 8px; flex: none; }
@@ -1849,6 +1866,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <div class="editbar" id="editBar" hidden><button id="edCancel" aria-label="Close without saving">✕</button><button id="edSave" class="tick" aria-label="Save">✓</button></div>
       <div class="visit" id="ovBanner" hidden><span>The whole meadow</span><button id="ovHome">Back to the lamb</button></div>
       <div class="visit" id="visitBanner" hidden><span>Visiting <b id="visitName"></b></span><button id="visitHome">Head home</button></div>
+      <button class="recenter" id="recenterBtn" aria-label="Re-centre the view"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <button class="foldexp" id="foldExpand" hidden aria-label="See the fold full screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="lamb" id="lamb" hidden></div>
     </div>
@@ -1858,7 +1876,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
 
 
   <div class="card" style="gap:10px">
-    <div class="eyebrow">This week</div>
+    <div class="weekhead"><div class="eyebrow">This week</div><button class="mini foundbtn weekbtn" id="myWeek" aria-label="Your week"></button></div>
     <div class="week" id="week"></div>
     <p class="verse weekverse">“Feed my lambs.” · John 21:15</p>
   </div>
@@ -1911,7 +1929,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.18.4 · 19 October 2026, 2:15 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.18.12 · 20 October 2026, 6:21 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -1998,10 +2016,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const toon = (opts) => new T.MeshToonMaterial(Object.assign({ gradientMap: toonRamp }, opts));
 
   // ---- rolling ground ----
-  const PADS = [[-7.4, -12.7], [-3.5, -12.9], [3.5, -12.9], [7.4, -12.7]];   // your gardens sit on level ground
   function heightAt(x, z) {
     const d = Math.hypot(x * 0.9, z + 2.5); let f = smooth(FLAT0, FLAT0 + 11.5, d);
-    if (!foldOn) for (const [px, pz] of PADS) { const k = Math.hypot(x - px, z - pz); if (k < 3) f *= smooth(1.9, 3, k); }
     return 0.03 * Math.sin(x * 2.1) * Math.cos(z * 1.7) +
       f * (1.3 + Math.sin(x * 0.33) * 1.3 + Math.cos(z * 0.27 + 1.0) * 1.2 + Math.sin((x + z) * 0.14) * 1.6);
   }
@@ -2266,19 +2282,37 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const col = ACC_COLORS[colorKey] || ACC_COLORS.blue;
     const g = new T.Group(); g.name = "acc"; let slot = "neck";
     if (["bandana", "lei", "bow", "bell", "scarf"].includes(id)) {
-      const tube = id === "scarf" ? 0.05 : id === "lei" ? 0.012 : 0.022, front = collarFront(tube + 0.02);
-      if (id !== "lei") strapTube(g, collarLoop(tube + 0.006), id === "bell" ? "#C8423A" : col, tube, true).name = "cord";
+      const tube = id === "scarf" ? 0.05 : id === "lei" ? 0.012 : id === "bandana" ? 0.026 : 0.022, front = collarFront(tube + 0.02);
+      if (id !== "lei" && id !== "bandana") strapTube(g, collarLoop(tube + 0.006), id === "bell" ? "#C8423A" : col, tube, true).name = "cord";
       if (id === "bandana") {
-        // a folded triangle of cloth lying on the chest below the knot, with white spots
-        const N = new T.Vector3(-chestDir.y, chestDir.x, 0).normalize(); if (N.y < 0) N.negate(); const Z = new T.Vector3(0, 0, 1);
-        const sh = new T.Shape(); sh.moveTo(-0.19, 0); sh.quadraticCurveTo(0, 0.03, 0.19, 0); sh.quadraticCurveTo(0.07, -0.15, 0, -0.31); sh.quadraticCurveTo(-0.07, -0.15, -0.19, 0);
-        const tg = new T.ExtrudeGeometry(sh, { depth: 0.025, bevelEnabled: true, bevelSize: 0.01, bevelThickness: 0.01, bevelSegments: 1 });
-        const cloth = new T.Group(); cloth.quaternion.setFromRotationMatrix(new T.Matrix4().makeBasis(Z, N, new T.Vector3().crossVectors(Z, N))); cloth.position.copy(front).addScaledVector(chestDir, 0.02).addScaledVector(N, -0.015); g.add(cloth);
-        const tm = new T.Mesh(tg, am(col)); tm.castShadow = true; cloth.add(tm); const to = new T.Mesh(tg, INK); to.scale.set(1.05, 1.05, 1.4); to.position.set(0, 0.004, 0.006); cloth.add(to);
-        [[-0.1, -0.06], [0.1, -0.06], [0, -0.16], [-0.04, -0.24], [0.05, -0.1]].forEach(([u, v]) => { const d = new T.Mesh(sph, am("#FFFFFF")); d.scale.set(0.02, 0.02, 0.008); d.position.set(u, v, -0.012); cloth.add(d); });
-        const knot = new T.Group(); knot.position.copy(front).add(new T.Vector3(0.03, 0.0, 0)); g.add(knot);   // the knot, with its two tied ends
-        knot.add(part(sph, am(col), 0.05, 0.045, 0.055, 0, 0, 0, 0.012));
-        [1, -1].forEach(sd => { const e = part(sph, am(col), 0.022, 0.075, 0.035, 0.01, -0.06, sd * 0.055, 0.01); e.rotation.x = sd * 0.6; knot.add(e); });
+        // a cowboy bandana: a big triangle of cloth tied round the neck — a thick rolled band, the triangle hanging over the chest, a knot with two ends at the back
+        const N = new T.Vector3(-chestDir.y, chestDir.x, 0).normalize(); if (N.y < 0) N.negate(); const Z = new T.Vector3(0, 0, 1), C0 = NECK_C.clone().sub(collarC);
+        const ring = new T.CatmullRomCurve3(collarLoop(0.035), true).getSpacedPoints(96); ring.pop();
+        const oval = (w, th, mat) => { const M = 12, pos = [], idx = [], n = ring.length;
+          ring.forEach((p, i) => { const o = p.clone().sub(C0); o.addScaledVector(N, -o.dot(N)).normalize(); const ww = w * (1 + 0.1 * Math.sin(i / n * Math.PI * 14));
+            for (let j = 0; j < M; j++) { const a = j / M * Math.PI * 2, v = p.clone().addScaledVector(o, Math.cos(a) * th / 2).addScaledVector(N, Math.sin(a) * ww / 2); pos.push(v.x, v.y, v.z); } });
+          for (let i = 0; i < n; i++) for (let j = 0; j < M; j++) { const a = i * M + j, b = ((i + 1) % n) * M + j, c = ((i + 1) % n) * M + (j + 1) % M, d = i * M + (j + 1) % M; idx.push(a, d, b, b, d, c); }
+          const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals(); const m = new T.Mesh(geo, mat); m.castShadow = true; g.add(m); return m; };
+        oval(0.085, 0.045, am(col)); oval(0.1, 0.06, INK);
+        // the triangle: a sheet of cloth laid over the chest below the band, its point hanging down the middle
+        const R = ring.reduce((a, p) => { const o = p.clone().sub(C0); return a + o.addScaledVector(N, -o.dot(N)).length(); }, 0) / ring.length;
+        const spot = (sv, tv, lift) => { const th = sv * 1.35 * (1 - tv), v = 0.02 + tv * 0.4, d = chestDir.clone().multiplyScalar(Math.cos(th)).addScaledVector(Z, Math.sin(th)), A = NECK_C.clone().addScaledVector(N, -v);
+          const h = _roundCollar ? null : woolHit(A.clone().addScaledVector(d, 2), A);
+          const p = h ? h.clone().addScaledVector(d, lift + 0.03 + tv * 0.03) : A.clone().addScaledVector(d, R + lift + tv * 0.05 + 0.01); return p.sub(collarC); };
+        const sheet = (k, lift, mat) => { const nS = 14, nT = 10, pos = [], idx = [];
+          for (let j = 0; j <= nT; j++) for (let i = 0; i <= nS; i++) { const v = spot((i / nS * 2 - 1) * k, Math.min(1, j / nT * (k > 1 ? 1.06 : 1)), lift); pos.push(v.x, v.y, v.z); }
+          for (let j = 0; j < nT; j++) for (let i = 0; i < nS; i++) { const a = j * (nS + 1) + i; idx.push(a, a + nS + 1, a + 1, a + 1, a + nS + 1, a + nS + 2); }
+          const geo = new T.BufferGeometry(); geo.setAttribute("position", new T.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals(); const m = new T.Mesh(geo, mat); m.castShadow = true; g.add(m); return m; };
+        const cm = am(col).clone(); cm.side = T.DoubleSide; const ik = INK.clone(); ik.side = T.DoubleSide;
+        sheet(1, 0.012, cm); sheet(1.07, 0.0, ik);
+        // a white trim along both edges and a few white spots, the way a bandana is printed
+        [-1, 1].forEach(sd => { const ln = []; for (let j = 0; j <= 8; j++) ln.push(spot(sd * 0.84, j / 8 * 0.88, 0.02)); strapTube(g, ln, "#FFFDF8", 0.006, false).children[1].visible = false; });
+        [[0, 0.22], [-0.45, 0.16], [0.45, 0.16], [0, 0.5], [-0.32, 0.36], [0.32, 0.36], [0, 0.74]].forEach(([u, v]) => { const q = spot(u, v, 0.02); const dot = part(sph, am("#FFFDF8"), 0.018, 0.018, 0.018, q.x, q.y, q.z, 0); dot.scale.multiplyScalar(1); g.add(dot); });
+        // the knot behind the neck, with its two ends sticking out
+        const back = ring.reduce((m, p) => p.clone().sub(C0).dot(chestDir) < m.clone().sub(C0).dot(chestDir) ? p : m, ring[0]), bo = back.clone().sub(C0).normalize();
+        const knot = new T.Group(); knot.position.copy(back).addScaledVector(bo, 0.03); knot.quaternion.setFromUnitVectors(new T.Vector3(-1, 0, 0), bo); g.add(knot);
+        knot.add(part(sph, am(col), 0.055, 0.05, 0.06, 0, 0, 0, 0.012));
+        [1, -1].forEach(sd => { const e = part(new T.ConeGeometry(1, 1, 4), am(col), 0.065, 0.18, 0.026, -0.06, 0.03, sd * 0.07, 0.01); e.rotation.set(sd * 1.0, 0, 1.1); knot.add(e); });
       } else if (id === "lei") {
         const cols2 = [col, "#FFFFFF"], pts = collarLoop(0.03);
         for (let i = 0; i < 16; i++) { const v = pts[i * 3], f = flower(cols2[i % 2], 0.036), out = v.clone().add(collarC).sub(NECK_C).normalize();
@@ -2290,7 +2324,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         bow.add(part(sph, am(col), 0.045, 0.045, 0.045, 0.01, 0.02, 0, 0.012));
         g.add(bow);
       } else if (id === "bell") {
-        const bell = new T.Group(); bell.position.copy(front).add(new T.Vector3(0.03, -0.06, 0));
+        const bell = new T.Group(); bell.name = "charm"; bell.position.copy(front).add(new T.Vector3(0.03, -0.06, 0));
         bell.add(part(sph, am("#F2C14E"), 0.065, 0.07, 0.065, 0, 0, 0, 0.012));
         bell.add(part(sph, am("#B98A2A"), 0.02, 0.02, 0.02, 0.0, -0.065, 0, 0.006));
         g.add(bell);
@@ -2303,7 +2337,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     } else {
       slot = "head";
       if (id === "daisy") {
-        const f = flower("#FFFFFF", 0.07); const { p, n } = surf(HC, HR, [0.1, 0.7, 0.72]);
+        const f = new T.Group(); for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2, pt = part(sph, am("#FFFFFF"), 0.012, 0.075, 0.026, 0, Math.cos(a) * 0.07, Math.sin(a) * 0.07, 0.005); pt.rotation.x = a; f.add(pt); }
+        f.add(part(sph, am("#F2B53A"), 0.03, 0.04, 0.04, 0.012, 0, 0, 0.006)); const { p, n } = surf(HC, HR, [0.1, 0.7, 0.72]);
         f.position.copy(p).addScaledVector(n, 0.1); f.quaternion.setFromUnitVectors(new T.Vector3(1, 0, 0), n); g.add(f);
       } else if (id === "crown") {
         const ring = new T.Group(); ring.position.set(0.13, 0.215, 0); ring.rotation.z = -0.14; ring.scale.setScalar(1.3);
@@ -2469,8 +2504,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + Math.PI / 6; const pts = []; for (let t = 0; t <= 12; t++) pts.push(on(TL * t / 12 * 0.98, a)); b.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts), 24, 0.004, 5), am("#FFFDF8"))); }
       aball(b, col, 0.03, 0, ry + 0.012, 0, 0.004);   // the button on top
       // a full peak: a rounded bill that starts inside the crown and reaches well out over the brow, dipping a little
-      const rimY = ry * Math.cos(TL), rimX = rx * Math.sin(TL), v = new T.Group(); v.position.set(rimX - 0.1, rimY + 0.02, 0); v.rotation.z = -0.5; b.add(v);
-      AP(v, new T.CylinderGeometry(1, 1, 1, 40, 1, false, 0, Math.PI), col, 0.26, 0.018, 0.22, 0, 0, 0, 0.01);
+      const rimY = ry * Math.cos(TL), rimX = rx * Math.sin(TL), v = new T.Group(); v.position.set(rimX - 0.04, rimY + 0.005, 0); v.rotation.z = -0.38; b.add(v);
+      AP(v, sph, col, 0.2, 0.03, 0.235, 0, 0, 0, 0.01);
       // a small embroidered cross, flat on the front panel
       const cr = new T.Group(); cr.position.copy(on(0.7, 0, 1.0)); cr.rotation.z = -0.7; b.add(cr);
       AP(cr, new T.BoxGeometry(1, 1, 1), "#F2C14E", 0.016, 0.008, 0.05, 0, 0.004, 0, 0); AP(cr, new T.BoxGeometry(1, 1, 1), "#F2C14E", 0.05, 0.008, 0.016, 0.006, 0.004, 0, 0); } },
@@ -2490,15 +2525,18 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       [-1, 1].forEach(sd => { const fl = AP(b, new T.BoxGeometry(1, 1, 1), C1, 0.2, 0.26, 0.04, -0.06, -0.12, sd * 0.27, 0.01); fl.rotation.x = sd * 0.12; });
       [0.02, 0.06].forEach(y => { const r = atorus(b, "#2E2622", 0.255, 0.02, Math.PI * 2, 0.005); r.rotation.x = Math.PI / 2; r.position.y = y; }); } },
     // a point on the chest, just below the chin, sitting on top of the wool
-    bowtie: { slot: "neck", color: true, build(g, col) { cord(g, col, 0.012); const f = chestPoint(-0.13, 0.035), t = new T.Group(); t.position.copy(f); t.rotation.z = -0.5; t.scale.setScalar(1.5); g.add(t);
-      [-1, 1].forEach(sd => { const w = AP(t, new T.ConeGeometry(1, 1, 4), col, 0.06, 0.1, 0.03, 0, 0, sd * 0.055, 0.01); w.rotation.set(sd * Math.PI / 2, 0, 0); });
-      aball(t, col, 0.028, 0.01, 0, 0, 0.006); } },
+    bowtie: { slot: "neck", build(g) {   // a golden chain: links that alternate flat and edge-on all round the neck
+      const C0 = NECK_C.clone().sub(collarC), pts = new T.CatmullRomCurve3(collarLoop(0.03), true).getSpacedPoints(40); pts.pop();
+      const lg = new T.TorusGeometry(0.024, 0.0075, 8, 18);
+      pts.forEach((p, i) => { const q = pts[(i + 1) % pts.length], X = q.clone().sub(pts[(i + pts.length - 1) % pts.length]).normalize(), O = p.clone().sub(C0).normalize();
+        let Zv = i % 2 ? O.clone() : new T.Vector3().crossVectors(X, O); Zv.addScaledVector(X, -Zv.dot(X)).normalize(); const Y = new T.Vector3().crossVectors(Zv, X);
+        const l = part(lg, am(GOLD), 1.45, 1, 1, p.x, p.y, p.z, 0.004); l.quaternion.setFromRotationMatrix(new T.Matrix4().makeBasis(X, Y, Zv)); g.add(l); }); } },
     necktie: { slot: "neck", color: true, build(g, col) { cord(g, "#FFFDF8", 0.02);
-      const pts = []; for (let i = 0; i <= 6; i++) pts.push(chestPoint(-0.09 - i * 0.045, 0.024));
-      aball(g, col, 0.035, pts[0].x, pts[0].y, 0, 0.008);
-      for (let i = 0; i < 6; i++) { const A = pts[i], B = pts[i + 1], d = B.clone().sub(A), w = 0.05 + i * 0.008;
-        const m = AP(g, new T.BoxGeometry(1, 1, 1), col, 0.012, d.length() * 1.05, w, (A.x + B.x) / 2, (A.y + B.y) / 2, 0, 0.006); m.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), d.normalize()); }
-      const tip = AP(g, new T.ConeGeometry(1, 1, 4), col, 0.05, 0.05, 0.05, pts[6].x, pts[6].y - 0.02, 0, 0.006); tip.rotation.set(Math.PI, Math.PI / 4, 0); tip.scale.x = 0.012; } },
+      // the tie hangs straight down from its knot, leaning out only as far as it must to clear the chest
+      const f = collarFront(0.03), L = 0.36; let lean = 0;
+      if (!_roundCollar) for (let d = 0.04; d <= L; d += 0.04) { const y = f.y + collarC.y - d, h = woolHit(new T.Vector3(2, y, 0), new T.Vector3(0, y, 0)); if (h) { const need = h.x - collarC.x + 0.02 - f.x; if (need > 0) lean = Math.max(lean, Math.atan2(need, d)); } }
+      const hang = new T.Group(); hang.position.copy(f); hang.rotation.z = lean; g.add(hang);
+      const t = new T.Group(); t.rotation.y = Math.PI / 2; t.position.set(-0.015, -0.035, 0); t.scale.setScalar(0.75); hang.add(t); ACC_ICON.necktie(t, col); } },
     whistle: { slot: "neck", build(g) { cord(g, "#2F6FB8", 0.01); const p = pendant(g, "#2F6FB8"); const w = new T.Group(); w.rotation.y = Math.PI / 2; p.add(w);
       AP(w, cyl, SILVER, 0.04, 0.06, 0.04, 0, 0, 0, 0.006).rotation.x = Math.PI / 2; AP(w, new T.BoxGeometry(1, 1, 1), SILVER, 0.035, 0.022, 0.05, 0.045, 0.012, 0, 0.005); atorus(w, SILVER, 0.012, 0.004, Math.PI * 2, 0).position.set(-0.03, 0.03, 0); } },
     sling: { slot: "neck", build(g) { cord(g, "#8C5A35", 0.012); const p = pendant(g, "#8C5A35");
@@ -2634,11 +2672,13 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         glow.material.opacity = on ? .6 * f : .12; glow.scale.setScalar(on ? .42 * f : .25); lamp.intensity = on ? .28 * f : 0; c.material.color.set(on ? "#FFE9A0" : "#FFD866"); }; } },
     breastplate: { slot: "neck", build(g) { cord(g, "#8C5A35", 0.016); const p = pendant(g); p.position.add(new T.Vector3(0.0, 0.05, 0));
       const pl = AP(p, sph, SILVER, 0.04, 0.12, 0.13, 0, 0, 0, 0.01); pl.rotation.z = 0.5; const h = AP(p, wHeart, GOLD, 0.06, 0.06, 0.03, 0.04, 0.01, 0, 0.006); h.rotation.y = Math.PI / 2; } },
-    friendship: { slot: "neck", color: true, build(g, col) { const pts = collarLoop(0.05);
-      strapTube(g, pts, col, 0.045, true).name = "cord";
-      for (let i = 0; i < pts.length; i += 6) aball(g, "#F3E6CF", 0.03, pts[i].x, pts[i].y, pts[i].z, 0);   // cream stripes knitted in
+    friendship: { slot: "neck", build(g) {   // a rainbow-striped scarf, like its picture
+      const RB = ["#E0605A", "#F2C14E", "#6DBF8B", "#7FB6E8", "#A98BE0"], pts = new T.CatmullRomCurve3(collarLoop(0.05), true).getSpacedPoints(60); pts.pop();
+      for (let k = 0; k < 15; k++) { const sub = []; for (let i = 0; i <= 4; i++) sub.push(pts[(k * 4 + i) % pts.length]); strapTube(g, sub, RB[k % 5], 0.045, false).name = "cord"; }
       const front = collarFront(0.07);
-      [col, "#F3E6CF"].forEach((c, i) => { const t = AP(g, new T.BoxGeometry(1, 1, 1), c, 0.05, 0.24, 0.09, 0, 0, 0, 0.012); t.position.copy(front).add(new T.Vector3(-0.02, -0.12 + i * 0.03, 0.09 - i * 0.08)); t.rotation.z = 0.25 - i * 0.15; }); } },
+      [0, 1].forEach(i => { const tl = new T.Group(); tl.position.copy(front).add(new T.Vector3(-0.02, -0.02 + i * 0.03, 0.09 - i * 0.08)); tl.rotation.z = 0.25 - i * 0.15; g.add(tl);
+        RB.forEach((c, j) => AP(tl, new T.BoxGeometry(1, 1, 1), c, 0.05, 0.05, 0.09, 0, -j * 0.05, 0, 0.012));
+        for (let j = 0; j < 4; j++) AP(tl, cyl, RB[(j + i) % 5], 0.008, 0.04, 0.008, 0, -0.27, -0.03 + j * 0.02, 0); }); } },
     towel: { slot: "neck", build(g) { strapTube(g, collarLoop(0.06), "#F4EEE2", 0.055, true).name = "cord";
       const front = collarFront(0.08);
       [-1, 1].forEach((sd, i) => { const e = new T.Group(); e.position.copy(front).add(new T.Vector3(0.0, -0.15, sd * 0.08)); e.rotation.set(sd * 0.12, 0, 0.22 - i * 0.08); g.add(e);
@@ -2768,10 +2808,25 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const HATS = new Set(["hat", "beret", "bucket", "beanie", "turban", "helmet", "cap", "shemagh"]), RINGS = new Set(["crown", "barley", "tiara", "grace", "laurel", "royalcrown"]);
   // wardrobe portraits: small things alone, back/feet/fleece shown on a lamb
   // icons show the thing itself: a crown, a scarf, or just the charm of a pendant
+  // a few icons drawn on their own: a scarf as a long piece of cloth, the bow alone, a proper tie
+  const longScarf = (g, cols) => { const pts = []; for (let i = 0; i <= 24; i++) { const t = i / 24; pts.push(new T.Vector3(Math.sin(t * Math.PI * 1.2) * 0.17, 0.44 - t * 0.88, 0)); }
+    const curve = new T.CatmullRomCurve3(pts), n = 11;
+    for (let k = 0; k < n; k++) { const sub = []; for (let j = 0; j <= 6; j++) sub.push(curve.getPointAt(Math.min(1, (k + j / 6 * 1.04) / n))); const geo = new T.TubeGeometry(new T.CatmullRomCurve3(sub), 8, 0.075, 10, false);
+      const m = new T.Mesh(geo, am(cols[k % cols.length])); m.scale.z = 0.3; g.add(m); const o = new T.Mesh(geo, INK); o.scale.set(1.03, 1.0, 0.3 * 1.25); o.position.z = -0.004; g.add(o); }
+    [[curve.getPointAt(0), -1], [curve.getPointAt(1), 1]].forEach(([p, e]) => { for (let k = 0; k < 5; k++) aseg(g, cols[e < 0 ? 0 : (n - 1) % cols.length], [p.x - 0.06 + k * 0.03, p.y + e * -0.0, 0], [p.x - 0.06 + k * 0.03, p.y - e * 0.08, 0], 0.007, 0.002); }); };
+  const ACC_ICON = {
+    scarf: (g, col) => longScarf(g, [col, col, "#F3E6CF"]),
+    friendship: (g) => longScarf(g, ["#E0605A", "#F2C14E", "#6DBF8B", "#7FB6E8", "#A98BE0"]),
+    bow: (g, col) => { [1, -1].forEach(s => { const l = AP(g, sph, col, 0.05, 0.08, 0.1, 0, 0.02, s * 0.085, 0.012); l.rotation.x = s * 0.5; const t = AP(g, sph, col, 0.03, 0.08, 0.03, 0, -0.08, s * 0.04, 0.01); t.rotation.x = -s * 0.35; }); AP(g, sph, col, 0.045, 0.045, 0.045, 0.01, 0.02, 0, 0.012); g.rotation.y = -Math.PI / 2; },
+    necktie: (g, col) => { const sh = new T.Shape(); sh.moveTo(-0.035, 0); sh.lineTo(0.035, 0); sh.lineTo(0.075, -0.4); sh.lineTo(0, -0.47); sh.lineTo(-0.075, -0.4); sh.lineTo(-0.035, 0);
+      const geo = new T.ExtrudeGeometry(sh, { depth: 0.03, bevelEnabled: true, bevelSize: 0.008, bevelThickness: 0.008, bevelSegments: 1 }); const m = new T.Mesh(geo, am(col)); g.add(m); const o = new T.Mesh(geo, INK); o.scale.set(1.08, 1.03, 1.3); o.position.z = -0.006; g.add(o);
+      const k = new T.Shape(); k.moveTo(-0.06, 0.08); k.lineTo(0.06, 0.08); k.lineTo(0.035, -0.005); k.lineTo(-0.035, -0.005); k.lineTo(-0.06, 0.08); const kg = new T.ExtrudeGeometry(k, { depth: 0.04, bevelEnabled: true, bevelSize: 0.008, bevelThickness: 0.008, bevelSegments: 1 }); g.add(new T.Mesh(kg, am(col))); const ko = new T.Mesh(kg, INK); ko.scale.set(1.08, 1.06, 1.25); ko.position.z = -0.006; g.add(ko);
+      [0, 1, 2].forEach(i => AP(g, new T.BoxGeometry(1, 1, 1), "#FFFDF8", 0.12 - i * 0.01, 0.012, 0.005, 0, -0.12 - i * 0.1, 0.045, 0).rotation.z = -0.5); } };
   function accThumb(id, colorKey) {
     return portrait("w" + id + (colorKey || ""), () => {
       const w = WEAR[id], g = new T.Group();
       if (w && w.icon) { w.icon(g); return g; }
+      if (ACC_ICON[id]) { ACC_ICON[id](g, ACC_COLORS[colorKey] || ACC_COLORS.blue); return g; }
       _roundCollar = w ? w.slot === "neck" : ["bandana", "lei", "bow", "bell", "scarf"].includes(id);
       let r; try { r = w ? buildWear(id, colorKey) : buildAccessory(id, colorKey); } finally { _roundCollar = false; } if (!r) return g;
       r.g.position.set(0, 0, 0); r.g.children.filter(o => o.name === "strap").forEach(o => r.g.remove(o)); r.g.updateMatrixWorld(true);   // the bag alone, without the straps round the lamb
@@ -3864,7 +3919,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   function pickNear(R) { for (let k = 0; k < 12; k++) { const a = R.obj.rotation.y + (R.r() - 0.5) * 2.6, d = 1.2 + R.r() * 2.8, x = R.x + Math.cos(a) * d, z = R.z - Math.sin(a) * d;
       if (x < -5.5 || x > 5.5 || z < -9.4 || z > 1.3 || Math.hypot(x, z) < 2.0 || inWater(x, z)) continue; return [x, z]; } return pickSpot(R.r); }
   // a place at the water's edge to drink from, facing the water
-  const blockedAt = (x, z) => !(x > -5.6 && x < 5.6 && z > -9.5 && z < 1.4 && Math.hypot(x, z) > 1.7 && !inWater(x, z) && !treeSpots.some(tr => Math.hypot(x - tr.x, z - tr.z) < 0.35));
+  const plotRects = [];
+  const blockedAt = (x, z) => !(x > -5.6 && x < 5.6 && z > -9.5 && z < 1.4 && Math.hypot(x, z) > 1.7 && !inWater(x, z) && !treeSpots.some(tr => Math.hypot(x - tr.x, z - tr.z) < 0.35) && !plotRects.some(r => x > r[0] - 0.3 && x < r[2] + 0.3 && z > r[1] - 0.3 && z < r[3] + 0.3));
   function drinkSpot(R) { let best = null;
     waterRects.forEach(([x0, z0, x1, z1]) => { const cx = Math.max(x0, Math.min(x1, R.x)), cz = Math.max(z0, Math.min(z1, R.z)); let dx = R.x - cx, dz = R.z - cz, d = Math.hypot(dx, dz);
       if (d < 1e-3) { dx = R.x - (x0 + x1) / 2; dz = R.z - (z0 + z1) / 2; d = Math.hypot(dx, dz) || 1; }
@@ -4069,7 +4125,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     ray.setFromCamera(ndc, camera); if (!ray.ray.intersectPlane(gridPlane, gridHit)) return null;
     const c = Math.floor(gridHit.x + 6), row = Math.floor(gridHit.z + 10); return c >= 0 && c < 12 && row >= 0 && row < 12 ? [c, row] : null;
   }
-  let gridOn = false;
+  let gridOn = false, gridQuiet = false;   // quiet: taps reach placed things, but no grid lines and nothing faded
   // real trees differ: a cedar towers, a myrtle is a shrub (heights in pasture units; the lamb is about 0.9)
   const TREE_SIZE = { cedar: [3, 3], oak: [2, 2], willow: [2, 2], life: [2, 2], palm: [2, 2], fig: [2, 2], olive: [2, 2] };
   const TREE_H = { sapling: 0.9, myrtle: 1.0, pomegranate: 1.6, vine: 1.5, apple: 2.4, mustard: 2.0, olive: 3.2, fig: 3.4, almond: 2.6, spirit: 2.4, willow: 4.6, oak: 5.4, palm: 6.0, life: 5.6, cedar: 8.5 };
@@ -4098,7 +4154,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     (L.keeps || []).forEach(kp => { if (!KEEPSAKE3D[kp.k]) return; const x = cellX(kp.c), z = cellZ(kp.row); const g = buildItem("keep", kp.k); g.position.set(x, heightAt(x, z) - 0.02, z); g.rotation.y = faceTo(x, z, 0, 6) * 0.7; homeItems.add(g); keepSpots.push({ x, z }); });
     (L.trees || []).forEach(tr => { if (!TREES[tr.k]) return; const [tw, td] = TREE_SIZE[tr.k] || [1, 1], x = GRID.x0 + tr.c + tw / 2, z = GRID.z0 + tr.row + td / 2; const g = buildItem("tree", tr.k); g.position.set(x, heightAt(x, z) - 0.02, z); g.rotation.y = ((tr.c * 7 + tr.row * 3) % 8) * 0.4; homeItems.add(g);
       g.updateMatrixWorld(true); const bb = new T.Box3().setFromObject(g); treeSpots.push({ x, z, top: bb.max.y, r: Math.min(bb.max.x - bb.min.x, bb.max.z - bb.min.z) * 0.32, used: 0 }); });
-    if (gridOn) fadeItems(true);
+    if (gridOn && !gridQuiet) fadeItems(true);
     const ak = JSON.stringify(L.animals || {}); if (ak !== setHome.ak) { setHome.ak = ak; setAnimals(L.animals); }
   }
   function tickHome(t, dt) { if (!home.visible) return; [homeItems, homeGate].forEach(gr => gr.traverse(o => { if (o.userData.tick) o.userData.tick(t, dt); })); tickAnimals(t, dt); }
@@ -4343,10 +4399,22 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   let dragX = null, az = 0, azVel = 0, downAt = null;
   // while arranging the pasture, taps and drags go to the planting grid instead of turning the camera
   const toGrid = (type, e) => { if (!gridOn || !api.onGridPointer) return false; api.onGridPointer(type, cellFromEvent(e), e); return true; };
-  canvas.addEventListener("pointerdown", e => { if (foldOn) return; if (toGrid("down", e)) { canvas.setPointerCapture(e.pointerId); return; } dragX = e.clientX; downAt = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = "grabbing"; });
-  canvas.addEventListener("pointermove", e => { if (foldOn) return; if (toGrid("move", e)) return; if (dragX === null) return; const dx = e.clientX - dragX; dragX = e.clientX; az = clamp(az - dx * 0.012, -1.3, 1.3); });
+  // zoom and move about: two fingers pinch and slide; the re-centre button brings it all back
+  const pPtrs = new Map(), pPan = new T.Vector3(); let pPinch = null, pZoom = 1, lastCamD = 6;
+  const pinchStart = () => { const [a, b] = [...pPtrs.values()]; pPinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, z: pZoom, m: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], pan: pPan.clone() }; dragX = null; downAt = null; };
+  canvas.addEventListener("pointerdown", e => { if (foldOn) return; if (!gridOn) { pPtrs.set(e.pointerId, [e.clientX, e.clientY]); if (pPtrs.size === 2) { pinchStart(); return; } } if (toGrid("down", e)) { canvas.setPointerCapture(e.pointerId); return; } dragX = e.clientX; downAt = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = "grabbing"; });
+  canvas.addEventListener("pointermove", e => { if (foldOn) return;
+    if (pPtrs.has(e.pointerId)) pPtrs.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pPinch && pPtrs.size >= 2) { const [a, b] = [...pPtrs.values()]; pZoom = clamp(pPinch.z * Math.hypot(a[0] - b[0], a[1] - b[1]) / pPinch.d, 0.45, 2.6);
+      const mx = (a[0] + b[0]) / 2 - pPinch.m[0], my = (a[1] + b[1]) / 2 - pPinch.m[1], k = lastCamD * 0.0026, ca = Math.cos(az), sa = Math.sin(az);
+      pPan.x = clamp(pPinch.pan.x - (ca * mx + sa * my) * k, -7, 7); pPan.z = clamp(pPinch.pan.z - (-sa * mx + ca * my) * k, -9, 4); return; }
+    if (toGrid("move", e)) return; if (dragX === null) return; const dx = e.clientX - dragX; dragX = e.clientX; az = clamp(az - dx * 0.012, -1.3, 1.3); });
   const ray = new T.Raycaster(), ndc = new T.Vector2();
-  canvas.addEventListener("pointerup", e => { if (foldOn) return; if (toGrid("up", e)) return;
+  const pUp = e => { pPtrs.delete(e.pointerId); if (pPtrs.size < 2) pPinch = null; };
+  canvas.addEventListener("pointercancel", pUp);
+  canvas.addEventListener("wheel", e => { if (foldOn || !e.ctrlKey) return; e.preventDefault(); pZoom = clamp(pZoom * Math.exp(-e.deltaY * 0.01), 0.45, 2.6); }, { passive: false });
+  function recenterPasture() { pZoom = 1; pPan.set(0, 0, 0); az = 0; }
+  canvas.addEventListener("pointerup", e => { const wasPinch = !!pPinch; pUp(e); if (foldOn) return; if (wasPinch) { dragX = null; downAt = null; return; } if (toGrid("up", e)) return;
     canvas.style.cursor = "grab"; dragX = null;
     if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) < 6) {
       const r = canvas.getBoundingClientRect();
@@ -4418,7 +4486,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       const wet = inWaterAt(lambPos.x, lambPos.z), sp = (state.lost ? 0.9 : returning ? 2.1 : roamSpeed) * (wet ? 0.6 : 1);
       const want = Math.atan2(-dz, dx);
       let dy = want - lamb.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
-      if (Math.abs(dy) > 0.7 && !returning) { lamb.rotation.y += Math.sign(dy) * Math.min(Math.abs(dy), dt * 4); walkPhase += dt * 5; }   // turn round first, then set off
+      if (Math.abs(dy) > 0.6) { lamb.rotation.y += Math.sign(dy) * Math.min(Math.abs(dy), dt * (returning ? 10 : 4)); walkPhase += dt * 5; }   // turn round first, then set off: never walk backwards or sideways
       else { const step = Math.min(dist, dt * sp); lambPos.x += dx / dist * step; lambPos.z += dz / dist * step;
         lamb.rotation.y += dy * (1 - Math.exp(-8 * dt));
         const before = Math.floor(walkPhase / Math.PI); walkPhase += dt * (state.lost ? 7 : 6 + sp * 6);
@@ -4586,10 +4654,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       if ((f.state === "walk" || f.state === "approach") && f.target) {
         const dx = f.target.x - f.pos.x, dz = f.target.z - f.pos.z, dd = Math.hypot(dx, dz);
         if (dd > 0.05) {
-          walk = true; const step = Math.min(dd, dt * sp);
-          f.pos.x += dx / dd * step; f.pos.z += dz / dd * step;
-          let dy = Math.atan2(-dz, dx) - f.obj.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.obj.rotation.y += dy * (1 - Math.exp(-6 * dt));
-          f.phase += dt * (6 + sp * 6);
+          walk = true; let dy = Math.atan2(-dz, dx) - f.obj.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+          if (Math.abs(dy) > 0.5) { f.obj.rotation.y += Math.sign(dy) * Math.min(Math.abs(dy), dt * 4.5); f.phase += dt * 5; }   // turn round first, then walk forwards
+          else { const step = Math.min(dd, dt * sp); f.pos.x += dx / dd * step; f.pos.z += dz / dd * step; f.obj.rotation.y += dy * (1 - Math.exp(-8 * dt)); f.phase += dt * (6 + sp * 6); }
         } else if (f.state === "approach") { f.state = "nuzzle"; f.timer = 2.2; }
         else { f.state = "idle"; f.timer = 1 + rnd() * 3; }
         if (f.state === "approach" && f.timer < -9) { f.state = "idle"; f.timer = 1; }   // give up if it takes too long
@@ -4608,8 +4675,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       }
       if (f.state === "graze") { tp = -0.85; ty = 0.05; if (f.timer <= 0) { f.state = "idle"; f.timer = 1 + rnd() * 2; } }
       // keep a little personal space
-      friends.forEach(o => { if (o === f) return; const dx = f.pos.x - o.pos.x, dz = f.pos.z - o.pos.z, dd = Math.hypot(dx, dz); if (dd > 0 && dd < 0.55) { f.pos.x += dx / dd * (0.55 - dd) * 0.5; f.pos.z += dz / dd * (0.55 - dd) * 0.5; } });
-      { const dx = f.pos.x - lambPos.x, dz = f.pos.z - lambPos.z, dd = Math.hypot(dx, dz); if (dd > 0 && dd < 0.55) { f.pos.x += dx / dd * (0.55 - dd) * 0.6; f.pos.z += dz / dd * (0.55 - dd) * 0.6; } }
+      // too close to someone: an idle lamb walks a few steps away (never slides); only touching lambs get a tiny nudge
+      [...friends.filter(o => o !== f).map(o => o.pos), lambPos].forEach(op => { const dx = f.pos.x - op.x, dz = f.pos.z - op.z, dd = Math.hypot(dx, dz); if (!(dd > 0 && dd < 0.55)) return;
+        if ((f.state === "idle" || f.state === "graze") && f.hopT < 0) { f.state = "walk"; f.target = new T.Vector3(f.pos.x + dx / dd * 0.7, 0, f.pos.z + dz / dd * 0.7); }
+        else if (dd < 0.3) { const k = Math.min(1, dt * 2) * (0.3 - dd); f.pos.x += dx / dd * k; f.pos.z += dz / dd * k; } });
       // hops
       let y = 0;
       if (f.hopT >= 0) {
@@ -4663,10 +4732,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     friends.forEach(f => { fitPoint(f.obj.position.x, f.obj.position.y + 0.1, f.obj.position.z); fitPoint(f.tag.position.x + 0.45, f.tag.position.y + 0.15, f.tag.position.z); fitPoint(f.tag.position.x - 0.45, f.tag.position.y + 0.15, f.tag.position.z); });
     if (fitMax > 1) fitExtra = Math.min(7, fitExtra + dt * 3 * (fitMax - 0.9) * 4);
     else if (fitMax < 0.82) fitExtra = Math.max(0, fitExtra - dt * 0.6);
-    const camD = 4.3 + Math.hypot(lambPos.x, lambPos.z) * 0.35 + fitExtra;
+    const camD = (4.3 + Math.hypot(lambPos.x, lambPos.z) * 0.35 + fitExtra) / pZoom; lastCamD = camD;
     const cx = target.x + Math.sin(A) * camD, cz = target.z + Math.cos(A) * camD;
-    const cy = Math.max(1.45 + fitExtra * 0.3, heightAt(cx, cz) + 1.1) + (reduce ? 0 : 0.06 * Math.sin(t * 0.23));
-    const fk = state.lost ? 0.55 : 0.8; target.x = ease(target.x, lambPos.x * fk, 2, dt); target.z = ease(target.z, lambPos.z * fk, 2, dt);
+    const cy = Math.max((1.45 + fitExtra * 0.3) / Math.pow(pZoom, 0.85), heightAt(cx, cz) + 1.1) + (reduce ? 0 : 0.06 * Math.sin(t * 0.23));
+    const fk = state.lost ? 0.55 : 0.8; target.x = ease(target.x, lambPos.x * fk + pPan.x, 2, dt); target.z = ease(target.z, lambPos.z * fk + pPan.z, 2, dt);
     // overview: rise up to see the whole meadow and every keepsake in it
     ov = ease(ov, ovOn ? 1 : 0, 1.6, dt); const ovs = ov * ov * (3 - 2 * ov);
     camera.position.set(cx, cy, cz); lookTmp.copy(target);
@@ -5203,7 +5272,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
           }
         }
         // a little personal space
-        if (!walk && !(f.step && f.step.door)) flock.forEach(o => { if (o === f || (o.step && o.step.door) || o.sleeping) return; const dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv); if (dd > 0 && dd < 0.4 && !onDeck(f)) { f.u += dx / dd * Math.min(0.003, 0.4 - dd); f.v += dv / dd * Math.min(0.003, 0.4 - dd); } });
+        // too close: walk a couple of steps away rather than sliding (a lying lamb stays put)
+        if (!walk && !(f.step && (f.step.door || f.step.act === "lie" || f.step.act === "nuzzle")) && !onDeck(f)) flock.forEach(o => { if (o === f || (o.step && o.step.door) || o.sleeping || o.i > f.i) return; const dx = f.u - o.u, dv = f.v - o.v, dd = Math.hypot(dx, dv); if (dd > 0 && dd < 0.4 && !(f.step && f.step.away)) { f.step = { go: [f.u + dx / dd * 0.55, f.v + dv / dd * 0.55], direct: true, away: true }; f.route = null; f.stepT = 0; } });
       }
       if (!f.sleeping && !(f.step && (f.step.door || f.step.wade))) info.foots.forEach(r0 => { if (info.pond && r0 === info.pondFoot) return; const r = [r0[0] - 0.3, r0[1] - 0.3, r0[2] + 0.3, r0[3] + 0.3]; if (f.u > r[0] && f.u < r[2] && f.v > r[1] && f.v < r[3]) { const d = [f.u - r[0], r[2] - f.u, f.v - r[1], r[3] - f.v], m = Math.min(...d), k = d.indexOf(m); if (k === 0) f.u = r[0]; else if (k === 1) f.u = r[2]; else if (k === 2) f.v = r[1]; else f.v = r[3]; } });
       if (!onDeck(f)) { if (f.crossing && taken.bridge === f) delete taken.bridge; f.crossing = false; } else if (!f.crossing && !f.sleeping) f.u = f.u < 0 ? -0.66 : 0.66;
@@ -5278,24 +5348,27 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       await new Promise(r => setTimeout(r, 900));
     }
     function recenter() { cam.want.set(0, 0.4, Z0 + (commons ? 1.2 : -0.6)); cam.focusWant = 1; }
+    function resetView() { recenter(); cam.az = 0.3; cam.el = commons ? (full ? 0.6 : 0.56) : 0.46; cam.zoom = commons ? (full ? 0.85 : 1.5) : 1; }
     // drag to turn, pinch or scroll to zoom (replaces the pasture's own drag while the fold is shown)
-    const ptrs = new Map(); let pinch0 = 0, zoom0 = 1;
+    const ptrs = new Map(); let pinch0 = 0, zoom0 = 1, mid0 = null;
     let tap0 = null;
-    canvas.addEventListener("pointerdown", e => { if (!foldOn) return; tap0 = ptrs.size ? null : { x: e.clientX, y: e.clientY, t: performance.now() }; ptrs.set(e.pointerId, [e.clientX, e.clientY]); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; } }, true);
+    canvas.addEventListener("pointerdown", e => { if (!foldOn) return; tap0 = ptrs.size ? null : { x: e.clientX, y: e.clientY, t: performance.now() }; ptrs.set(e.pointerId, [e.clientX, e.clientY]); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = cam.zoom; mid0 = null; } }, true);
     addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId);
       if (tap0 && Math.hypot(e.clientX - tap0.x, e.clientY - tap0.y) > 9) tap0 = null;
       if (ptrs.size === 1 && commons && full) { const dx = e.clientX - p[0], dy = e.clientY - p[1], k = camera.position.distanceTo(cam.tgt) * 0.0017, ca = Math.cos(cam.az), sa = Math.sin(cam.az), m = info.h - 1;
         cam.want.x = Math.max(-m, Math.min(m, cam.want.x - (ca * dx + sa * dy) * k)); cam.want.z = Math.max(Z0 - m, Math.min(Z0 + m, cam.want.z - (-sa * dx + ca * dy) * k)); cam.tgt.copy(cam.want); }
       else if (ptrs.size === 1) { cam.az -= (e.clientX - p[0]) * 0.007; if (full) cam.el = Math.max(0.3, Math.min(1.1, cam.el + (e.clientY - p[1]) * 0.004)); }
       ptrs.set(e.pointerId, [e.clientX, e.clientY]);
-      if (ptrs.size === 2 && full) { const [a, b] = [...ptrs.values()]; if (pinch0) cam.zoom = Math.max(0.6, Math.min(4, zoom0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch0)); } });
+      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; if (pinch0) cam.zoom = Math.max(0.5, Math.min(4, zoom0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch0));
+        const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; if (mid0) { const dx = mx - mid0[0], dy = my - mid0[1], k = camera.position.distanceTo(cam.tgt) * 0.0017, ca = Math.cos(cam.az), sa = Math.sin(cam.az), m = info.h;
+          cam.want.x = Math.max(-m, Math.min(m, cam.want.x - (ca * dx + sa * dy) * k)); cam.want.z = Math.max(Z0 - m, Math.min(Z0 + m, cam.want.z - (-sa * dx + ca * dy) * k)); cam.tgt.copy(cam.want); } mid0 = [mx, my]; } });
     // a quick tap on a lamb: who it is
     function pickAt(x, y) { const r = canvas.getBoundingClientRect(); let best = null, bd = 34; const v = new T.Vector3();
       flock.forEach(f => { if (!f.obj.visible) return; v.copy(f.obj.position); v.y += 0.55; v.project(camera); if (v.z > 1) return; const sx = r.left + (v.x + 1) / 2 * r.width, sy = r.top + (1 - v.y) / 2 * r.height, d = Math.hypot(sx - x, sy - y); if (d < bd) { bd = d; best = f; } });
       return best; }
-    const up2 = e => { const was1 = ptrs.has(e.pointerId) && ptrs.size === 1; ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = 0;
+    const up2 = e => { const was1 = ptrs.has(e.pointerId) && ptrs.size === 1; ptrs.delete(e.pointerId); if (ptrs.size < 2) { pinch0 = 0; mid0 = null; }
       if (was1 && tap0 && performance.now() - tap0.t < 450 && foldOn && FOLD.onTap) { const f = pickAt(e.clientX, e.clientY); if (f) { f.flashT = nowT + 4; FOLD.onTap(f.m, e.clientX, e.clientY); } } tap0 = null; }; addEventListener("pointerup", up2); addEventListener("pointercancel", up2);
-    canvas.addEventListener("wheel", e => { if (!foldOn || !full) return; e.preventDefault(); cam.zoom = Math.max(0.6, Math.min(4, cam.zoom * Math.exp(-e.deltaY * 0.0015))); }, { passive: false });
+    canvas.addEventListener("wheel", e => { if (!foldOn || !(full || e.ctrlKey)) return; e.preventDefault(); cam.zoom = Math.max(0.5, Math.min(4, cam.zoom * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)))); }, { passive: false });
 
     root.visible = false; let was = null, full = false;
     function open(o) {
@@ -5319,7 +5392,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     function highlight(fold) { flock.forEach(f => { f.tagOn = !!f.m.me || (!!fold && f.m.fold === fold); }); }
     function setCommonsFull(on) { full = !!on; cam.zoom = on ? 0.85 : 1; cam.el = 0.6; recenter(); }
     const screenOf = uid => { const f = flock.find(x => x.m.uid === uid); if (!f) return null; const r = canvas.getBoundingClientRect(), v = f.obj.position.clone(); v.y += 0.55; v.project(camera); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; };
-    return { tick, open, close, setFull, focusOn, highlight, setCommonsFull, screenOf, isCommons: () => commons, onTap: null, isOpen: () => foldOn, setLevel: setLevelNow, levelUp, recenter, get level() { return level; }, cam, flock: () => flock, info: () => info, spec, halfOf };
+    return { tick, open, close, setFull, resetView, focusOn, highlight, setCommonsFull, screenOf, isCommons: () => commons, onTap: null, isOpen: () => foldOn, setLevel: setLevelNow, levelUp, recenter, get level() { return level; }, cam, flock: () => flock, info: () => info, spec, halfOf };
   })();
 
 
@@ -5475,8 +5548,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     function set(plots, extra) {
       const k = JSON.stringify([plots || {}, extra || {}]); if (k === pkey) return; pkey = k; group.children.slice().forEach(c => group.remove(c));
       if (!plots) return;
+      plotRects.length = 0;
       Object.keys(DEF).forEach(key => { const open = key === "show" ? !!(extra && extra.anyBook) : plots[key] && Object.keys(plots[key]).length; if (!open) return;
-        const [x, z] = DEF[key].at, g = build(key, key === "show" ? null : plots[key], extra); g.position.set(x, heightAt(x, z), z); group.add(g); });
+        const cell = extra && extra.at && extra.at[key]; const [x, z] = cell ? [GRID.x0 + cell[0] + 1.5, GRID.z0 + cell[1] + 1.5] : DEF[key].at;
+        const g = build(key, key === "show" ? null : plots[key], extra); g.scale.setScalar(cell ? 2.8 / Math.max(DEF[key].w, DEF[key].d) : 1); g.position.set(x, heightAt(x, z), z); group.add(g);
+        if (cell) plotRects.push([x - 1.5, z - 1.5, x + 1.5, z + 1.5]); });
     }
     function thumb(key) {   // a reward's own picture: the thing alone
       const it = ITEMS[key]; if (!it) return null;
@@ -5493,8 +5569,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       if (!snapped) { snapped = true; lambPos.copy(state.lost ? awayPos : homePos); lamb.rotation.y = state.lost ? 0.4 : HOME_YAW; }
     },
     feed() { const far = Math.hypot(lambPos.x - homePos.x, lambPos.z - homePos.z) > 0.1 || state.lost; if (far) act.feedPending = true; else { act.feedT = 0; act.feedBurst = false; } return far; },
+    recenter() { if (foldOn) FOLD.resetView(); else recenterPasture(); },
     setPlots: (p, x) => PLOTS.set(p, x), plotThumb: k => PLOTS.thumb(k), plotsAt: () => PLOTS.DEF,
-    setFriends, setHome, setSetting, setOutfit, keepsakeThumb, accThumb, homeThumb, skyThumb, breedThumb, lambThumb, showHome(on) { home.visible = !!on; }, setGrid(on) { gridOn = !!on; gridFx.visible = gridOn; fadeItems(gridOn); if (!on) setGridMarks([]); }, setGridMarks, onGridPointer: null,
+    setFriends, setHome, setSetting, setOutfit, keepsakeThumb, accThumb, homeThumb, skyThumb, breedThumb, lambThumb, showHome(on) { home.visible = !!on; }, setGrid(on, quiet) { gridOn = !!on; gridQuiet = !!quiet; gridFx.visible = gridOn && !gridQuiet; fadeItems(gridOn && !gridQuiet); if (!on) setGridMarks([]); }, setGridMarks, onGridPointer: null,
     gridToScreen(x, z) { const v = new T.Vector3(x, 0.1, z).project(camera); if (v.z > 1) return null; return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; }, overview(on, mode) { ovOn = !!on; ovMode = mode || "view"; },
     pet() {
       if (state.lost || walking) return false;
@@ -5856,7 +5933,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     ["neck", "bandana", "Bandana", ["free"], "Free", 2, "", "", 1],
     ["neck", "friendship", "Friendship scarf", ["free"], "Free", 3, "", "", 1],
     ["neck", "bow", "Ribbon bow", ["first"], "First Bible Reading", 4, "", "", 1],
-    ["neck", "bowtie", "Bow tie", ["streak", 3], "3-Day Streak", 5, "", "", 1],
+    ["neck", "bowtie", "Golden chain", ["streak", 3], "3-Day Streak", 5, "", "", 1],
     ["neck", "scarf", "Cosy scarf", ["refls", 1], "1 Reflection", 6, "", "", 1],
     ["neck", "lei", "Flower garland", ["refls", 5], "5 Reflections", 7, "", "", 1],
     ["neck", "whistle", "Coach's whistle", ["encourage", 10], "Encourage 10 Times", 8, "", "", 0],
@@ -7912,6 +7989,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if (!S.home) return; const P0 = S.home.plots = S.home.plots || {}; let changed = false;
     CATALOGUE.filter(c => PLOT_SECS.includes(c.sec) && S.owned && S.owned[c.id]).sort((a, b) => a.order - b.order).forEach(c => { const sl = plotSlot(c.key); if (!sl) return; P0[c.sec] = P0[c.sec] || {}; if (!P0[c.sec][sl]) { P0[c.sec][sl] = c.key; changed = true; } });
     if (P0.show == null && (S.books || []).length) { P0.show = S.books[S.books.length - 1]; changed = true; }
+    if (placeGardens(S.home)) changed = true;
     if (changed && !draft) pushHome();
   }
   function useReward(c) {
@@ -8215,21 +8293,21 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   setTimeout(fetchWeather, 1500); setInterval(fetchWeather, 30 * 60 * 1000);
 
   // ---------- push the pasture to the 3D scene ----------
-  let draft = null, editTab = "sky";
+  let draft = null, editTab = "fence", lastTab = "fence";
   function pushHome() {
     if (!window.Lamb3D || !window.Lamb3D.setHome) return;
     const H = (pastureVisit && pastureVisit.home) || draft || S.home; window.Lamb3D.setHome(H);
     const cat = currentCat(); let key = (H.setting || {})[cat] || STARTERS[cat][0];
     window.Lamb3D.setSetting(cat, key);
-    if (window.Lamb3D.setPlots) { const sb = (H.plots || {}).show, br = sb != null ? BOOK_REWARDS.find(r => r.books[0] === sb && r.kind === "keep") : null;
-      window.Lamb3D.setPlots(H.plots || {}, { anyBook: sb != null, bookName: sb != null && BOOKS[sb] ? BOOKS[sb][0] : "", keep: br ? br.key : "" }); }
+    if (window.Lamb3D.setPlots) { if (!pastureVisit && H === S.home && placeGardens(S.home)) save(); const sb = (H.plots || {}).show, br = sb != null ? BOOK_REWARDS.find(r => r.books[0] === sb && r.kind === "keep") : null;
+      window.Lamb3D.setPlots(H.plots || {}, { anyBook: sb != null, bookName: sb != null && BOOKS[sb] ? BOOKS[sb][0] : "", keep: br ? br.key : "", at: (H.plots || {}).at || {} }); }
   }
 
   // ---------- the pasture sheet ----------
   let homeOpen = false, sel = new Set(), pick = null, undo = [], dragFrom = null;
   function fitSheet() { fitDock(); }
   window.addEventListener("resize", () => { if (homeOpen) fitSheet(); });
-  function setGridMode() { if (!window.Lamb3D || !window.Lamb3D.setGrid) return; const on = homeOpen && ["trees", "water", "keeps"].includes(editTab); window.Lamb3D.setGrid(on); window.Lamb3D.overview(on, "edit"); }
+  function setGridMode() { if (!window.Lamb3D || !window.Lamb3D.setGrid) return; const on = homeOpen && ["trees", "water", "keeps"].includes(editTab); window.Lamb3D.setGrid(homeOpen && editTab !== "sky", !on); window.Lamb3D.overview(on, "edit"); }
   function setHomeSheet(open) {
     if (open && dressOpen) setDress(false);
     homeOpen = open; if (open) SND.startMeadow(); else SND.stopMeadow(); $("homeSheet").hidden = !open; $("editBar").hidden = !open; $("screen").classList.toggle("editing", open); dockMode();
@@ -8245,8 +8323,21 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const TREE_FOOT = { cedar: [3, 3], oak: [2, 2], willow: [2, 2], life: [2, 2], palm: [2, 2], fig: [2, 2], olive: [2, 2] };
   const footprint = it => it.k in WATER_SIZE ? (it.r ? [WATER_SIZE[it.k][1], WATER_SIZE[it.k][0]] : WATER_SIZE[it.k]) : (TREE_FOOT[it.k] || [1, 1]);
   const isReserved = (c, r) => { const x = -6 + c + 0.5, z = -10 + r + 0.5; return (Math.abs(x) < 1.6 && z > -1.6) || (Math.abs(x) < 1.1 && z < -8.9); };
+  // each garden that has opened takes a 3x3 patch inside the fence: the first corner or edge that is free of your own things, kept there for good
+  const GARDEN_SPOTS = [[0, 0], [9, 0], [0, 4], [9, 4], [0, 8], [9, 8], [3, 0], [6, 0], [3, 4], [6, 4]];
+  const gardenOpen = (H, k) => k === "show" ? (H.plots || {}).show != null : !!((H.plots || {})[k] && Object.keys(H.plots[k]).length);
+  function placeGardens(H) {
+    if (!H) return false; H.plots = H.plots || {}; const at = H.plots.at = H.plots.at || {}; let changed = false;
+    ["refl", "study", "hosp", "show"].forEach(k => { if (at[k] || !gardenOpen(H, k)) return;
+      const occ = {}; [["trees", H.trees || []], ["water", H.water || []], ["keeps", H.keeps || []]].forEach(([kind, list]) => list.forEach(it => { const [w, d] = footprint(it); for (let a = 0; a < w; a++) for (let b = 0; b < d; b++) occ[(it.c + a) + "," + (it.row + b)] = 1; }));
+      Object.values(at).forEach(([c, r]) => { for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) occ[(c + a) + "," + (r + b)] = 1; });
+      const free = (c, r) => { for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) { const cc = c + a, rr = r + b; if (cc > 11 || rr > 11 || occ[cc + "," + rr] || isReserved(cc, rr)) return false; } return true; };
+      let spot = GARDEN_SPOTS.find(([c, r]) => free(c, r)); if (!spot) for (let r = 0; r <= 9 && !spot; r++) for (let c = 0; c <= 9 && !spot; c++) if (free(c, r)) spot = [c, r];
+      if (spot) { at[k] = spot; changed = true; } });
+    return changed;
+  }
   function occupied(skipKind, skipIdx) {
-    const o = {};
+    const o = {}; Object.values(((draft || S.home).plots || {}).at || {}).forEach(([c, r]) => { for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) o[(c + a) + "," + (r + b)] = 1; });
     [["trees", draft.trees], ["water", draft.water], ["keeps", draft.keeps || []]].forEach(([kind, list]) => list.forEach((it, i) => { if (kind === skipKind && i === skipIdx) return; const [w, d] = footprint(it); for (let a = 0; a < w; a++) for (let b = 0; b < d; b++) o[(it.c + a) + "," + (it.row + b)] = kind + ":" + i; }));
     return o;
   }
@@ -8279,6 +8370,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const items = [];
     draft.water.forEach((it, i) => { const [w, d] = footprint(it); items.push(`<div class="gi water ${kind === "water" ? "act" : "dim"} ${kind === "water" && sel.has(i) ? "sel" : ""}" data-kind="water" data-i="${i}" style="left:${it.c / 12 * 100}%;top:${it.row / 12 * 100}%;width:${w / 12 * 100}%;height:${d / 12 * 100}%">${thumbImg("water", it.k, it.r ? "rot" : "")}</div>`); });
     draft.trees.forEach((it, i) => items.push(`<div class="gi tree ${kind === "trees" ? "act" : "dim"} ${kind === "trees" && sel.has(i) ? "sel" : ""}" data-kind="trees" data-i="${i}" style="left:${it.c / 12 * 100}%;top:${it.row / 12 * 100}%;width:${footprint(it)[0] / 12 * 100}%;height:${footprint(it)[1] / 12 * 100}%">${thumbImg("tree", it.k)}</div>`));
+    Object.entries((draft.plots || {}).at || {}).forEach(([k, [c, r]]) => items.push(`<div class="gi garden dim" style="left:${c / 12 * 100}%;top:${r / 12 * 100}%;width:25%;height:25%"><span>${esc(PLOT_NAMES[k] || "")}</span></div>`));
     return `<div class="gridwrap"><div class="gridlabel top">Gate</div><div class="grid" id="hgrid">${cells.join("")}${items.join("")}<div class="lambspot" aria-hidden="true">🐑</div></div><div class="gridlabel">Front · your lamb's patch</div></div>`;
   }
   // the Gardens tab: four fixed plots beyond the back fence; each spot shows one thing you've earned, your choice
@@ -8296,14 +8388,14 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     }).join("");
     const books = [...new Set(S.books || [])];
     const show = books.length ? `<div class="hsec gsec"><div class="gname"><b>Bible Showcase</b><small>One book you've finished, on display.</small></div><div class="pillrow">${books.map(b => `<button class="chip ${P0.show === b ? "on" : ""}" data-gshow="${b}" aria-pressed="${P0.show === b}">${esc(BOOKS[b][0])}</button>`).join("")}</div></div>` : "";
-    return plots || show ? `<p class="planline">Your gardens are just beyond the back fence. Tap a piece to show it; tap it again to leave that spot empty.</p>${plots}${show}` : `<p class="planline">Your gardens will appear just beyond the back fence as you earn them: your first reflection, your first verse learned, your first note to someone, your first finished book.</p>`;
+    return plots || show ? `<p class="planline">Your gardens have their own patches in your pasture. Tap a piece to show it; tap it again to leave that spot empty.</p>${plots}${show}` : `<p class="planline">Your gardens will appear in your pasture as you earn them: your first reflection, your first verse learned, your first note to someone, your first finished book.</p>`;
   }
   function renderHomeSheet() {
     const c = $("homeCard"); if (!homeOpen) { c.innerHTML = ""; placeTools(null); return; }
-    const D = draft, tabs = [["sky", "Sky"], ["fence", "Fence"], ["keeps", "Keepsakes"], ["trees", "Trees"], ["water", "Water"], ["animals", "Animals"], ["gardens", "Gardens"]];
+    const D = draft, tabs = [["fence", "Fence"], ["keeps", "Keepsakes"], ["trees", "Trees"], ["water", "Water"], ["animals", "Animals"], ["gardens", "Bonus"]];
     const kind = ["trees", "water", "keeps"].includes(editTab) ? editTab : null;
     if (!D.keeps) D.keeps = [];
-    let body = "";
+    let body = "", placeHint = "";
     if (editTab === "sky") {
       const now = currentCat();
       body = `
@@ -8315,8 +8407,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       const cat = kind === "trees" ? "tree" : kind === "keeps" ? "keep" : "water";
       const placed = k => kind !== "trees" && D[kind].some(w => w.k === k);
       const pal = homeOptions(cat).map(o => `<button class="hopt ${pick === o.key ? "on" : ""} ${o.got ? "" : "locked"} ${placed(o.key) ? "placed" : ""}" data-pick="${o.key}" ${o.got ? "" : `data-lockinfo="${o.item.id}"`} title="${esc(o.got ? o.name : unlockText(o.how))}">${thumbImg(cat, o.key)}${o.got ? `<b>${esc(o.name)}</b>` : lockBits(o.how)}${placed(o.key) ? `<small class="placedtag">In your pasture</small>` : ""}</button>`).join("");
-      body = `<p class="planline">${pick ? `Tap an empty square on the pasture to place the ${esc(homeName(cat, pick).toLowerCase())}.` : sel.size ? `${sel.size} selected. ${sel.size === 1 ? "Tap an empty square, or drag it, to move it." : ""}` : `Pick one, then tap a square on the pasture above. Tap things in the pasture to select them.`}</p>
-        <div class="hopts">${pal}</div>`;
+      placeHint = pick ? `Tap an empty square on the pasture to place the ${esc(homeName(cat, pick).toLowerCase())}.` : "";
+      body = `<div class="hopts">${pal}</div>`;
     } else if (editTab === "gardens") {
       body = gardensHtml(D);
     } else if (editTab === "animals") {
@@ -8325,18 +8417,19 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         <div class="hsec"><span class="small">Companion</span><div class="hopts">${homeOptions("companion").map(o => { const on = !!D.animals[o.key];
         return `<button class="hopt ${on ? "on" : ""} ${o.got ? "" : "locked"}" data-an="${o.key}" ${o.got ? "" : `data-lockinfo="${o.item.id}"`} aria-pressed="${on}" title="${esc(o.got ? o.name : unlockText(o.how))}">${thumbImg("animal", o.key)}${o.got ? `<b>${esc(o.name)}</b>` : lockBits(o.how)}</button>`; }).join("")}</div></div>`;
     }
-    const one = sel.size === 1 ? [...sel][0] : null;
-    const tools = kind ? `<div class="edicons">
+    const anyPlaced = HKINDS.some(k => (D[k] || []).length), tools = editTab !== "sky" && (kind || anyPlaced) ? `<div class="edicons">
         <button id="edUndo" ${undo.length ? "" : "disabled"} aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button id="edDel" ${sel.size ? "" : "disabled"} aria-label="Delete selected" title="Delete selected"><svg viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7M6.5 7l.9 12.1c.1.9.8 1.4 1.6 1.4h6c.8 0 1.5-.5 1.6-1.4L17.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.3 10.5v6.5M13.7 10.5v6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        <button id="edDel" ${selItems().length ? "" : "disabled"} aria-label="Delete selected" title="Delete selected"><svg viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7M6.5 7l.9 12.1c.1.9.8 1.4 1.6 1.4h6c.8 0 1.5-.5 1.6-1.4L17.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.3 10.5v6.5M13.7 10.5v6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
         <button id="edAll" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2.4"/><path d="M8.5 12.5l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button id="edClear" aria-label="Clear all" title="Clear all"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.1-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M17.5 3.5v4h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>` : "";
-    c.innerHTML = `<div class="dockhead"><div class="calhead"><div><div class="eyebrow">${esc(S.name)}'s pasture</div><p class="cardtitle">Tend your pasture</p></div>${tools}</div>
+    const nSel = selItems().length, hint = placeHint || (nSel ? `${nSel} selected.${nSel === 1 ? " Tap an empty square, or drag it, to move it." : ""}` : kind ? "Pick one below, then tap a square on the pasture. Tap anything placed to select it." : "Tap anything placed in your pasture to select it.");
+    c.innerHTML = `<div class="dockhead"><div class="calhead"><div class="tphead"><div><div class="eyebrow">${esc(S.name)}'s pasture</div><p class="cardtitle">Tend your pasture</p></div><button class="skybtn ${editTab === "sky" ? "on" : ""}" id="skyBtn" aria-pressed="${editTab === "sky"}" aria-label="Sky and weather" title="Sky and weather">${WEATHER_SVG}</button></div></div>
       <div class="wtabs htabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-htab="${k}" aria-selected="${editTab === k}" class="${editTab === k ? "on" : ""}">${l}</button>`).join("")}</div></div>
+      ${tools ? `<div class="edrow"><span class="edhint">${hint}</span>${tools}</div>` : ""}
       ${kind ? "" : nextRewardHtml()}
       ${body}`;
-    c.querySelectorAll("[data-htab]").forEach(b => b.onclick = () => { editTab = b.dataset.htab; sel.clear(); pick = null; renderHomeSheet(); setGridMode(); });
-    if (!kind) placeTools(null);
+    c.querySelectorAll("[data-htab]").forEach(b => b.onclick = () => { editTab = lastTab = b.dataset.htab; pick = null; renderHomeSheet(); setGridMode(); });
+    $("skyBtn").onclick = () => { editTab = editTab === "sky" ? lastTab : "sky"; sel.clear(); pick = null; renderHomeSheet(); setGridMode(); };
     const change = () => { pushHome(); renderHomeSheet(); };
     if (editTab === "sky") {
       $("liveSw").onclick = () => { if (D.live === true) { D.live = false; S.home.live = false; save(); change(); } else askLiveSky(); };
@@ -8348,47 +8441,53 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     c.querySelectorAll("[data-gslot]").forEach(b => b.onclick = () => { const [sec, sl, key] = b.dataset.gslot.split("|"); D.plots = D.plots || {}; D.plots[sec] = Object.assign({}, D.plots[sec]); if (key) D.plots[sec][sl] = key; else delete D.plots[sec][sl]; change(); });
     c.querySelectorAll("[data-gshow]").forEach(b => b.onclick = () => { D.plots = Object.assign({}, D.plots, { show: +b.dataset.gshow }); change(); });
     c.querySelectorAll("[data-an]").forEach(b => b.onclick = () => { const k = b.dataset.an, A2 = Object.assign({}, D.animals); if (A2[k]) delete A2[k]; else A2[k] = 1; D.animals = A2; change(); });
-    if (kind) wireGrid(kind, change); else if (window.Lamb3D && window.Lamb3D.setGridMarks) window.Lamb3D.setGridMarks([]);
+    if (editTab !== "sky") wireGrid(kind, change); else { placeTools(null); if (window.Lamb3D && window.Lamb3D.setGridMarks) window.Lamb3D.setGridMarks([]); }
     fillRewardArt(c);
   }
   let ghost = null;
+  // things placed in the pasture, whichever tab is open: a selection is "kind:index", so trees, water and keepsakes can be picked, moved and removed together
+  const HKINDS = ["trees", "water", "keeps"];
+  const WEATHER_SVG = `<svg viewBox="0 0 32 32" aria-hidden="true"><g stroke="#E2A93B" stroke-width="2" stroke-linecap="round"><path d="M12 3.5v2.6M4.6 6.6l1.8 1.8M19.4 6.6l-1.8 1.8M2 14h2.6"/></g><circle cx="12" cy="14" r="5.4" fill="#F7C948" stroke="#C98F1E" stroke-width="1.4"/><path d="M11.5 26.5h13.2a4.8 4.8 0 0 0 .6-9.56 6.6 6.6 0 0 0-12.7 1.06 4.3 4.3 0 0 0-1.1 8.5z" fill="#fff" stroke="#3B2B25" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+  const selItems = () => [...sel].map(x => { const [k, i] = x.split(":"); return [k, +i]; }).filter(([k, i]) => draft && draft[k] && draft[k][i]);
   function showMarks(kind) {
-    if (!window.Lamb3D || !window.Lamb3D.setGridMarks) return; const list = draft[kind] || [];
-    const marks = list.map((it, i) => sel.has(i) ? null : { c: it.c, row: it.row, w: footprint(it)[0], d: footprint(it)[1], kind: "own" }).filter(Boolean)
-      .concat([...sel].filter(i => list[i]).map(i => { const [w, d] = footprint(list[i]); return { c: list[i].c, row: list[i].row, w, d, kind: "sel" }; }));
+    if (!window.Lamb3D || !window.Lamb3D.setGridMarks) return;
+    const marks = (kind ? (draft[kind] || []).map((it, i) => sel.has(kind + ":" + i) ? null : { c: it.c, row: it.row, w: footprint(it)[0], d: footprint(it)[1], kind: "own" }).filter(Boolean) : [])
+      .concat(selItems().map(([k, i]) => { const it = draft[k][i], [w, d] = footprint(it); return { c: it.c, row: it.row, w, d, kind: "sel" }; }));
     if (ghost) marks.push(ghost); window.Lamb3D.setGridMarks(marks);
   }
   function wireGrid(kind, change) {
-    const D = draft, list = D[kind];
+    const D = draft;
     $("homeCard").querySelectorAll("[data-pick]").forEach(b => b.onclick = () => {
-      const k = b.dataset.pick, at = kind !== "trees" ? list.findIndex(w => w.k === k) : -1;
-      if (at >= 0) { pick = null; sel = new Set([at]); renderHomeSheet(); return; }   // each water feature only once: select the one already there
+      const k = b.dataset.pick, at = kind !== "trees" ? D[kind].findIndex(w => w.k === k) : -1;
+      if (at >= 0) { pick = null; sel = new Set([kind + ":" + at]); renderHomeSheet(); return; }   // each water feature only once: select the one already there
       pick = pick === k ? null : k; sel.clear(); renderHomeSheet(); });
-    $("edUndo").onclick = () => { if (!undo.length) return; Object.assign(draft, JSON.parse(undo.pop())); sel.clear(); change(); };
-    $("edDel").onclick = () => { snap(); D[kind] = list.filter((_, i) => !sel.has(i)); sel.clear(); change(); };
-    $("edAll").onclick = () => { pick = null; sel = new Set(list.map((_, i) => i)); renderHomeSheet(); };
-    $("edClear").onclick = () => { if (!list.length) return; snap(); D[kind] = []; sel.clear(); change(); };
+    const btn = id => $(id) || {};
+    btn("edUndo").onclick = () => { if (!undo.length) return; Object.assign(draft, JSON.parse(undo.pop())); sel.clear(); change(); };
+    btn("edDel").onclick = () => { const it = selItems(); if (!it.length) return; snap(); HKINDS.forEach(k => { D[k] = (D[k] || []).filter((_, i) => !sel.has(k + ":" + i)); }); sel.clear(); change(); };
+    btn("edAll").onclick = () => { pick = null; sel = new Set(HKINDS.flatMap(k => (D[k] || []).map((_, i) => k + ":" + i))); renderHomeSheet(); };
+    btn("edClear").onclick = () => { if (!HKINDS.some(k => (D[k] || []).length)) return; snap(); HKINDS.forEach(k => { D[k] = []; }); sel.clear(); change(); };
     // a pond, brook or well being placed: turn it and settle it right where it sits on the pasture
-    placeTools(kind === "water" && sel.size === 1 ? [...sel][0] : null, i => { const it = Object.assign({}, list[i], { r: list[i].r ? 0 : 1 }); if (fits(it, kind, i)) { snap(); list[i] = it; change(); } else flashGrid(); }, () => { sel.clear(); renderHomeSheet(); });
-    const itemAt = cell => { const o = occupied()[cell[0] + "," + cell[1]]; if (!o) return -1; const [k, i] = o.split(":"); return k === kind ? +i : -1; };
+    const one = selItems().length === 1 ? selItems()[0] : null;
+    placeTools(one && one[0] === "water" ? one[1] : null, i => { const it = Object.assign({}, D.water[i], { r: D.water[i].r ? 0 : 1 }); if (fits(it, "water", i)) { snap(); D.water[i] = it; change(); } else flashGrid(); }, () => { sel.clear(); renderHomeSheet(); });
+    const itemAt = cell => { const o = occupied()[cell[0] + "," + cell[1]]; if (!o || o === 1) return null; const [k, i] = o.split(":"); return [k, +i]; };
     let drag = null; ghost = null;
     window.Lamb3D.onGridPointer = (type, cell) => {
       if (type === "down") {
-        if (!cell) return; const i = itemAt(cell);
-        if (i >= 0 && !pick) { drag = { i, start: cell, moved: false, off: [cell[0] - list[i].c, cell[1] - list[i].row] }; return; }
-        if (pick) { if (kind !== "trees" && list.some(w => w.k === pick)) { pick = null; renderHomeSheet(); return; }
+        if (!cell) return; const hit = itemAt(cell);
+        if (hit && !pick) { const it = D[hit[0]][hit[1]]; drag = { k: hit[0], i: hit[1], start: cell, moved: false, off: [cell[0] - it.c, cell[1] - it.row] }; return; }
+        if (pick && kind) { const list = D[kind]; if (kind !== "trees" && list.some(w => w.k === pick)) { pick = null; renderHomeSheet(); return; }
           const it = { k: pick, c: cell[0], row: cell[1] }; { const [w, d] = footprint(it); it.c = Math.min(cell[0], 12 - w); it.row = Math.min(cell[1], 12 - d); }
-          if (fits(it, kind, -1)) { cue("place"); snap(); list.push(it); if (kind !== "trees") pick = null; ghost = null; if (kind === "water") sel = new Set([list.length - 1]); change(); } else flashGrid(); return; }
-        if (sel.size === 1) { const j = [...sel][0], it = Object.assign({}, list[j], { c: cell[0], row: cell[1] }); if (fits(it, kind, j)) { cue("place"); snap(); list[j] = it; change(); } else flashGrid(); return; }
+          if (fits(it, kind, -1)) { cue("place"); snap(); list.push(it); if (kind !== "trees") pick = null; ghost = null; if (kind === "water") sel = new Set(["water:" + (list.length - 1)]); change(); } else flashGrid(); return; }
+        if (one) { const [k, j] = one, it = Object.assign({}, D[k][j], { c: cell[0], row: cell[1] }); if (fits(it, k, j)) { cue("place"); snap(); D[k][j] = it; change(); } else flashGrid(); return; }
         if (sel.size) { sel.clear(); renderHomeSheet(); }
       } else if (type === "move") {
         if (drag && cell) { if (cell[0] !== drag.start[0] || cell[1] !== drag.start[1]) drag.moved = true;
-          if (drag.moved) { const it = Object.assign({}, list[drag.i], { c: cell[0] - drag.off[0], row: cell[1] - drag.off[1] }), [w, d] = footprint(it); ghost = { c: it.c, row: it.row, w, d, kind: fits(it, kind, drag.i) ? "ghost" : "bad" }; showMarks(kind); } }
-        else if (pick && cell) { const it = { k: pick, c: cell[0], row: cell[1] }, [w, d] = footprint(it); ghost = { c: Math.min(cell[0], 12 - w), row: Math.min(cell[1], 12 - d), w, d, kind: "ghost" }; showMarks(kind); }
+          if (drag.moved) { const it = Object.assign({}, D[drag.k][drag.i], { c: cell[0] - drag.off[0], row: cell[1] - drag.off[1] }), [w, d] = footprint(it); ghost = { c: it.c, row: it.row, w, d, kind: fits(it, drag.k, drag.i) ? "ghost" : "bad" }; showMarks(kind); } }
+        else if (pick && kind && cell) { const it = { k: pick, c: cell[0], row: cell[1] }, [w, d] = footprint(it); ghost = { c: Math.min(cell[0], 12 - w), row: Math.min(cell[1], 12 - d), w, d, kind: "ghost" }; showMarks(kind); }
       } else if (type === "up") {
-        if (!drag) return; const d0 = drag; drag = null; ghost = null;
-        if (!d0.moved || !cell) { pick = null; sel.has(d0.i) ? sel.delete(d0.i) : sel.add(d0.i); renderHomeSheet(); return; }
-        const it = Object.assign({}, list[d0.i], { c: cell[0] - d0.off[0], row: cell[1] - d0.off[1] }); if (fits(it, kind, d0.i)) { cue("place"); snap(); list[d0.i] = it; sel = new Set([d0.i]); change(); } else { flashGrid(); renderHomeSheet(); }
+        if (!drag) return; const d0 = drag, key = d0.k + ":" + d0.i; drag = null; ghost = null;
+        if (!d0.moved || !cell) { pick = null; sel.has(key) ? sel.delete(key) : sel.add(key); renderHomeSheet(); return; }
+        const it = Object.assign({}, D[d0.k][d0.i], { c: cell[0] - d0.off[0], row: cell[1] - d0.off[1] }); if (fits(it, d0.k, d0.i)) { cue("place"); snap(); D[d0.k][d0.i] = it; sel = new Set([key]); change(); } else { flashGrid(); renderHomeSheet(); }
       }
     };
     showMarks(kind);
@@ -9085,7 +9184,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     if (!viewGroup) { foldInline(null); window.Lamb3D.setFriends([]); if (window.Lamb3D.showHome) window.Lamb3D.showHome(true); vb.hidden = true; return; }
     if (window.Lamb3D.showHome) window.Lamb3D.showHome(false);
     if (window.Lamb3D.fold) { window.Lamb3D.setFriends([]); foldInline(viewGroup);
-      vb.hidden = false; $("visitName").textContent = viewGroup === COMMONS ? "the Flock Commons" : viewGroup === (myProfile && myProfile.groupId) ? ((groupOf(viewGroup) || {}).name || "your fold") + ", your fold" : ((groupOf(viewGroup) || {}).name || "another fold"); return; }
+      vb.hidden = false; $("visitName").textContent = viewGroup === COMMONS ? "Flock Commons" : viewGroup === (myProfile && myProfile.groupId) ? ((groupOf(viewGroup) || {}).name || "your fold") + ", your fold" : ((groupOf(viewGroup) || {}).name || "another fold"); return; }
     const others = membersOf(viewGroup).filter(p => p.uid !== (me && me.uid) && !p.lost)
       .sort((a, b) => (readToday(b) - readToday(a)) || ((b.total || 0) - (a.total || 0))).slice(0, 8);
     window.Lamb3D.setFriends(others.map(m => ({ label: first(m.displayName) + "'s " + (m.lambName || "lamb"), read: readToday(m), scale: m.scale || 0.85, outfit: m.outfit || null })));
@@ -9447,7 +9546,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const GEAR = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="6.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
   function cheerButtons(p) {
     if (!me) return "";
-    if (p.uid === me.uid) return `<span class="cheerbtns"><button class="mini foundbtn" id="fcAnn" aria-label="${amFounder() ? "Send a message to the flock or its folds" : "Send a message to your fold"}">${HAILER}</button>${amFounder() ? `<button class="mini foundbtn" id="fcTools" aria-label="Founder's tools">${GEAR}</button>` : ""}<button class="mini foundbtn weekbtn" id="myWeek" aria-label="Your week">${WEEK_ICON}</button></span>`;
+    if (p.uid === me.uid) return `<span class="cheerbtns"><button class="mini foundbtn" id="fcAnn" aria-label="${amFounder() ? "Send a message to the flock or its folds" : "Send a message to your fold"}">${HAILER}</button>${amFounder() ? `<button class="mini foundbtn" id="fcTools" aria-label="Founder's tools">${GEAR}</button>` : ""}</span>`;
     const sent = sentToday.find(c => c.kind === "heart" && c.toUid === p.uid);
     return `<span class="cheerbtns"><button class="mini heartbtn ${sent ? "on" : ""}" ${sent ? `data-unheart="${esc(sent.id)}" aria-label="Take back the heart you sent ${esc(first(p.displayName))}"` : `data-heart="${esc(p.uid)}" aria-label="Send ${esc(first(p.displayName))} a heart"`}>${HEART}</button><button class="mini" data-note="${esc(p.uid)}" aria-label="Write ${esc(first(p.displayName))} a note">${MAIL}</button></span>`;
   }
@@ -9957,7 +10056,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   function growthBar(g, id, todayPts) {
     const pts = (g && g.growth) || 0, L = foldLevel(pts), top = L >= 50;
     const lo = GROWTH_XP[L], hi = top ? lo : GROWTH_XP[L + 1], got = top ? pts : pts - lo, need = top ? lo : hi - lo, f = top ? 1 : Math.max(0, Math.min(1, got / need));
-    const tp = top ? 0 : Math.max(0, todayPts || 0), ft = Math.min(1 - f, tp / need);
+    const tp = top ? 0 : Math.max(0, todayPts || 0), ft = Math.min(1 - f, tp > 0 ? Math.max(0.04, tp / need) : 0);   // always wide enough to see
     return `<span class="flbadge"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="flface" cx="22" cy="22" r="20"/><circle class="flring0" cx="22" cy="22" r="20"/><circle class="flring" cx="22" cy="22" r="20" style="stroke-dashoffset:${(125.66 * (1 - f)).toFixed(1)}" transform="rotate(-90 22 22)"/></svg><b${id ? ` id="${id}Num"` : ""}>${L}</b></span>
       <span class="flbar"><i style="width:${(f * 100).toFixed(1)}%"${id ? ` id="${id}Fill"` : ""}></i>${tp > 0 ? `<b class="fltoday" style="left:${(f * 100).toFixed(1)}%;width:${(ft * 100).toFixed(1)}%"></b>` : ""}<span${id ? ` id="${id}Txt"` : ""}>${top ? "Eden" : `${fmtN(got)} / ${fmtN(need)} · ${Math.floor(f * 100)}%${tp >= 0.05 ? ` <em>+${tp < 10 ? tp.toFixed(1).replace(/\.0$/, "") : Math.round(tp)} today</em>` : ""}`}</span></span>`;
   }
@@ -9994,17 +10093,15 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     root.querySelectorAll("[data-cmgo]").forEach(b => b.onclick = () => { F.focusOn(b.dataset.cmgo); commonsFind = ""; rerender(); });
   }
   function renderCommons(c) {
-    const all = profilesAll.filter(p => p.groupId && groupOf(p.groupId)), n = all.filter(readToday).length;
+    const all = profilesAll.filter(p => p.groupId && groupOf(p.groupId));
     c.innerHTML = `<div class="grtop"><div class="grhead"><div class="grtitle"><div class="eyebrow">You're at</div><p class="cardtitle">Flock Commons</p></div>
         <div class="gricons"><button class="hudbtn" id="grOthers" aria-label="Visit other folds">${SIGNPOST}</button></div></div>
       <button class="flockpill" id="flockPill" aria-label="Your flocks: ${esc(flockName(S.flockId))}. Tap to switch"><span class="flockhouse" aria-hidden="true">${SHEEP_MINI}</span><b>${esc(flockName(S.flockId))}</b><span class="chevd" aria-hidden="true">▾</span></button></div>
       ${all.length ? `<div class="foldlvl" id="foldLvl" role="img" aria-label="Flock level ${flockLevelNow()}">${growthBar(flockInfo || {}, null, pendingFlockGrowth())}</div>` : ""}
-      <p class="planline">Every lamb of the flock grazes here together. ${all.length} lamb${all.length === 1 ? "" : "s"}, ${n} fed today. Tap a lamb to see who it is.</p>
-      ${commonsTools("cm")}
       ${weeklyHtml()}
       ${unityHtml()}`;
     $("grOthers").onclick = () => setVisit(true); $("flockPill").onclick = () => openFlocks("list");
-    wireCommonsTools(c, "cm", () => renderGroup()); wireWeekly(c); tendFlock();
+    wireWeekly(c); tendFlock();
     S.commonsSeen = S.commonsSeen || {}; const L = flockLevelNow(), was = S.commonsSeen[S.flockId];
     if (was != null && L > was) toast(`The Commons grew to level ${L}. Every lamb's reading, reflecting, remembering and encouraging helped.`, () => {});
     if (was !== L) { S.commonsSeen[S.flockId] = L; save(); }
@@ -10101,23 +10198,15 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const cv = $("screen").querySelector("canvas"); if (!cv) return;
     const ov = document.createElement("div"); ov.className = "foldview commonsview"; ov.id = "foldView"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Flock Commons");
     ov.innerHTML = `<div class="fvstage" id="fvStage"></div>
-      <div class="fvtop"><div class="fvcard"><div class="fvhead"><p class="cardtitle">Flock Commons</p><button class="fvclose" id="fvClose" aria-label="Close">✕</button></div><div id="fvTools"></div><div id="fvLevels"></div></div></div>
-      <p class="fvhint" id="fvHint">Drag to move · pinch to zoom · tap a lamb</p>`;
+      <div class="fvtop"><div class="fvcard"><div class="fvhead"><p class="cardtitle">Flock Commons</p><button class="fvclose" id="fvClose" aria-label="Close">✕</button></div><div class="foldlvl static" id="fvLvl" role="img" aria-label="Flock level ${flockLevelNow()}">${growthBar(flockInfo || {}, null, pendingFlockGrowth())}</div><div id="fvTools"></div></div></div>
+      <p class="fvhint" id="fvHint">Drag to move · pinch to zoom · tap a lamb</p><button class="recenter fvrc" data-recenter="1" aria-label="Re-centre the view"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>`;
     document.body.appendChild(ov); document.body.classList.add("fvopen"); foldViewOn = true;
     $("fvStage").appendChild(cv);
     const F = window.Lamb3D.fold, members = commonsMembers(), L = flockLevelNow(), U = unityShown(), key = "C|" + L + "|" + U + "|" + JSON.stringify(members);
     if (foldKey !== key || !F.isOpen() || !F.isCommons()) { F.open({ commons: true, level: L, unity: U, members, name: flockName(S.flockId), full: true }); foldKey = key; }
     F.setCommonsFull(true); F.highlight(foldHit());
     const tools = () => { $("fvTools").innerHTML = commonsTools("cv"); wireCommonsTools($("fvTools"), "cv", tools); }; tools();
-    // look ahead: every level and Unity milestone, locked until the flock reaches it
-    const levels = () => { const pv = commonsPreview, Ln = L, Un = U;
-      $("fvLevels").innerHTML = `<div class="cmlv"><span class="small">${pv ? `Preview: ${pv.unity != null ? esc(UNITY[pv.unity - 1].name) : "level " + pv.level} · ${(pv.unity != null ? pv.unity <= Un : pv.level <= Ln) ? "reached" : "locked"}` : "See every level"}</span>
-        <div class="cmlvrow"><button class="chip ${pv ? "" : "on"}" data-lvnow="1">Now</button>${COMMONS_LEVELS.map(([lv, what]) => `<button class="chip ${lv > Ln ? "locked" : ""} ${pv && pv.unity == null && pv.level === lv ? "on" : ""}" data-lv="${lv}" title="${esc(what)}">${lv > Ln ? "🔒 " : ""}${lv}</button>`).join("")}${UNITY.map((m, i) => `<button class="chip uchip ${i + 1 > Un ? "locked" : ""} ${pv && pv.unity === i + 1 ? "on" : ""}" data-un="${i + 1}" title="${esc(m.look)}">${i + 1 > Un ? "🔒 " : ""}♥${i + 1}</button>`).join("")}</div>
-        ${pv ? `<small class="planline">${esc(pv.unity != null ? UNITY[pv.unity - 1].look : (COMMONS_LEVELS.find(x => x[0] === pv.level) || [0, ""])[1])}</small>` : ""}</div>`;
-      $("fvLevels").querySelectorAll("[data-lv]").forEach(b => b.onclick = () => { commonsPreview = { level: +b.dataset.lv, unity: null }; F.open({ commons: true, level: +b.dataset.lv, unity: Un, members, name: flockName(S.flockId), full: true }); F.setCommonsFull(true); foldKey = null; levels(); });
-      $("fvLevels").querySelectorAll("[data-un]").forEach(b => b.onclick = () => { commonsPreview = { level: Ln, unity: +b.dataset.un }; F.open({ commons: true, level: Ln, unity: +b.dataset.un, members, name: flockName(S.flockId), full: true }); F.setCommonsFull(true); foldKey = null; levels(); });
-      $("fvLevels").querySelector("[data-lvnow]").onclick = () => { if (!commonsPreview) return; commonsPreview = null; F.open({ commons: true, level: Ln, unity: Un, members, name: flockName(S.flockId), full: true }); F.setCommonsFull(true); foldKey = key; levels(); }; };
-    commonsPreview = null; levels();
+    commonsPreview = null;
     const shut = () => { if (!foldViewOn) return; foldViewOn = false; closeBigView = null; if (commonsPreview) { commonsPreview = null; foldKey = null; } F.setCommonsFull(false); $("screen").prepend(cv); ov.remove(); document.body.classList.remove("fvopen"); document.removeEventListener("keydown", esc2); closeLambCard(); if (!foldKey) push3D(); renderGroup(); };
     const esc2 = e => { if (e.key === "Escape") shut(); }; document.addEventListener("keydown", esc2);
     closeBigView = shut; $("fvClose").onclick = shut; $("fvStage").addEventListener("pointerdown", () => { const h = $("fvHint"); if (h) h.style.opacity = 0; }, { once: true });
@@ -10184,7 +10273,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const ov = document.createElement("div"); ov.className = "foldview"; ov.id = "foldView"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", g.name + " fold");
     ov.innerHTML = `<div class="fvstage" id="fvStage"></div>
       <div class="fvtop"><div class="fvcard"><div class="fvhead"><p class="cardtitle">${esc(g.name)}</p><button class="fvclose" id="fvClose" aria-label="Close">✕</button></div><div class="foldlvl static" id="fvLvl">${growthBar({ growth: GROWTH_XP[from] + (from === L ? (g.growth || 0) - GROWTH_XP[L] : 0) }, "fv")}</div></div></div>
-      <p class="fvhint" id="fvHint">Drag to turn · pinch to zoom</p>
+      <p class="fvhint" id="fvHint">Drag to turn · pinch to zoom</p><button class="recenter fvrc" data-recenter="1" aria-label="Re-centre the view"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <div class="fvup" id="fvUp" role="status" aria-live="polite"><small>Level up</small><h2 id="fvUpLv"></h2><p class="what" id="fvUpWhat"></p><p class="cheer" id="fvUpCheer"></p><button class="btn primary" id="fvUpOk">Continue</button></div>`;
     document.body.appendChild(ov); document.body.classList.add("fvopen"); foldViewOn = true;
     $("fvStage").appendChild(cv);
@@ -10240,11 +10329,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     wireCheers(c); wireNudge(c); wireShelf(c); if (c.querySelector("img[data-lamb]")) fillLambs(c);
     $("flockPill").onclick = () => openFlocks("list");
     if ($("fcAnn")) $("fcAnn").onclick = () => openFlockNews();
-    if ($("myWeek")) $("myWeek").onclick = () => openWeek(weekStart(today()), today());
     if ($("fcTools")) $("fcTools").onclick = () => { managing = true; mod = null; loadMod(); renderFellowship(); };
     $("grOthers").onclick = () => setVisit(true);
     if (!visiting) tendGrowth();
-    { const hd = c.querySelector(".grhead > div:first-child"); if (hd) c.style.setProperty("--grh", Math.round(hd.getBoundingClientRect().height) + "px"); }   // the signpost is as tall as the fold's heading
+    { const hd = c.querySelector(".grhead > div:first-child"); const hh = hd ? Math.round(hd.getBoundingClientRect().height) : 0; if (hh >= 30) c.style.setProperty("--grh", hh + "px"); else c.style.removeProperty("--grh"); }   // the signpost is as tall as the fold's heading
   }
   // the founder: choose a lamb, choose a fold
   function openMover(fromGid) {
@@ -11002,7 +11090,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.18.4";
+  const APP_VERSION = "2.18.12";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -11406,12 +11494,14 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const TOUR = [
     tchunk(["#screen", "Your lamb", "Read each day to keep your lamb fed and happy. A small daily rhythm, with a friend to look after."],
       [["#hearts", "#heartInfo"], "Hearts", "Reading feeds your lamb, a reflection adds a heart, and a missed day takes one away. Tap the i for more."],
-      ["#homeBtn", "Your pasture", "Make your lamb's home your own with things you've earned along the way."],
+      ["#recenterBtn", "Look around", "Pinch to zoom and drag with two fingers to look around. Tap here to come back to your lamb."],
+      ["#homeBtn", "Your pasture", "Make your lamb's home your own: the sky, fence, trees, water, animals and gardens you've earned."],
       ["#dressBtn", "The wardrobe", "Dress your lamb. Every item marks a step in your reading."],
       ["#inboxBtn", "Your inbox", "Hearts, notes, replies and messages from your flock, all in one place."],
       ["#setBtn", "Settings", "Text size, sound, your account, and this walkthrough again."],
       ["#nameBtn", "Your lamb's name", "Tap the pencil to rename your lamb."]),
-    tchunk(["#week", "This week", "A tick for each day you read. Small steps add up."]),
+    tchunk(["#week", "This week", "A tick for each day you read. Small steps add up."],
+      ["#myWeek", "Your week", "A look back at what you read, wrote and gave this week."]),
     tchunk(["#installCard", "Keep it close", "Add WordPasture to your home screen so it opens like an app."]),
     tchunk([["text:#todayLabel", "text:#todayRef"], "Today's reading", "Your passage for today, from your reading plan."],
       ["#calBtn", "Your plan", "See your plan, catch up on a missed day, or choose another plan."],
@@ -11425,14 +11515,14 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#toReflect", "I'm done reading", "Tap when you've read, here or in another Bible app. That feeds your lamb. Reflect too to earn a heart."],
       ["#today .aheadbtn", "Read ahead", "Going away? Read the next day's passage early."]),
     tchunk([() => document.querySelector("#groupCard .grtitle"), "Your fold", "Your small group, reading together."],
-      ["#grOthers", "Other folds", "Visit the other folds in your flock and cheer them on."],
+      ["#grOthers", "The farm", "Every fold in your flock, with the Flock Commons in the middle. Visit a fold or the Commons and cheer them on."],
       ["#flockPill", "Your flock", "Your flocks and their codes. Invite a friend, switch, join or start one."],
+      ["#groupCard #foldLvl", "Fold growth", "Every reading, reflection, verse and heart helps your fold grow. The striped part is today's, added at the end of the day."],
       ["#groupCard .members", "Who's read today", "A green dot means they've read today."],
       [firstOther("#groupCard .cheerbtns"), "Hearts and private notes", "A heart cheers someone on. The envelope sends a private note only they can read."],
       ["#groupCard .reflchip", "Their reflections", "Read what they saw in today's passage, give it a heart, or help with their question."],
       ["#groupCard .mmore", "Tending a lamb", "As a leader, the ⋮ lets you look after a lamb in your fold, such as moving or removing them."],
       ["#fcAnn", "Messages", "Post a message to your fold. Leaders can choose exactly who it reaches."],
-      ["#myWeek", "Your week", "A look back at what you read, wrote and gave this week."],
       ["#fcTools", "Founder's tools", "Run your flock: folds, shepherds, the flock code and reported notes."],
       ["#groupCard .qshelf", "Questions from the flock", "What others are wondering about. Tap Help answer to share what you think."],
       ["#groupCard .notesbox", "Your private notes", "Private notes between you and one other person. Reply to keep talking, send a heart back, or flag anything that isn't right."])
@@ -11446,7 +11536,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     [["text:#today label[for=respondBox]", "#respondBox"], "Today I will", "One thing you can do today because of it."],
     ["#today .jadd", "Add more", "Add a prayer, or a question you'd like help with."],
     ["#freeToggle", "Write freely", "Rather skip the prompts? Write it your own way."],
-    ["#today .sharepick", "Share with", "Keep it personal, or share it with your fold or the whole flock."],
+    ["#today .sharepick", "Share with", "Keep it personal, or share it with your fold or the whole flock. In more than one? Pick each one to share to."],
     ["#submitReflect", "Submit", "Your lamb earns a heart. You can edit it any time today."]
   ];
   const REFL_ZH = [
@@ -11458,7 +11548,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     [["text:#today label[for=respondBox]", "#respondBox"], "今天我要", "写下一件你今天因此可以去做的事。"],
     ["#today .jadd", "想多写一点", "可以加一段祷告，或一个想请大家帮忙的问题。"],
     ["#freeToggle", "自由书写", "不想用提示？就用你自己的方式写。"],
-    ["#today .sharepick", "分享给", "只留给自己，或分享给你的羊圈或整个羊群。"],
+    ["#today .sharepick", "分享给", "只留给自己，或分享给你的羊圈或整个羊群。在多个羊圈或羊群？逐一选择要分享到哪里。"],
     ["#submitReflect", "提交", "小羊会得到一颗心。今天之内随时可以修改。"]
   ];
   const MEM_EN = [
@@ -11493,10 +11583,11 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#dressSheet .nextrw", "Next reward", "What you're closest to earning, and how to get it."],
       ["#dressSheet .accs", "Try things on", "Tap to wear. A locked one shows what unlocks it and how close you are."]] },
     pasture: { root: "#homeSheet .htabs", steps: () => [
-      ["#homeSheet .htabs", "Your pasture", "Sky, fence, keepsakes, trees, water and animals."],
+      ["#homeSheet .tphead", "Your pasture", "Make it yours with what you've earned. The sun and cloud button sets the sky for each kind of weather, or lets it follow your local weather."],
+      ["#homeSheet .htabs", "What you can add", "Fence, keepsakes, trees, water, animals, and Bonus for your gardens."],
+      ["#homeSheet .edrow", "Move and remove", "Tap anything in your pasture to select it, from any tab. Drag to move it; the bin removes it; undo puts it back."],
       ["#homeSheet .nextrw", "Next reward", "What you're closest to earning, and how to get it."],
-      [() => { const s = $("liveSw"); return s && s.closest(".setrow"); }, "Match my weather", "Let the sky follow your local weather and time of day."],
-      ["#homeSheet .hopts", "Choose and place", "Tap to choose. A locked one shows what unlocks it."]] },
+      ["#homeSheet .hopts", "Choose and place", "Tap to choose, then tap a square in the pasture. A locked one shows what unlocks it."]] },
     plan: { root: "#calSheet .calgrid", steps: () => [
       ["#calSheet .calgrid", "Your reading plan", "Tap a day to see its reading. A missed day can be caught up from today's card."],
       ["#calPlan", "Change reading plan", "Pick another plan whenever you like."]] },
@@ -11508,7 +11599,12 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#bibleSheet .bsec", "Your Bible", "Every book, chapter by chapter. Tap a book to see which chapters you've read."],
       ["#bibleRestart", "Start over", "Read it through again from 0%. Books finished and rewards earned stay yours."])] },
     farm: { root: "#visitSheet .farmwrap", steps: () => [
-      ["#visitSheet .farmwrap", "The farm", "Every fold in your flock. Tap one to visit, read their reflections and cheer them on."]] },
+      ["#visitSheet .farmwrap", "The farm", "The Flock Commons in the middle, your fold (with the house) on top, and every other fold around. Tap one to see its lambs, then visit."]] },
+    commons: { root: "#groupCard .wqwrap, #groupCard .unity", steps: () => [
+      [() => document.querySelector("#groupCard .grtitle"), "Flock Commons", "Where every lamb in the flock grazes together. Tap a lamb to see who it is and visit their pasture. The arrows on the scene open it full screen, with search."],
+      ["#groupCard #foldLvl", "Flock growth", "Everyone's reading, reflecting, remembering and encouraging grows the Commons together."],
+      ["#groupCard .wqwrap", "This week's question", "One question for the whole flock each week. Anyone can answer; earlier questions stay open."],
+      ["#groupCard .unity", "Flock Unity", "Notes and replies between lambs in different folds draw the flock together, and the Commons blooms a little more."]] },
     news: { root: "#newsSheet #nwText", steps: () => [
       ["#newsSheet .tochips", "Send to", "Choose who it reaches."],
       [["#nwTitle", "#nwText"], "Your message", "It pops up once for each person, then stays in their inbox."],
@@ -11778,6 +11874,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   render();
 
   $("visitHome").onclick = () => pastureVisit ? endPastureVisit() : goHome();
+  document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-recenter]"); if (b && window.Lamb3D && window.Lamb3D.recenter) window.Lamb3D.recenter(); });
+  $("recenterBtn").onclick = () => { if (window.Lamb3D && window.Lamb3D.recenter) window.Lamb3D.recenter(); };
+  $("myWeek").innerHTML = WEEK_ICON; $("myWeek").onclick = () => openWeek(weekStart(today()), today());
   boot();
 
   // ---------- keep this person's own lamb in their Claude account when available ----------
