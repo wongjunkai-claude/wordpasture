@@ -176,6 +176,11 @@ label.small { font-size: 13px; color: var(--muted); font-weight: 600; display: b
 .week i.fed::after { content: ""; width: 9px; height: 5px; border: solid var(--accent-ink); border-width: 0 0 2.5px 2.5px; transform: rotate(-45deg) translate(1px,-1px); }
 .week i.today { border-color: var(--gold); border-style: solid; }
 .week i.rest { border: 0; background: none; overflow: visible; }
+.week div[data-wk] { cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; border-radius: 10px; }
+.week div[data-wk]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.week div.holding i { animation: wkhold 3s linear forwards; }
+@keyframes wkhold { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 70%, transparent); transform: scale(1); } to { box-shadow: 0 0 0 7px color-mix(in srgb, var(--gold) 70%, transparent); transform: scale(1.22); } }
+@media (prefers-reduced-motion: reduce) { .week div.holding i { animation: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 70%, transparent); } }
 .week i.rest svg { width: 34px; height: 23px; display: block; margin: 2px -4px 0; }
 
 .verse { font-family: var(--scripture); font-style: italic; color: var(--muted); text-align: center; font-size: 15px; max-width: 34ch; margin: 0 auto; }
@@ -520,6 +525,35 @@ select.field { appearance: auto; }
 .mini:disabled { cursor: default; }
 .tag { font-size: 11px; font-weight: 700; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 99px; padding: 1px 7px; vertical-align: 1px; }
 .picks { display: flex; flex-direction: column; gap: 8px; }
+.nofoldrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0 2px; }
+.pick.nofold { border-style: dashed; margin-top: 8px; width: 100%; }
+.memlist { border: 1.5px solid var(--line); border-radius: 14px; padding: 0 12px; }
+.memlist > summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 0; cursor: pointer; list-style: none; }
+.memlist > summary::-webkit-details-marker { display: none; }
+.memlist > summary::after { content: "+"; font: 700 20px var(--body); color: var(--accent); margin-left: 8px; }
+.memlist[open] > summary::after { content: "–"; }
+.memlist > summary .small { margin-left: auto; }
+.memwrap { overflow-x: auto; }
+.memtab { width: 100%; border-collapse: collapse; font-size: 13px; }
+.memtab th, .memtab td { text-align: left; padding: 7px 4px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.memtab th { font-size: 12px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+.memtab .sn { width: 26px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.memtab td:first-child, .memtab th:first-child { width: 26px; }
+.memtab input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); }
+.memtab .mname b { display: block; font-weight: 700; line-height: 1.25; }
+.memtab .mtag { display: inline-block; margin-top: 3px; font-size: 10.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 6px; padding: 1px 6px; }
+.memtab .mtag.founder { color: color-mix(in srgb, var(--gold) 75%, var(--ink)); background: color-mix(in srgb, var(--gold) 20%, transparent); }
+.memtab .mfold { color: var(--ink); }
+.memtab .mfed { white-space: nowrap; color: var(--muted); }
+.memtab .mfed.today { color: var(--accent); font-weight: 700; }
+.memtab tr.sel td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.msort { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; display: inline-flex; gap: 3px; align-items: center; }
+.msort.on { color: var(--ink); }
+.msort span { font-size: 9px; }
+.memmove { display: grid; gap: 6px; padding: 10px 0 12px; }
+.memmove .row { display: flex; gap: 8px; align-items: stretch; }
+.memmove select.field { flex: 1 1 auto; width: auto; min-width: 0; text-transform: none !important; letter-spacing: normal !important; font: 600 14px var(--body) !important; }
+.memmove .btn { flex: none; }
 .pick { text-align: left; display: flex; flex-direction: column; padding: 11px 12px; border-radius: 12px; border: 1.5px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; font: 15px var(--body); }
 .pick.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
 .pick small { color: var(--muted); font-size: 13px; }
@@ -1929,7 +1963,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.18.14 · 20 October 2026, 2:40 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.18.17 · 20 October 2026, 10:15 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -5769,11 +5803,12 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   const doneMap = key => ((S.planDone || {})[key] || {});
   const lateMap = key => ((S.lateRead || {})[key] || {});   // missed days read later in the app: no longer listed, still missed
   const isDoneIdx = (key, i) => doneMap(key)[i] != null;
-  const isReadingDay = d => { const p = getPlan(planKey()); if (p.dates) return p.dates.includes(d); return !p.weekdays || !isWeekend(d); };
+  const isRestDay = d => (S.restDays || []).includes(d);   // a day you chose to rest (long press in This Week)
+  const isReadingDay = d => { if (isRestDay(d)) return false; const p = getPlan(planKey()); if (p.dates) return p.dates.includes(d); return !p.weekdays || !isWeekend(d); };
   function todayIdxOf(key) { const i = indexOn(key, today()); return i; }
   // missed passages: before today, not read
   function missedList(key) { const t = todayIdxOf(key), p = getPlan(key), lim = t == null ? (() => { let d = today(); while (indexOn(key, d) == null) d = addDays(d, -1); return indexOn(key, d) + 1; })() : t;
-    const from = joinedOn(key), out = []; for (let i = 0; i < Math.min(lim, p.days.length); i++) if (!isDoneIdx(key, i) && !lateMap(key)[i] && (!from || dateOfIdx(key, i) >= from)) out.push(i); return out; }
+    const from = joinedOn(key), out = []; for (let i = 0; i < Math.min(lim, p.days.length); i++) if (!isDoneIdx(key, i) && !lateMap(key)[i] && (!from || dateOfIdx(key, i) >= from) && !isRestDay(dateOfIdx(key, i))) out.push(i); return out; }
   // missed passages, gathered by book: each book's chapters from the missed days that haven't been caught up yet
   function catchGroups(key, missing) {
     const p = getPlan(key), parts = ((S.catchParts || {})[key]) || {}, by = new Map();
@@ -5818,6 +5853,73 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     }
     save(); render(); if (elsewhere) popText("♥");
     toast(elsewhere ? `${g.label} marked as read. Tap to undo.` : `${g.label} read. Well done! Tap to undo.`, () => { Object.assign(S, before); save(); render(); });
+  }
+  // ---------- This Week: untick a day ticked by mistake, tick a day you did read, or hold for a rest day ----------
+  const wkFmt = d => parseYmd(d).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" });
+  const wkDayInfo = d => { const pk = planKey(), p = getPlan(pk), i = indexOn(pk, d), inPlan = i != null && i >= 0 && i < p.days.length; return { pk, i, inPlan, day: inPlan ? p.days[i] : null, ref: inPlan ? label(p.days[i]) : "" }; };
+  const wkMissed = d => d < today() && isReadingDay(d) && !(S.fedDays || []).includes(d) && !(S.covered || []).includes(d);
+  function wkRun() { const fed = new Set((S.fedDays || []).concat(S.covered || [])), ds = [...fed].sort(); let best = 0, run = 0, prev = null;
+    ds.forEach(d => { if (d > today()) return; run = prev && readingGap(prev, d) <= 1 ? run + 1 : 1; prev = d; best = Math.max(best, run); }); return best; }
+  function weekEdit(d, op) {
+    const t = today(), hBefore = hearts(), missedBefore = wkMissed(d), runBefore = wkRun();
+    const { pk, i, inPlan, day } = wkDayInfo(d);
+    S.fedDays = S.fedDays || []; S.covered = S.covered || []; S.planDone = S.planDone || {}; S.planDone[pk] = S.planDone[pk] || {}; S.chRead = S.chRead || {}; S.chDay = S.chDay || {}; S.restDays = S.restDays || [];
+    let rescueUndone = false;
+    if (op === "untick" || (op === "rest" && S.fedDays.includes(d))) {
+      S.fedDays = S.fedDays.filter(x => x !== d); S.covered = S.covered.filter(x => x !== d);
+      let removed = 0; Object.keys(S.planDone[pk]).forEach(j => { if (S.planDone[pk][j] === d || (inPlan && +j === i)) { delete S.planDone[pk][j]; removed++; } });
+      if (inPlan && S.lateRead && S.lateRead[pk]) delete S.lateRead[pk][i];
+      Object.keys(S.chRead).forEach(k => { if (S.chRead[k] === d) delete S.chRead[k]; }); delete S.chDay[d];
+      S.total = Math.max(0, (S.total || 0) - removed); S.daysRead = Math.max(S.fedDays.length, (S.daysRead || 0) - 1);
+      if (d === t) { Object.values(S.dayStates || {}).forEach(x => { x.read = false; x.reflect = false; }); step = null; if (S.rescued === t) { delete S.rescued; rescueUndone = true; } }
+    }
+    if (op === "tick") {
+      S.restDays = S.restDays.filter(x => x !== d);
+      if (!S.fedDays.includes(d)) { S.fedDays.push(d); S.fedDays.sort(); S.fedDays = S.fedDays.slice(-400); S.daysRead = Math.max((S.daysRead || 0) + 1, S.fedDays.length); }
+      if (inPlan && !isDoneIdx(pk, i)) { S.planDone[pk][i] = d; S.total = (S.total || 0) + 1; if (S.lateRead && S.lateRead[pk]) delete S.lateRead[pk][i]; }
+      if (day) { day.forEach(([b, c]) => { const k = b + ":" + c; if (!S.chRead[k]) S.chRead[k] = d; (S.chDay[d] = S.chDay[d] || []).includes(k) || S.chDay[d].push(k); });
+        const finished = [...new Set(day.map(([b]) => b))].filter(b => !S.books.includes(b) && Array.from({ length: BOOKS[b][1] }, (_, c) => S.chRead[b + ":" + (c + 1)]).every(Boolean));
+        if (finished.length) { S.books.push(...finished); S.newBooks = (S.bookDay === t ? S.newBooks : []).concat(finished); S.bookDay = t; } }
+    }
+    if (op === "rest" && !S.restDays.includes(d)) S.restDays.push(d);
+    if (op === "unrest") S.restDays = S.restDays.filter(x => x !== d);
+    S.restDays = S.restDays.filter(x => x >= addDays(t, -60)).sort();
+    // the last day read, the streak (rest days don't break it), and the best run if it came from these days
+    S.lastFed = S.fedDays.filter(x => x <= t).slice(-1)[0] || null;
+    const fed = new Set(S.fedDays.concat(S.covered)); let x = fed.has(t) ? t : addDays(t, -1), n = 0;
+    for (let k = 0; k < 400; k++) { if (isReadingDay(x)) { if (fed.has(x)) n++; else break; } x = addDays(x, -1); }
+    S.streak = n; S.best = (S.best || 0) === runBefore ? Math.max(wkRun(), n) : Math.max(S.best || 0, n);
+    // hearts: a day that is no longer missed gives its heart back; a day that now counts as missed takes one
+    let target = hBefore + (missedBefore ? 1 : 0) - (wkMissed(d) ? 1 : 0); if (rescueUndone) target = 0;
+    S.heartsAtFeed = Math.max(0, Math.min(5, target)) + missed();
+    checkUnlocks(); touchDirectory(); save(); render();
+    const when = d === t ? "Today" : wkFmt(d);
+    toast(op === "untick" ? `${when} unticked.` : op === "tick" ? `${when} ticked as read.` : op === "rest" ? `${when} is a rest day.` : `${when} is a normal day again.`);
+  }
+  function weekTap(d) {
+    const t = today(), fed = (S.fedDays || []).includes(d), { pk, i, inPlan, day, ref } = wkDayInfo(d), when = d === t ? "today" : "on " + wkFmt(d);
+    if (S.born && d < S.born) return;
+    if (fed) {
+      if ((S.journal || []).some(j => j.d === d)) { confirmSheet("This day stays ticked", `You wrote a reflection ${when}, so it counts as read.`, "OK", false, () => {}); return; }
+      confirmSheet(`Untick ${d === t ? "today" : wkFmt(d)}?`, "For a day ticked by mistake. Your streak and hearts will be updated. Rewards you've already earned stay yours.", "Untick", true, () => weekEdit(d, "untick")); return; }
+    const q = ref ? `Have you read ${ref} ${when}?` : `Did you read your Bible ${when}?`;
+    confirmSheet(q, isRestDay(d) ? "This day is a rest day. Ticking it counts it as read instead." : "Your streak and hearts will be updated.", "Yes, I read it", false, () => {
+      if (d === t && inPlan && day && !isDoneIdx(pk, i)) { S.restDays = (S.restDays || []).filter(x => x !== d); markRead(ref, day, SEE_Q, i); return; }
+      weekEdit(d, "tick"); });
+  }
+  function wireWeek() {
+    const w = $("week"); if (!w || w.dataset.wired) return; w.dataset.wired = "1";
+    let hold = null;
+    const cell = e => e.target.closest && e.target.closest("[data-wk]");
+    const stop = () => { if (!hold) return; clearTimeout(hold.timer); hold.el.classList.remove("holding"); };
+    w.addEventListener("pointerdown", e => { const c = cell(e); if (!c) return; stop(); const d = c.dataset.wk;
+      hold = { el: c, d, x: e.clientX, y: e.clientY, fired: false, timer: setTimeout(() => { hold.fired = true; c.classList.remove("holding"); cue("toggle"); weekEdit(d, isRestDay(d) ? "unrest" : "rest"); }, 3000) };
+      c.classList.add("holding"); });
+    w.addEventListener("pointermove", e => { if (hold && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 12) stop(); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(ev => w.addEventListener(ev, stop));
+    w.addEventListener("contextmenu", e => { if (cell(e)) e.preventDefault(); });
+    w.addEventListener("click", e => { const c = cell(e); if (!c) return; if (hold && hold.fired && hold.el === c) { hold = null; return; } hold = null; weekTap(c.dataset.wk); });
+    w.addEventListener("keydown", e => { const c = cell(e); if (c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); weekTap(c.dataset.wk); } });
   }
   // a missed book's passages, back to back; Done once they've been read to the end
   function openCatch(b) {
@@ -6171,7 +6273,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   function weekOf(t) { const [y, m, d] = t.split("-").map(Number); return addDays(t, -((new Date(y, m - 1, d).getDay() + 6) % 7)); }
   const discussN = () => Math.max(new Set(S.discussed || []).size, (S.acts || []).filter(a => a.k === "answer").length && !(S.discussed || []).length ? new Set((S.acts || []).filter(a => a.k === "answer").map(a => a.d)).size : 0);
   const sharedDays = () => (S.sharedDays || []).length;
-  const daysRead = () => Math.max(S.daysRead || 0, (S.fedDays || []).length);
+  // reading days: every day read is in fedDays (kept for 400 days); past that, the running count carries on
+  const daysRead = () => { const n = (S.fedDays || []).length; return n < 400 ? n : Math.max(S.daysRead || 0, n); };
   const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
   // the holy days we keep: Maundy Thursday, Good Friday, Easter Sunday, Christmas
   function easterOf(y) {
@@ -6267,6 +6370,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         o.mem.push(v.learned ? { id: "v" + i, ref: v.ref, text: v.text, added: (v.days || [])[0] || t, rung: 5, recall: (v.days || []).slice(0, 3), learned: (v.days || []).slice(-1)[0] || t, gi: 0, next: nx }
           : { id: "v" + i, ref: v.ref, text: v.text, added: (v.days || [])[0] || t, rung: Math.min(4, 1 + (v.days || []).length), recall: [] }); }); }
     if (o.daysRead == null) o.daysRead = Math.max((o.fedDays || []).length, o.total || 0);   // before we counted days, readings stood in for them
+    if ((o.fedDays || []).length < 400) o.daysRead = (o.fedDays || []).length;   // corrects the count that added each new day twice (before 2.18.17)
     if (o.outfit) ["breastplate", "sundial", "purple", "fruits", "necklace"].forEach(id => ["head", "neck", "back"].forEach(sl => { if (o.outfit[sl] === id) o.outfit[sl] = ""; }));
     if (o.outfit) { const wm = { cocoa: "moorit", charcoal: "black" }, fm = { caramel: "tan", cocoa: "brown", ebony: "black" }; if (wm[o.outfit.wool]) o.outfit.wool = wm[o.outfit.wool]; if (fm[o.outfit.face]) o.outfit.face = fm[o.outfit.face]; }
     if (o.outfit && !o.outfit.headColor) { const c = o.outfit.color || "blue"; o.outfit = Object.assign({ wool: "white", face: "peach" }, o.outfit, { headColor: c, neckColor: c }); }
@@ -6314,7 +6418,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     { const BD = {}; [older.bookDone || {}, newer.bookDone || {}].forEach(src => Object.entries(src).forEach(([b, list]) => { const m = BD[b] = BD[b] || new Map();
         list.forEach(e => { const o = m.get(e.t); if (!o || (e.u || 0) > (o.u || 0) || (!o.note && e.note)) m.set(e.t, Object.assign({}, e, { seen: !!(e.seen || (o && o.seen)) })); }); }));
       out.bookDone = {}; Object.entries(BD).forEach(([b, m]) => out.bookDone[b] = [...m.values()].sort((x, y) => x.t - y.t)); }
-    out.daysRead = Math.max(out.daysRead || 0, (out.fedDays || []).length);
+    out.daysRead = (out.fedDays || []).length < 400 ? (out.fedDays || []).length : Math.max(out.daysRead || 0, (out.fedDays || []).length);
     out.edited = Math.max(L.edited || 0, R.edited || 0);
     return out;
   }
@@ -6425,9 +6529,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const now = new Date(), days = [];
     for (let i = 6; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); days.push(d); }
     // a scheduled rest day (from the plan itself, not just a day without reading) shows a lamb at rest; reading on it still shows the tick
-    $("week").innerHTML = days.map(d => { const k = ymd(d), fed = S.fedDays.includes(k), rest = !fed && readingOn(k).kind === "rest";
-      return `<div><i class="${fed ? "fed" : ""} ${k === today() ? "today" : ""} ${rest ? "rest" : ""}" role="img" aria-label="${k}${fed ? " read" : rest ? " Rest Day" : ""}"${rest ? ` title="Rest Day"` : ""}>${rest ? REST_LAMB : ""}</i>${"SMTWTFS"[d.getDay()]}</div>`; }).join("");
+    $("week").innerHTML = days.map(d => { const k = ymd(d), fed = S.fedDays.includes(k), rest = !fed && (isRestDay(k) || readingOn(k).kind === "rest");
+      return `<div data-wk="${k}" role="button" tabindex="0" aria-label="${esc(wkFmt(k))}: ${fed ? "read. Tap to untick" : rest ? "rest day" : "not read. Tap to tick"}. Hold for 3 seconds for a rest day."><i class="${fed ? "fed" : ""} ${k === today() ? "today" : ""} ${rest ? "rest" : ""}" role="img" aria-label="${k}${fed ? " read" : rest ? " Rest Day" : ""}"${rest ? ` title="Rest Day"` : ""}>${rest ? REST_LAMB : ""}</i>${"SMTWTFS"[d.getDay()]}</div>`; }).join("");
 
+    wireWeek();
     renderVerse();
     renderSocial();
     renderMeadow();
@@ -7140,6 +7245,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     const pk = planKey(), p = getPlan(pk), i = indexOn(pk, k), t = today();
     const read = S.journal.filter(j => j.d === k).map(j => j.ref);
     const inPlan = i != null && i >= 0 && i < p.days.length, ref = inPlan ? [label(p.days[i])] : [];
+    if (k <= t && isRestDay(k) && !read.length && !(S.fedDays || []).includes(k)) return { kind: "rest", refs: [] };
     if (k < t) { if (read.length) return { kind: "done", refs: read };
       if (inPlan && isDoneIdx(pk, i) && doneMap(pk)[i] <= k) return { kind: "done", refs: ref };
       if (inPlan && lateMap(pk)[i]) return { kind: "missed", refs: ref, late: true };
@@ -9292,7 +9398,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   async function joinFoundFlock() {
     const displayName = (fName || myName()).trim();
     if (!displayName) { flockMsg = "Tell us your name first."; return paintFlocks(); }
-    if (fFoundGroups.length > 1 && !fGroup) { flockMsg = "Choose your fold."; return paintFlocks(); }
+    if (fFoundGroups.length && !fGroup) { flockMsg = "Choose your fold, or No fold yet."; return paintFlocks(); }
     const ac = accountCheck(); if (ac) { flockMsg = ac; return paintFlocks(); }
     flockBusy = true; joining = true; flockMsg = ""; paintFlocks();
     let created = false;
@@ -9300,7 +9406,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       created = await ensureAccount("join");
       B.setFlock(fFound.id);
       const code = String(fJoinCode).toUpperCase().replace(/[^A-Z0-9]/g, "");
-      await B.createProfile(Object.assign({ displayName, groupId: fGroup || (fFoundGroups[0] || {}).id || "", role: "member", code, flockName: fFound.name }, profilePayload()));
+      await B.createProfile(Object.assign({ displayName, groupId: fGroup === "-" ? "" : fGroup || (fFoundGroups[0] || {}).id || "", role: "member", code, flockName: fFound.name }, profilePayload()));
       S.displayName = displayName; S.flocks = (S.flocks || []).concat([{ id: fFound.id, name: fFound.name }]);
       const id = fFound.id; fFound = null; fJoinCode = ""; flockSheet = false; joining = false; flockBusy = false; renderFlockSheet();
       await enterFlock(id); toast("Welcome to " + flockName(id) + "!", () => {});
@@ -9363,7 +9469,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <div><label class="small" for="fCode">Flock code</label><input id="fCode" class="field keyfield" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. LAMB24" value="${esc(fJoinCode)}"></div>
       <button class="btn primary" id="fFind" ${flockBusy ? "disabled" : ""}>${flockBusy ? "Looking…" : "Find the flock"}</button>`;
     else if (tab === "join") body = `<div class="ffound"><span class="small">You're joining</span><b>${esc(fFound.name)}</b></div>${nameField}
-      ${fFoundGroups.length > 1 ? `<div><label class="small" for="fGroup">Which fold (small group) are you in?</label><select id="fGroup" class="field"><option value="">Choose your fold</option>${fFoundGroups.slice().sort((a, b) => a.name.localeCompare(b.name)).map(g => `<option value="${esc(g.id)}" ${g.id === fGroup ? "selected" : ""}>${esc(g.name)}</option>`).join("")}</select></div>` : ""}
+      ${fFoundGroups.length ? `<div><label class="small" for="fGroup">Which fold (small group) are you in?</label><select id="fGroup" class="field"><option value="">Choose your fold</option>${fFoundGroups.slice().sort((a, b) => a.name.localeCompare(b.name)).map(g => `<option value="${esc(g.id)}" ${g.id === fGroup ? "selected" : ""}>${esc(g.name)}</option>`).join("")}<option value="-" ${fGroup === "-" ? "selected" : ""}>No fold yet (graze in the Flock Commons)</option></select></div>` : ""}
       ${accountFields()}
       <button class="btn ${me ? "primary" : "gbtn"}" id="fJoin" ${flockBusy ? "disabled" : ""}>${flockBusy ? "Joining…" : me ? "Join " + esc(fFound.name) : G_LOGO + "Continue with Google to join"}</button>
       <button class="linkish" id="fBack">Use a different code</button>`;
@@ -10034,7 +10140,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // Flock Growth: the same four disciplines, averaged over the flock's active lambs, so a big flock doesn't climb faster;
   // the shared-reading bonus is in proportion to how many of them read the flock's passage (up to +5)
   function flockGrowthOn(D, live) {
-    const ms = profilesAll.filter(p => p.groupId && groupOf(p.groupId)).map(p => live && me && p.uid === me.uid ? Object.assign({}, p, { act: actLog() }) : p), bits = (p, d) => ((p.act || {})[d] || 0);
+    const ms = profilesAll.filter(inFlock).map(p => live && me && p.uid === me.uid ? Object.assign({}, p, { act: actLog() }) : p), bits = (p, d) => ((p.act || {})[d] || 0);
     const active = ms.filter(p => { for (let k = 0; k < 14; k++) if (bits(p, addDays(D, -k)) & 17) return true; return false; });
     if (!active.length) return 0;
     let sum = 0, readers = 0; active.forEach(p => { const b = bits(p, D); sum += (b & 1) + (b >> 1 & 1) + (b >> 2 & 1) + (b >> 3 & 1); if (b & 1) readers++; });
@@ -10042,7 +10148,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
   let tendingF = false, tendFAt = 0;
   async function tendFlock() {
-    if (tendingF || !B || !B.growFlock || !flockInfo || !myProfile || !myProfile.groupId) return;
+    if (tendingF || !B || !B.growFlock || !flockInfo || !myProfile) return;
     const y = addDays(today(), -1); if (flockInfo.gday && flockInfo.gday >= y && Date.now() - tendFAt < 10 * 60e3) return;
     tendingF = true; tendFAt = Date.now();
     try { await B.growFlock(cur => { const o = settleWith(d => flockGrowthOn(d), cur, y); if (cur.gday && o.gday === cur.gday && o.add < 0.01) return null; delete o.add; return o; }); } catch (e) {}
@@ -10075,8 +10181,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     [23, "A stream through the meadow"], [24, "A little bridge"], [26, "Apple trees"], [27, "Iron lanterns"], [28, "A dry-stone wall and a fold gate"], [29, "A stable"], [30, "A fellowship hall"], [50, "Eden: the tree of life, and gold"]];
   let commonsPreview = null;   // { level, unity } while looking ahead
   const flockLevelNow = () => foldLevel((flockInfo && flockInfo.growth) || 0);
-  const commonsMembers = () => profilesAll.filter(p => p.groupId && groupOf(p.groupId)).sort((a, b) => (me && a.uid === me.uid ? -1 : me && b.uid === me.uid ? 1 : (a.displayName || "").localeCompare(b.displayName || "")))
-    .map(p => ({ uid: p.uid, me: !!me && p.uid === me.uid, name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), fold: (groupOf(p.groupId) || {}).name || "", outfit: p.outfit || null }));
+  const inFlock = p => !p.groupId || !!groupOf(p.groupId);   // in a fold, or "no fold yet" (they graze in the Commons)
+  const commonsMembers = () => profilesAll.filter(inFlock).sort((a, b) => (me && a.uid === me.uid ? -1 : me && b.uid === me.uid ? 1 : (a.displayName || "").localeCompare(b.displayName || "")))
+    .map(p => ({ uid: p.uid, me: !!me && p.uid === me.uid, name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), fold: (groupOf(p.groupId) || {}).name || "No fold yet", outfit: p.outfit || null }));
   let commonsFind = "";
   const foldHit = () => { const q = commonsFind.trim().toLowerCase(); const g = q.length >= 2 && groupsAll.find(x => x.name.toLowerCase().includes(q)); return g ? g.name : null; };
   function commonsTools(idp) {
@@ -10093,14 +10200,17 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     root.querySelectorAll("[data-cmgo]").forEach(b => b.onclick = () => { F.focusOn(b.dataset.cmgo); commonsFind = ""; rerender(); });
   }
   function renderCommons(c) {
-    const all = profilesAll.filter(p => p.groupId && groupOf(p.groupId));
-    c.innerHTML = `<div class="grtop"><div class="grhead"><div class="grtitle"><div class="eyebrow">You're at</div><p class="cardtitle">Flock Commons</p></div>
+    const all = profilesAll.filter(inFlock), nofold = !!myProfile && !myProfile.groupId;
+    c.innerHTML = `<div class="grtop"><div class="grhead"><div class="grtitle"><div class="eyebrow">${nofold ? "You're in" : "You're at"}</div><p class="cardtitle">Flock Commons</p></div>
         <div class="gricons"><button class="hudbtn" id="grOthers" aria-label="Visit other folds">${SIGNPOST}</button></div></div>
       <button class="flockpill" id="flockPill" aria-label="Your flocks: ${esc(flockName(S.flockId))}. Tap to switch"><span class="flockhouse" aria-hidden="true">${SHEEP_MINI}</span><b>${esc(flockName(S.flockId))}</b><span class="chevd" aria-hidden="true">▾</span></button></div>
       ${all.length ? `<div class="foldlvl" id="foldLvl" role="img" aria-label="Flock level ${flockLevelNow()}">${growthBar(flockInfo || {}, null, pendingFlockGrowth())}</div>` : ""}
+      ${nofold ? `<div class="nofoldrow"><span class="small">No fold yet${groupsAll.length ? "" : ". The folds are still being prepared"}</span><span class="cheerbtns">${groupsAll.length ? `<button class="btn small-btn" id="cmPickFold">Choose your fold</button>` : ""}${amFounder() ? `<button class="mini foundbtn" id="fcTools" aria-label="Founder's tools">${GEAR}</button>` : ""}</span></div>` : ""}
       ${weeklyHtml()}
       ${unityHtml()}`;
     $("grOthers").onclick = () => setVisit(true); $("flockPill").onclick = () => openFlocks("list");
+    if ($("cmPickFold")) $("cmPickFold").onclick = () => { picking = true; renderGroup(); };
+    if ($("fcTools")) $("fcTools").onclick = () => { managing = true; mod = null; loadMod(); renderFellowship(); };
     wireWeekly(c); tendFlock();
     S.commonsSeen = S.commonsSeen || {}; const L = flockLevelNow(), was = S.commonsSeen[S.flockId];
     if (was != null && L > was) toast(`The Commons grew to level ${L}. Every lamb's reading, reflecting, remembering and encouraging helped.`, () => {});
@@ -10245,7 +10355,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
   // the fold, full screen: the same meadow, further out, with everything the fold has grown
   let foldViewOn = false, foldKey = null;
-  const foldMembers = gid => membersOf(gid).slice().sort((a, b) => (a.uid === (me && me.uid) ? -1 : b.uid === (me && me.uid) ? 1 : 0)).map(p => ({ uid: p.uid, me: !!me && p.uid === me.uid, name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), fold: (groupOf(p.groupId) || {}).name || "", outfit: p.outfit || null }));
+  const foldMembers = gid => membersOf(gid).slice().sort((a, b) => (a.uid === (me && me.uid) ? -1 : b.uid === (me && me.uid) ? 1 : 0)).map(p => ({ uid: p.uid, me: !!me && p.uid === me.uid, name: me && p.uid === me.uid ? "You" : first(p.displayName), read: readToday(p), fold: (groupOf(p.groupId) || {}).name || "No fold yet", outfit: p.outfit || null }));
   const pendingUp = gid => { const g = groupOf(gid), seen = (S.foldSeen || {})[gid]; return !!g && gid === (myProfile && myProfile.groupId) && seen != null && seen < foldLevel(g.growth || 0); };
   // the fold's farm in the top box (instead of your own pasture) while you're at a fold
   function foldInline(gid) {
@@ -10311,6 +10421,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     c.hidden = false;
     const mine = myProfile.groupId, gid = viewGroup || mine, g = groupOf(gid);
     if (gid === COMMONS && !picking) { renderCommons(c); return; }
+    if (!mine && !gid && !picking && S.flockId) { renderCommons(c); return; }   // no fold yet: home is the Flock Commons
     if (!gid || !g || picking) { renderPicker(c); return; }
     const visiting = gid !== mine;
     const list = membersOf(gid).filter(p => !pendingRemoval || p.uid !== pendingRemoval.uid).sort((a, b) => (readToday(b) - readToday(a)) || (a.displayName || "").localeCompare(b.displayName || ""));
@@ -10335,38 +10446,16 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     { const hd = c.querySelector(".grhead > div:first-child"); const hh = hd ? Math.round(hd.getBoundingClientRect().height) : 0; if (hh >= 30) c.style.setProperty("--grh", hh + "px"); else c.style.removeProperty("--grh"); }   // the signpost is as tall as the fold's heading
   }
   // the founder: choose a lamb, choose a fold
-  function openMover(fromGid) {
-    let sh = $("moveSheet"); if (!sh) { sh = document.createElement("div"); sh.id = "moveSheet"; sh.className = "calsheet"; document.body.appendChild(sh); }
-    const groups = groupsAll.slice().sort((a, b) => a.name.localeCompare(b.name));
-    const lambOpts = groups.map(gr => { const ms = membersOf(gr.id).sort((a, b) => (a.displayName || "").localeCompare(b.displayName || "")); return ms.length ? `<optgroup label="${esc(gr.name)}">${ms.map(p => `<option value="${esc(p.uid)}">${esc(p.uid === (me && me.uid) ? "You" : p.displayName || "Someone")} · ${esc(p.lambName || "Lamb")}</option>`).join("")}</optgroup>` : ""; }).join("");
-    sh.innerHTML = `<div class="calback" data-close="1"></div>
-      <section class="calcard movecard" role="dialog" aria-modal="true" aria-label="Move a lamb">
-        <div class="calhead"><div><div class="eyebrow">Founder</div><p class="cardtitle">Move a lamb</p></div><div class="calnav"><button data-close="1" aria-label="Close">✕</button></div></div>
-        <div><label class="small" for="mvLamb">Which lamb</label><select id="mvLamb" class="field plainsel">${lambOpts}</select></div>
-        <div><label class="small" for="mvTo">To which fold</label><select id="mvTo" class="field plainsel"></select></div>
-        <p class="planline" id="mvNote"></p>
-        <button class="btn primary" id="mvGo">Move</button>
-      </section>`;
-    const close = () => sh.remove();
-    sh.querySelectorAll("[data-close]").forEach(x => x.onclick = close);
-    const fillTo = () => { const who = profOf($("mvLamb").value), from = who && who.groupId;
-      $("mvTo").innerHTML = groups.filter(gr => gr.id !== from).map(gr => `<option value="${esc(gr.id)}">${esc(gr.name)}</option>`).join("");
-      $("mvNote").textContent = who ? `${first(who.displayName)} is in ${(groupOf(from) || {}).name || "no fold"} now.` : ""; };
-    const firstHere = membersOf(fromGid)[0]; if (firstHere) $("mvLamb").value = firstHere.uid;
-    $("mvLamb").onchange = fillTo; fillTo();
-    $("mvGo").onclick = async () => { const uid = $("mvLamb").value, gid = $("mvTo").value; if (!uid || !gid) return; $("mvGo").disabled = true;
-      try { await B.moveMember(uid, gid); const who = profOf(uid); close(); toast(`${first(who && who.displayName)} moved to ${(groupOf(gid) || {}).name}`, () => {}); }
-      catch (e) { $("mvNote").textContent = "That didn't go through. Please try again."; $("mvGo").disabled = false; } };
-  }
   function renderPicker(c) {
     const mine = myProfile.groupId;
     c.innerHTML = `<div><div class="eyebrow">${esc(flockName(S.flockId))} · Your fold</div><p class="cardtitle">${mine ? "Move to another fold" : "Choose your fold"}</p>
         <p class="planline">Your lamb grazes alongside the lambs of your small group. You can wander over to visit other folds any time.</p></div>
       <div class="picks">${groupsAll.slice().sort((a, b) => a.name.localeCompare(b.name)).map(g => `<button class="pick ${g.id === mine ? "on" : ""}" data-g="${esc(g.id)}"><b>${esc(g.name)}</b><small>${membersOf(g.id).length} lamb${membersOf(g.id).length === 1 ? "" : "s"} grazing</small></button>`).join("") || `<p class="planline">The folds are still being prepared.</p>`}</div>
       ${groupMsg ? `<p class="badmsg">${esc(groupMsg)}</p>` : ""}
-      ${mine ? `<button class="linkish" id="pkCancel">Stay where I am</button>` : ""}`;
+      ${mine ? `<button class="linkish" id="pkCancel">Stay where I am</button>` : `<button class="pick nofold" id="pkNone"><b>No fold yet</b><small>Graze in the Flock Commons for now, and choose a fold later</small></button>`}`;
     c.querySelectorAll(".pick").forEach(b => b.onclick = async () => { await joinGroup(b.dataset.g); });
     if ($("pkCancel")) $("pkCancel").onclick = () => { picking = false; renderGroup(); };
+    if ($("pkNone")) $("pkNone").onclick = () => { picking = false; viewGroup = null; renderSocial(); push3D(); };
   }
   async function joinGroup(id) {
     try {
@@ -10413,15 +10502,51 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
 
   // ----- founder's tools: the flock's name and code, shepherds, folds, people removed, and handing the flock on -----
+  let memOpen = false, memSort = { k: "name", dir: 1 }, memSel = new Set(), memTo = "", memBusy = false, memMsg = "";
+  // the founder's member list: every lamb in the flock, sortable; tick several and move them together
+  const fedAgo = d => { if (!d) return "Not yet"; const n = between(d, today()); return n <= 0 ? "Today" : n === 1 ? "Yesterday" : n + " days ago"; };
+  function memberRows() {
+    const nm = p => (p.displayName || "Someone").toLowerCase(), fold = p => (groupOf(p.groupId) || {}).name || "", lf = p => p.lastFed || "";
+    const key = { name: nm, fold: p => fold(p).toLowerCase() || "\uffff", fed: lf, role: p => (flockInfo && flockInfo.createdBy === p.uid ? 0 : p.role === "shepherd" ? 1 : 2) }[memSort.k] || nm;
+    return profilesAll.slice().sort((a, b) => { const x = key(a), y = key(b); return (x < y ? -1 : x > y ? 1 : nm(a) < nm(b) ? -1 : 1) * (memSort.k === "fed" ? -memSort.dir : memSort.dir); });
+  }
+  function memberListHtml() {
+    const rows = memberRows(), all = rows.length && rows.every(p => memSel.has(p.uid)), n = [...memSel].filter(u => profilesAll.some(p => p.uid === u)).length;
+    const th = (k, l) => `<th scope="col"><button class="msort ${memSort.k === k ? "on" : ""}" data-msort="${k}">${l}${memSort.k === k ? `<span aria-hidden="true">${memSort.dir > 0 ? "▲" : "▼"}</span>` : ""}</button></th>`;
+    const tag = p => flockInfo && flockInfo.createdBy === p.uid ? `<span class="mtag founder">Founder</span>` : p.role === "shepherd" ? `<span class="mtag">Shepherd</span>` : "";
+    return `<details class="memlist" id="memList" ${memOpen ? "open" : ""}><summary><span class="eyebrow">Members</span><span class="small">${rows.length} lamb${rows.length === 1 ? "" : "s"}</span></summary>
+      <div class="memwrap"><table class="memtab"><thead><tr><th scope="col"><input type="checkbox" id="memAll" aria-label="Select everyone" ${all ? "checked" : ""}></th><th scope="col" class="sn">S/N</th>${th("name", "Name")}${th("fold", "Fold")}${th("fed", "Last fed")}</tr></thead>
+      <tbody>${rows.map((p, i) => `<tr class="${memSel.has(p.uid) ? "sel" : ""}"><td><input type="checkbox" data-msel="${esc(p.uid)}" aria-label="Select ${esc(p.displayName || "Someone")}" ${memSel.has(p.uid) ? "checked" : ""}></td><td class="sn">${i + 1}</td>
+        <td class="mname"><b>${esc(p.uid === (me && me.uid) ? (!p.displayName || p.displayName === "You" ? "You" : p.displayName + " (you)") : p.displayName || "Someone")}</b>${tag(p)}</td><td class="mfold">${esc((groupOf(p.groupId) || {}).name || "No fold yet")}</td><td class="mfed ${readToday(p) ? "today" : ""}">${fedAgo(p.lastFed)}</td></tr>`).join("")}</tbody></table></div>
+      <div class="memmove"><span class="small">${n ? `${n} selected. Move to` : "Tick lambs to move them together"}</span>
+        <div class="row"><select id="memTo" class="field grow plainsel" ${n ? "" : "disabled"}><option value="">Choose a fold</option>${groupsAll.slice().sort((a, b) => a.name.localeCompare(b.name)).map(g => `<option value="${esc(g.id)}" ${memTo === g.id ? "selected" : ""}>${esc(g.name)}</option>`).join("")}<option value="-" ${memTo === "-" ? "selected" : ""}>No fold yet (Flock Commons)</option></select><button class="btn primary-soft" id="memGo" ${n && memTo && !memBusy ? "" : "disabled"}>${memBusy ? "Moving…" : "Move"}</button></div>
+        ${memMsg ? `<p class="badmsg">${esc(memMsg)}</p>` : ""}</div></details>`;
+  }
+  function wireMembers(c) {
+    const ml = c.querySelector("#memList"); if (!ml) return;
+    ml.addEventListener("toggle", () => { memOpen = ml.open; });
+    c.querySelectorAll("[data-msort]").forEach(b => b.onclick = () => { const k = b.dataset.msort; memSort = memSort.k === k ? { k, dir: -memSort.dir } : { k, dir: 1 }; renderFounder(); });
+    c.querySelectorAll("[data-msel]").forEach(b => b.onchange = () => { b.checked ? memSel.add(b.dataset.msel) : memSel.delete(b.dataset.msel); memMsg = ""; renderFounder(); });
+    const allBox = $("memAll"); if (allBox) allBox.onchange = () => { memSel = allBox.checked ? new Set(profilesAll.map(p => p.uid)) : new Set(); renderFounder(); };
+    const to = $("memTo"); if (to) to.onchange = () => { memTo = to.value; renderFounder(); };
+    const go = $("memGo"); if (go) go.onclick = async () => {
+      const ids = [...memSel].filter(u => profilesAll.some(p => p.uid === u)), gid = memTo === "-" ? "" : memTo; if (!ids.length || !memTo) return;
+      memBusy = true; memMsg = ""; renderFounder();
+      const res = await Promise.all(ids.map(u => B.moveMember(u, gid).then(() => true, () => false))), ok = res.filter(Boolean).length;
+      memBusy = false; memSel = new Set(ids.filter((u, i) => !res[i])); memMsg = ok < ids.length ? `${ids.length - ok} couldn't be moved just now. They're still ticked, so you can try again.` : "";
+      if (ok) toast(`${ok} lamb${ok === 1 ? "" : "s"} moved to ${gid ? (groupOf(gid) || {}).name : "No fold yet"}.`);
+      const meI = me ? ids.indexOf(me.uid) : -1; if (meI >= 0 && res[meI] && myProfile) myProfile.groupId = gid;
+      renderFounder(); renderSocial(); push3D(); };
+  }
   let managing = false, addDraft = "", removing = null, adminMsg = "", renameDraft = null, removedList = null, handTo = "", handing = false;
   function manageHtml() {
     const rows = groupsAll.slice().sort((a, b) => a.name.localeCompare(b.name));
     const people = profilesAll.filter(p => !me || p.uid !== me.uid).sort((a, b) => (a.displayName || "").localeCompare(b.displayName || ""));
-    return `<div class="manage"><div class="eyebrow">Name and code</div>
+    return `<div class="manage">${memberListHtml()}<div class="eyebrow">Name and code</div>
       <div><label class="small" for="flName">Name of the flock</label><div class="row"><input id="flName" class="field grow plain" maxlength="40" value="${esc(renameDraft != null ? renameDraft : flockInfo.name)}"><button class="btn" id="flNameGo">Save</button></div></div>
       ${codeBox()}<button class="linkish" id="fcNew">Make a new code (the old one stops working)</button>
       <div class="eyebrow">Shepherds</div>
-      <ul class="mlist shep">${people.map(p => `<li class="row"><span class="grow">${esc(p.displayName || "Someone")}<small class="setnote">${esc((groupOf(p.groupId) || {}).name || "No fold")}</small></span><button class="switch" role="switch" aria-checked="${p.role === "shepherd"}" data-shep="${esc(p.uid)}" aria-label="${esc(p.displayName || "Someone")} is a shepherd"><i></i></button></li>`).join("") || `<li class="empty">No one else has joined yet.</li>`}</ul>
+      <ul class="mlist shep">${people.map(p => `<li class="row"><span class="grow">${esc(p.displayName || "Someone")}<small class="setnote">${esc((groupOf(p.groupId) || {}).name || "No fold yet")}</small></span><button class="switch" role="switch" aria-checked="${p.role === "shepherd"}" data-shep="${esc(p.uid)}" aria-label="${esc(p.displayName || "Someone")} is a shepherd"><i></i></button></li>`).join("") || `<li class="empty">No one else has joined yet.</li>`}</ul>
       <div class="eyebrow">Tend the folds</div>
       <ul class="mlist">${rows.map(g => { const m = membersOf(g.id).length; return `<li>
         <div class="row"><input class="field grow plain" data-name="${esc(g.id)}" maxlength="40" value="${esc(g.name)}" aria-label="Fold name"><button class="btn" data-save="${esc(g.id)}">Save</button><button class="btn" data-remove="${esc(g.id)}">Remove</button></div>
@@ -10461,7 +10586,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
         try { on ? await B.mute(who, nm) : await B.unmute(who); toast(on ? `${first(nm)} is muted.` : `${first(nm)} can send notes again.`, () => {}); } catch (e) { toast("Couldn't do that just now.", () => {}); } loadMod(); }); });
   }
   function wireManage(c) {
-    wireMod(c);
+    wireMod(c); wireMembers(c);
     const fail = m => () => { adminMsg = m; renderFellowship(); };
     $("flName").oninput = e => { renameDraft = e.target.value; };
     $("flNameGo").onclick = async () => { const v = (renameDraft != null ? renameDraft : flockInfo.name).trim(); if (!v) return;
@@ -10588,14 +10713,14 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     sh.innerHTML = `<div class="calback" data-fclose="1"></div>
       <section class="calcard foundcard" role="dialog" aria-modal="true" aria-label="Founder's tools">
         <div class="calhead"><div><div class="eyebrow">${esc(flockInfo.name)}</div><p class="cardtitle">Founder's tools</p></div><div class="calnav"><button data-fclose="1" aria-label="Close">✕</button></div></div>
-        <div class="foundquick"><button class="btn" id="fqPlan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8.5" cy="14.5" r="1.2" fill="currentColor"/><circle cx="12" cy="14.5" r="1.2" fill="currentColor"/></svg><span>Flock plan</span></button><button class="btn" id="fqMove">${TRANSFER}<span>Move a lamb</span></button></div>
+        <div class="foundquick"><button class="btn" id="fqPlan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8.5" cy="14.5" r="1.2" fill="currentColor"/><circle cx="12" cy="14.5" r="1.2" fill="currentColor"/></svg><span>Flock plan</span></button><button class="btn" id="fqMove">${TRANSFER}<span>Move lambs</span></button></div>
         ${manageHtml()}
       </section>`;
     sh.querySelector(".calcard").scrollTop = keep;
     const close = () => { managing = false; removing = null; adminMsg = ""; renameDraft = null; removedList = null; handing = false; renderFounder(); };
     sh.querySelectorAll("[data-fclose]").forEach(x => x.onclick = close);
     $("fqPlan").onclick = () => { close(); planOpen = "fellowship"; openPlans(true); planOpen = "fellowship"; renderPlans(); };
-    $("fqMove").onclick = () => { close(); openMover(myProfile.groupId); };
+    $("fqMove").onclick = () => { memOpen = true; renderFounder(); const m = $("memList"); if (m) m.scrollIntoView({ behavior: "smooth", block: "start" }); };
     wireManage(sh);
   }
 
@@ -10901,7 +11026,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
   document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-refl]"); if (!b) return; const r = reflsAll.find(x => x.id === b.dataset.refl); if (r) { e.stopPropagation(); openRefl(r); } });
   // sharing my own reflection
-  const canShare = () => !!(B && myProfile && me);
+  const canShare = () => !!(B && myProfile && me && myProfile.groupId);   // reflections are kept with a fold
   // sharing reaches your fold or flock in each flock you pick: one source, separate ordinary posts, separate replies
   async function groupIn(fid) { if (fid === S.flockId) return (myProfile && myProfile.groupId) || ""; S.foldIn = S.foldIn || {};
     try { const g = B.myGroupIn ? await B.myGroupIn(fid) : null; if (g != null) S.foldIn[fid] = g; return g; } catch (e) { return S.foldIn[fid] != null ? S.foldIn[fid] : null; } }
@@ -11090,7 +11215,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.18.14";
+  const APP_VERSION = "2.18.17";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
@@ -11500,7 +11625,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#inboxBtn", "Your inbox", "Hearts, notes, replies and messages from your flock, all in one place."],
       ["#setBtn", "Settings", "Text size, sound, your account, and this walkthrough again."],
       ["#nameBtn", "Your lamb's name", "Tap the pencil to rename your lamb."]),
-    tchunk(["#week", "This week", "A tick for each day you read. Small steps add up."],
+    tchunk(["#week", "This week", "A tick for each day you read. Tap a day to fix a wrong tick, or hold it for 3 seconds to make it a rest day."],
       ["#myWeek", "Your week", "A look back at what you read, wrote and gave this week."]),
     tchunk(["#installCard", "Keep it close", "Add WordPasture to your home screen so it opens like an app."]),
     tchunk([["text:#todayLabel", "text:#todayRef"], "Today's reading", "Your passage for today, from your reading plan."],
@@ -11623,7 +11748,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ["#bankSheet .mtq", "Me too", "How many others are wondering the same."],
       ["#bankSheet .pager", "More questions", "Page through the rest."]] },
     founder: { root: "#founderSheet .foundquick", steps: () => [
-      ["#founderSheet .foundquick", "Quick tools", "Set a reading plan for the flock, or move a lamb to another fold."],
+      ["#founderSheet .foundquick", "Quick tools", "Set a reading plan for the flock, or move lambs between folds."],
+      ["#founderSheet #memList", "Members", "Everyone in the flock, with their fold and when they last fed. Tap a heading to sort. Tick several lambs to move them to a fold, or to No fold yet, together."],
       ["#founderSheet .codestrip", "Flock code", "Share it so others can join. Make a new one if it gets out."],
       [byLabel("#founderSheet", "Shepherds"), "Shepherds", "Choose who looks after each fold."],
       [byLabel("#founderSheet", "Tend the folds"), "Folds", "Rename, add or remove folds."],
@@ -11828,7 +11954,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       const gap = S.lastFed ? readingGap(S.lastFed, t) : 99;
       S.streak = gap <= 1 ? S.streak + 1 : 1;
       S.best = Math.max(S.best, S.streak);
-      if (!S.fedDays.includes(t)) { S.fedDays.push(t); S.daysRead = daysRead() + 1; }
+      if (!S.fedDays.includes(t)) { S.daysRead = daysRead() + 1; S.fedDays.push(t); }   // count first: counting after the push added the day twice
       S.fedDays = S.fedDays.slice(-400);
     }
     // hearts: reading feeds (no heart lost); a reflection on today's or a read-ahead passage earns +1; a lost lamb comes home with 1

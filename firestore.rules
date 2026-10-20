@@ -280,7 +280,7 @@ service cloud.firestore {
           && ((flock(fid).createdBy == uid && request.resource.data.role == 'shepherd')
               || (request.resource.data.role == 'member'
                   && request.resource.data.code == flock(fid).code
-                  && groupExists(fid, request.resource.data.groupId)));
+                  && (request.resource.data.groupId == '' || groupExists(fid, request.resource.data.groupId))));   // '' = no fold yet: grazing in the Commons
         // people update their own summary; they stay in their fold unless it was removed, and can't make themselves shepherds
         allow update: if isMe(uid)
           && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid', 'code'])
@@ -295,7 +295,7 @@ service cloud.firestore {
         allow update: if isFounder(fid)
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['groupId', 'role', 'updated'])
           && (request.resource.data.role in ['member', 'shepherd'])
-          && groupExists(fid, request.resource.data.groupId);
+          && (request.resource.data.groupId == '' || groupExists(fid, request.resource.data.groupId));
         // the super admin makes the new founder a shepherd when handing a flock on
         allow update: if isAdmin()
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'updated'])
