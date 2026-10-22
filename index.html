@@ -2004,7 +2004,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <p class="planline" id="demoNote" hidden>You're looking at a preview. The flock, folds and messages here are pretend, and nothing you send leaves this page.</p>
       <div class="setgroup" id="installSet" hidden><h3>On your phone/tablet</h3><div id="installRow"></div></div>
       <button class="linkish" id="tourAgain">Take the walkthrough</button>
-      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.18.35 · 21 October 2026, 9:55 pm</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
+      <div class="about"><span>WordPasture · “Feed my lambs.” John 21:15</span><span id="appVer">Version 2.18.38 · 22 October 2026, 7:37 am</span><button class="linkish" id="checkUpd">Check for updates</button><span>Berean Standard Bible (BSB): The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.info, and the Berean Bible Translation Committee. This text of God's Word has been dedicated to the public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a></span><span>和合本（新标点·简体·神版）CUVS: public domain</span></div>
     </section>
   </div>
 
@@ -8599,19 +8599,19 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       useHeld: r => `Use the verse you reflected on · ${r}`, start: "Start memorizing", cancel: "Cancel",
       today: list => `Today: ${list}`, review: r => "review " + r, practise: r => "practise " + r, allDone: "All done for today", sep: ", ",
       addedMsg: k => `Added. You're learning ${k} verses now. Tap one to practise.`,
-      bringBack: n => `${n} will bring each verse back when it's time to review.`, tomorrow: "Come back tomorrow to keep climbing.", still: "Still learning",
+      bringBack: () => "Every verse here is learned. Choose another to memorize, or tap one to say it again.", tomorrow: "Come back tomorrow to keep climbing.", still: "Still learning",
       add: more => `+ Choose ${more ? "another" : "a"} verse to memorize`, knows: (n, k) => `Verses ${n} knows by heart (${k})`,
       treasuredT: r => `${r} is treasured`, knowsT: (n, r) => `${n} knows ${r} by heart`, treasuredL: "You still remember it a month on. It's yours to keep.",
-      learnedL: n => `You said it from memory on ${RECALL_DAYS} different days. ${n} will bring it back now and then so it stays.`,
+      learnedL: () => `You said it from memory on ${RECALL_DAYS} different days. It stays in your list: tap it anytime to say it again.`,
       together: "Celebrate together", withFold: "With my fold", withFlock: "With the whole flock", shared: "Shared. Your flock can celebrate with you.", back2: "Back to Remember",
       learning: "Learning", reviewing: "Review", readSlow: "Read it slowly, out loud if you can.", readIt: n => `I've read it · ${n} of 3`,
       fill: "Fill in the missing words.", more: "More words are missing now.", typeLetters: "Type the whole verse. The first letters are there to help.", typeMem: "Type the whole verse from memory.",
       phLetters: "Type it out…", phMem: "Say it in your heart, then type it…", missing: "Missing word",
       allRight: "Every word right.", notQuite: "Not quite. The right words are filled in for you.", nearly: "Nearly. The words you missed are underlined. Practise with the first letters, then try again.", onceMore: "The words you missed are underlined. Try once more.",
       keepGoing: r => `Keep going · ${r}`, enough: "That's enough for today", done: "Done", withLetters: "Practise with first letters", tryAgain: "Try again", stopNow: "Stop for now", check: "Check", back: "Back", drop: "Stop learning this verse",
-      stillThere: (n, d) => `Still there. ${n} will ask again in ${d} day${d === 1 ? "" : "s"}.`, onTo: (ok, k, r) => `${ok ? "Every word right. " : ""}On to rung ${k}: ${r.toLowerCase()}.`,
+      stillThere: () => "Still there, word for word.", onTo: (ok, k, r) => `${ok ? "Every word right. " : ""}On to rung ${k}: ${r.toLowerCase()}.`,
       saidOn: k => `Said from memory on ${k} of ${RECALL_DAYS} days. Come back tomorrow and say it again.`, popT: "Treasured!", popL: "Learned!",
-      stT: d => `Treasured · next review ${d === 0 ? "today" : "in " + d + " days"}`, stRevd: "Reviewed today", stRev: "Review today", stL: d => `Learned · next review in ${d} day${d === 1 ? "" : "s"}`,
+      stT: () => "Treasured · tap to say it again", stRevd: "Said again today", stRev: "Say it again", stL: () => "Learned · tap to say it again anytime",
       stRung: (r, k, rc, dn) => `${r} · rung ${k} of 5${rc ? ` · from memory on ${rc} of ${RECALL_DAYS} days` : ""}${dn ? " · done for today" : ""}` },
     zh: { rungs: ["", "慢慢读", "填空", "更多空格", "首字提示", "凭记忆背诵"], remember: "背诵经文", choose: "请选择想背诵的经节", label: "背诵的经节", ph: "例如：马太福音 5:16 或 Matthew 5:16",
       typeHint: "输入经文出处，经文就会显示在这里。", notInBible: "圣经里没有这个出处，请检查书卷、章和节。", keepTyping: "继续输入，例如：约翰福音 10:11",
@@ -8619,19 +8619,19 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       useHeld: r => `使用你默想的经节 · ${r}`, start: "开始背经", cancel: "取消",
       today: list => `今天：${list}`, review: r => "复习" + r, practise: r => "练习" + r, allDone: "今天都完成了", sep: "，",
       addedMsg: k => `已加入。你现在正在背${k}节经文，点一节开始练习。`,
-      bringBack: n => `到了复习的时候，${n}会把每节经文带回来。`, tomorrow: "明天再来，继续往上爬。", still: "正在学习",
+      bringBack: () => "这里的经文都背熟了。再选一节来背，或点按一节再背一次。", tomorrow: "明天再来，继续往上爬。", still: "正在学习",
       add: more => `+ 选择${more ? "另一节" : ""}要背诵的经节`, knows: (n, k) => `${n}已背熟的经节（${k}）`,
       treasuredT: r => `${r}已成为珍藏`, knowsT: (n, r) => `${n}已经背熟${r}`, treasuredL: "一个月后你仍然记得。它永远是你的了。",
-      learnedL: n => `你已在${RECALL_DAYS}个不同的日子凭记忆背出来。${n}会不时把它带回来，让你牢牢记住。`,
+      learnedL: () => `你已在${RECALL_DAYS}个不同的日子凭记忆背出来。它会留在你的列表里，随时点按再背一次。`,
       together: "一同庆祝", withFold: "和我的羊圈", withFlock: "和整个羊群", shared: "已分享。你的羊群可以和你一同庆祝。", back2: "返回背经",
       learning: "学习背诵", reviewing: "复习", readSlow: "慢慢读，可以的话就读出声来。", readIt: n => `已阅读 · ${n}/3`,
       fill: "填上缺少的字。", more: "现在缺少更多的字了。", typeLetters: "输入整节经文。首字提示可以帮助你。", typeMem: "凭记忆输入整节经文。",
       phLetters: "输入经文……", phMem: "先在心里背一遍，再输入……", missing: "缺少的字",
       allRight: "每个字都对了。", notQuite: "还差一点。正确的字已经帮你填上了。", nearly: "差一点了。漏掉的字已加上底线。先用首字提示练习，再试一次。", onceMore: "漏掉的字已加上底线。再试一次。",
       keepGoing: r => `继续 · ${r}`, enough: "今天就到这里", done: "完成", withLetters: "用首字提示练习", tryAgain: "再试一次", stopNow: "先停一下", check: "检查", back: "返回", drop: "停止背诵这经节",
-      stillThere: (n, d) => `还记得！${n}会在${d}天后再问你。`, onTo: (ok, k, r) => `${ok ? "每个字都对了。" : ""}进入第${k}级：${r}。`,
+      stillThere: () => "还记得，一字不差！", onTo: (ok, k, r) => `${ok ? "每个字都对了。" : ""}进入第${k}级：${r}。`,
       saidOn: k => `已凭记忆背诵${k}/${RECALL_DAYS}天。明天再来背一次。`, popT: "珍藏！", popL: "背熟了！",
-      stT: d => `珍藏 · ${d === 0 ? "今天复习" : d + "天后复习"}`, stRevd: "今天已复习", stRev: "今天复习", stL: d => `已背熟 · ${d}天后复习`,
+      stT: () => "珍藏 · 点按可再背一次", stRevd: "今天已再背一次", stRev: "再背一次", stL: () => "已背熟 · 随时点按再背一次",
       stRung: (r, k, rc, dn) => `${r} · 第${k}/5级${rc ? ` · 已凭记忆背诵${rc}/${RECALL_DAYS}天` : ""}${dn ? " · 今天完成" : ""}` }
   };
   const cardZh = () => !S.par && readVer() === "cuvs";
@@ -8647,7 +8647,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   let memAdded = 0;
   const INTERVALS = [1, 3, 7, 14, 30, 60, 120];
   const RECALL_DAYS = 3;
-  const memDue = m => m.learned ? (m.next <= today() && m.revDay !== today()) : m.doneDay !== today();
+  const memDue = m => m.learned ? false : m.doneDay !== today();   // a learned verse is kept, not brought back: say it again whenever you like
   const memAllDone = () => (S.mem || []).length > 0 && !(S.mem || []).some(memDue);
   let memView = null, memReads = 0, memResult = null, memDraft = "", memSeed = 0;
   // comparing what was typed with the verse: capitals and punctuation never count
@@ -8687,8 +8687,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     : shownWords(text).map(w => w.replace(/[A-Za-z0-9’']+/g, x => x[0] + "_".repeat(Math.max(0, Math.min(3, x.length - 1))))).join(" ");
   function memStatus(m, T) {
     T = T || MT.en;
-    if (m.treasured) return T.stT(m.next <= today() ? 0 : between(today(), m.next));
-    if (m.learned) return m.next <= today() ? (m.revDay === today() ? T.stRevd : T.stRev) : T.stL(between(today(), m.next));
+    if (m.treasured) return T.stT(0);
+    if (m.learned) return m.revDay === today() ? T.stRevd : T.stL(0);
     return T.stRung(T.rungs[m.rung], m.rung, m.recall.length, m.doneDay === today());
   }
   const ladderDots = m => `<span class="ladder" aria-hidden="true">${[1, 2, 3, 4, 5].map(r => `<i class="${m.learned || r < m.rung ? "on" : r === m.rung ? "now" : ""}"></i>`).join("")}</span>`;
@@ -8774,11 +8774,10 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       cue("tok");
       memResult.msg = rung === 5 ? T.nearly : T.onceMore;
       if (rung === 5 && !review) { m.rung = 4; save(); }
-      if (review) { m.gi = Math.max(0, (m.gi || 0) - 2); m.next = addDays(today(), 1); m.revDay = today(); save(); }
       renderVerse();
     };
     c.querySelectorAll("input.blank").forEach(inp => inp.addEventListener("keydown", e => { if (e.key === "Enter" && $("memCheck")) $("memCheck").click(); }));
-    if ($("memRetry")) $("memRetry").onclick = () => { if (review) { memView = { id: m.id, mode: "learn" }; m.rung = Math.min(m.rung, 4); } memResult = null; memDraft = ""; memSeed++; renderVerse(); };
+    if ($("memRetry")) $("memRetry").onclick = () => { memResult = null; memDraft = ""; memSeed++; renderVerse(); };
     // tap a rung to look back at it; Start over clears this rung's attempt and begins it again
     c.querySelectorAll("[data-rung]").forEach(b => b.onclick = () => { const r = +b.dataset.rung, home = review || m.learned ? 5 : m.rung;
       memView.peek = r === home && !m.learned ? 0 : r; memResult = null; memDraft = ""; memReads = 0; memSeed++; renderVerse(); });
@@ -8803,8 +8802,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   function passRung(m, checked) {
     const review = memView.mode === "review", day = today(), T = MT[memLangOf(m)];
     if (review) {
-      const was = INTERVALS[m.gi || 0]; m.revDay = day; m.gi = Math.min((m.gi || 0) + 1, INTERVALS.length - 1); m.next = addDays(day, INTERVALS[m.gi]);
-      if (was >= 30 && !m.treasured) { m.treasured = day; save(); petLamb(T.popT); memView = { id: m.id, celebrate: "treasured" }; memResult = null; return renderVerse(); }
+      m.revDay = day; m.gi = Math.min((m.gi || 0) + 1, INTERVALS.length - 1); m.next = addDays(day, INTERVALS[m.gi]);
+      if (between(m.learned, day) >= 30 && !m.treasured) { m.treasured = day; save(); petLamb(T.popT); memView = { id: m.id, celebrate: "treasured" }; memResult = null; return renderVerse(); }
       memResult = { ok: memResult ? memResult.ok : [], pass: true, rung: 5, msg: T.stillThere(esc(S.name), INTERVALS[m.gi]) };
       save(); petLamb("♥"); renderVerse(); paintSteps(); return;
     }
@@ -8990,6 +8989,12 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
 
   function petLamb(text) { if (window.Lamb3D) window.Lamb3D.pet(); popText(text); }
+  // the verses already known by heart, in a dropdown: tap one to say it again
+  function knownList(T) {
+    const known = (S.mem || []).filter(m => m.learned); if (!known.length) return "";
+    return `<details class="mini knownlist"><summary>${T.knows(esc(S.name), known.length)}</summary><ul class="memlist">${known.map(x => `<li class="memrow"><button data-memknown="${x.id}"><b>${esc(memRef(x))}</b>${ladderDots(x)}<small>${esc(memStatus(x, T))}</small></button></li>`).join("")}</ul></details>`;
+  }
+  function wireKnown(c) { c.querySelectorAll("[data-memknown]").forEach(b => b.onclick = () => { const x = (S.mem || []).find(y => y.id === b.dataset.memknown); if (!x) return; memView = { id: x.id, mode: "review" }; memReads = 0; memResult = null; memDraft = ""; renderVerse(); }); }
   function renderChoose(c) {
     const hs = S.steps && S.steps.hold && S.steps.hold.sets, heldOne = hs && hs.length === 1 && hs[0].v2 - hs[0].v1 <= 5 ? hs[0] : null;
     const T = MT[cardZh() ? "zh" : "en"];
@@ -8998,7 +9003,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       <div class="vprev" id="vPrev" aria-live="polite"><span class="hint">${T.typeHint}</span></div>
       ${heldOne ? `<button class="btn" id="vHeld">${T.useHeld(esc(memDefaultLang("") === "zh" ? zhRef(verseRef(heldOne)) : verseRef(heldOne)))}</button>` : ""}
       <div class="vstart"><button class="donebtn" id="vSave" disabled><span class="db-ico" aria-hidden="true">${SHEEP_MINI}</span><span>${T.start}</span><span class="db-arrow" aria-hidden="true">→</span></button></div>
-      ${(S.mem || []).length ? `<button class="linkish" id="vCancel">${T.cancel}</button>` : ""}`;
+      ${(S.mem || []).length ? `<button class="linkish" id="vCancel">${T.cancel}</button>` : ""}
+      ${knownList(T)}`;
+    wireKnown(c);
     let found = null;
     const show = () => { const prev = $("vPrev"); if (!found || !prev) return; const zh = found.lang === "zh", main = zh ? found.zh : found.en, other = zh ? found.en : found.zh;
       prev.innerHTML = main ? `<b>${esc(zh ? zhRef(found.ref) : found.ref)}</b> <span class="${zh ? "zh" : ""}">${esc(main)}</span><small>${zh ? "CUVS" : "BSB"}</small>`
@@ -9306,8 +9313,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
     return [];   // books: no dates kept, just the books themselves
   }
   const gardenN = key => key === "show" ? new Set(S.books || []).size : gardenDates(key).length;
-  function openGarden(key) {
+  function openGarden(key, keep) {
     const G = GARDENS[key]; let sh = $("gSheet"); if (!sh) { sh = document.createElement("div"); sh.id = "gSheet"; sh.className = "calsheet"; document.body.appendChild(sh); }
+    const keepAt = keep ? [sh.scrollTop, ...[...sh.querySelectorAll("*")].filter(x => x.scrollTop > 0).map(x => [x.className, x.scrollTop])] : null;
     const real = gardenDates(key), n = gardenN(key), st = G.steps.filter(v => n >= v).length, nx = G.steps[st];
     const dates = G.steps.map(v => real[v - 1] || null), first = real[0];
     const fmt = d => d ? parseYmd(d).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "";
@@ -9328,8 +9336,9 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
       ${best[1] ? `<div class="gfoot">Your steadiest month was ${best[2]}, with ${best[1]}.</div>` : ""}` : books.length ? `<div class="gsec">On display</div><p class="gfoot" style="margin:2px 0 0">Choose the book whose piece stands at the centre.</p><div class="bkpills">${books.map(b => { const r = BOOK_REWARDS.find(x => x.books[0] === b && x.kind === "keep") || KEEP_OF[b], on = (S.home.plots || {}).show === b; return `<button class="bkpill ${on ? "on" : ""}" data-gpick="${b}" aria-pressed="${on}" aria-label="${esc(BOOKS[b][0])}" title="${esc(BOOKS[b][0])}">${statueArt(b, r)}<small>${esc(BOOKS[b][0])}</small></button>`; }).join("")}</div>` : ""}
     </section>`;
     sh.querySelectorAll("[data-gx]").forEach(x => x.onclick = () => sh.remove());
+    if (keepAt) { sh.scrollTop = keepAt[0]; keepAt.slice(1).forEach(([cls, top]) => { try { const x = cls && sh.querySelector("." + String(cls).trim().split(/\s+/).join(".")); if (x) x.scrollTop = top; } catch (e) {} }); }
     fillRewardArt(sh);
-    sh.querySelectorAll("[data-gpick]").forEach(b => b.onclick = () => { S.home.plots = Object.assign({}, S.home.plots, { show: +b.dataset.gpick }); save(); pushHome(); openGarden("show"); });
+    sh.querySelectorAll("[data-gpick]").forEach(b => b.onclick = () => { S.home.plots = Object.assign({}, S.home.plots, { show: +b.dataset.gpick }); save(); pushHome(); openGarden("show", true); });
   }
   function placeGardens(H) {
     if (!H) return false; H.plots = H.plots || {}; const at = H.plots.at = H.plots.at || {}; let changed = false;
@@ -9389,6 +9398,8 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   }
   function renderHomeSheet() {
     const c = $("homeCard"); if (!homeOpen) { c.innerHTML = ""; placeTools(null); return; }
+    const scrolled = [...c.querySelectorAll("*")].filter(x => x.scrollTop > 0).map(x => [x.className, x.scrollTop]), selfTop = c.scrollTop, sameTab = c.dataset.tab === editTab; c.dataset.tab = editTab;
+    requestAnimationFrame(() => { if (!sameTab) return; c.scrollTop = selfTop; scrolled.forEach(([cls, top]) => { try { const x = cls && c.querySelector("." + String(cls).trim().split(/\s+/).join(".")); if (x) x.scrollTop = top; } catch (e) {} }); });
     const D = draft, tabs = [["fence", "Fence"], ["keeps", "Keepsakes"], ["trees", "Trees"], ["water", "Water"], ["animals", "Animals"], ["gardens", "Bonus"]];
     const kind = ["trees", "water", "keeps"].includes(editTab) ? editTab : null;
     if (!D.keeps) D.keeps = [];
@@ -12107,7 +12118,7 @@ html.lay-tab .calcard .btn:not(.small-btn):not(.acc):not(.hopt) { padding-block:
   // ---------- keeping everyone on the latest version ----------
   // When a new version is published, version.json on the server changes. The app notices, and asks to update:
   // updating clears any stored copies and reloads fresh, so no one is left on an old version.
-  const APP_VERSION = "2.18.35";
+  const APP_VERSION = "2.18.38";
   let updShown = false;
   async function checkUpdate(manual) {
     let remote = null;
